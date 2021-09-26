@@ -1,0 +1,11 @@
+{
+    "build": {
+        "dockerfile": "Dockerfile"
+    },
+    "remoteUser": "user",
+    "extensions": [
+        "bmewburn.vscode-intelephense-client",
+        "whatwedo.twig",
+        "editorconfig.editorconfig"
+    ]
+}
