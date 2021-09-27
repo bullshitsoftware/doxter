@@ -1,0 +1,26 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Wait{% endblock %}
+
+{% block body %}
+<table>
+  <thead>
+    <tr>
+      <th scope="col">ID</th>
+      <th scope="col">Title</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for task in tasks %}
+    <tr>
+      <td>{{ task.id }}</td>
+      <td>{{ task.title }}</td>
+    </tr>
+    {% else %}
+    <tr>
+      <td colspan="2">No tasks</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}
