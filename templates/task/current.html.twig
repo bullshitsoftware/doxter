@@ -13,7 +13,7 @@
   <tbody>
     {% for task in tasks %}
     <tr>
-      <td>{{ task.id }}</td>
+      <td><a href="{{ url('task_view', {id: task.id}) }}">{{ task.id }}</a></td>
       <td>{{ task.title }}</td>
     </tr>
     {% else %}
