@@ -32,6 +32,7 @@ RUN apk add --no-cache \
     php8-pecl-apcu \
     make \
     git \
+    nodejs npm \
     curl
 
 RUN ln -s /usr/bin/php8 /usr/bin/php
