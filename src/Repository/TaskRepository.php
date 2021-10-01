@@ -44,7 +44,7 @@ class TaskRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('t')
             ->andWhere('t.user = :user')
             ->setParameter('user', $user->getId()->toBinary())
-            ->andWhere('t.wait IS NOT NULL OR t.wait > :now')
+            ->andWhere('t.wait IS NOT NULL AND t.wait > :now')
             ->setParameter('now', new \DateTimeImmutable())
             ->andWhere('t.ended IS NULL')
             ->getQuery()
