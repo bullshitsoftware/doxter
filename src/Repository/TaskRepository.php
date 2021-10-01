@@ -54,7 +54,7 @@ class TaskRepository extends ServiceEntityRepository
     /**
      * @return Task[]
      */
-    public function findDoneByUser(User $user): array
+    public function findCompletedByUser(User $user): array
     {
         return $this->createQueryBuilder('t')
             ->andWhere('t.user = :user')

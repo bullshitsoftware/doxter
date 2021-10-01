@@ -37,13 +37,13 @@ class TaskController extends AbstractController
         ]);
     }
 
-    #[Route('/done', name: 'task_done')]
-    public function done(TaskRepository $repository): Response
+    #[Route('/completed', name: 'task_completed')]
+    public function completed(TaskRepository $repository): Response
     {
         $this->denyAccessUnlessGranted('ROLE_USER');
 
-        return $this->render('task/done.html.twig', [
-            'tasks' => $repository->findDoneByUser($this->getUser()),
+        return $this->render('task/completed.html.twig', [
+            'tasks' => $repository->findCompletedByUser($this->getUser()),
         ]);
     }
 
