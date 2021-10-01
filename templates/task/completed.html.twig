@@ -21,7 +21,7 @@
       <div>{{ task.ended|date('Y-m-d') }}</div>
 
       <div class="sm-only"><strong>Age</strong></div>
-      <div>365d</div>
+      <div>{{ task.created|date_diff(now) }}</div>
 
       <div class="sm-only"><strong>Title</strong></div>
       <div>{{ task.title }}</div>

@@ -15,13 +15,13 @@
       <div><a href="{{ url('task_view', {id: task.id}) }}" class="mono">{{ task.id|slice(0,8) }}</a></div>
 
       <div class="sm-only"><strong>Age</strong></div>
-      <div>365d</div>
+      <div>{{ task.created|date_diff(now) }}</div>
 
       <div class="sm-only"><strong>Wait</strong></div>
       <div>{{ task.wait|date('Y-m-d')}}</div>
 
       <div class="sm-only"><strong>Remaining</strong></div>
-      <div>365d</div>
+      <div>{{ task.wait|date_diff(now) }}</div>
 
       <div class="sm-only"><strong>Title</strong></div>
       <div>{{ task.title }}</div>

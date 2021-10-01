@@ -23,6 +23,7 @@ class TaskController extends AbstractController
         $this->denyAccessUnlessGranted('ROLE_USER');
 
         return $this->render('task/current.html.twig', [
+            'now' => new \DateTimeImmutable(),
             'tasks' => $repository->findCurrentByUser($this->getUser()),
         ]);
     }
@@ -33,6 +34,7 @@ class TaskController extends AbstractController
         $this->denyAccessUnlessGranted('ROLE_USER');
 
         return $this->render('task/waiting.html.twig', [
+            'now' => new \DateTimeImmutable(),
             'tasks' => $repository->findWaitingByUser($this->getUser()),
         ]);
     }
@@ -43,6 +45,7 @@ class TaskController extends AbstractController
         $this->denyAccessUnlessGranted('ROLE_USER');
 
         return $this->render('task/completed.html.twig', [
+            'now' => new \DateTimeImmutable(),
             'tasks' => $repository->findCompletedByUser($this->getUser()),
         ]);
     }
