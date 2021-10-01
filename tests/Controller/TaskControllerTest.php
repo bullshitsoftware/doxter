@@ -37,13 +37,13 @@ class TaskControllerTest extends WebTestCase
         self::assertCount(4 * 9, $crawler->filter('.sm-only'));
     }
 
-    public function testWait(): void
+    public function testWaiting(): void
     {
-        $this->client->request('GET', '/wait');
+        $this->client->request('GET', '/waiting');
         self::assertResponseRedirects('/login');
 
         $this->client->loginUser($this->userRepository->findOneByEmail('john.doe@example.com'));
-        $crawler = $this->client->request('GET', '/wait');
+        $crawler = $this->client->request('GET', '/waiting');
         self::assertResponseIsSuccessful();
         self::assertCount(5 * 8, $crawler->filter('.sm-only'));
     }

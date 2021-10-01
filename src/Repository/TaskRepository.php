@@ -39,7 +39,7 @@ class TaskRepository extends ServiceEntityRepository
     /**
      * @return Task[]
      */
-    public function findWaitByUser(User $user): array
+    public function findWaitingByUser(User $user): array
     {
         return $this->createQueryBuilder('t')
             ->andWhere('t.user = :user')

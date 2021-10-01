@@ -27,13 +27,13 @@ class TaskController extends AbstractController
         ]);
     }
 
-    #[Route('/wait', name: 'task_wait')]
-    public function wait(TaskRepository $repository): Response
+    #[Route('/waiting', name: 'task_waiting')]
+    public function waiting(TaskRepository $repository): Response
     {
         $this->denyAccessUnlessGranted('ROLE_USER');
 
-        return $this->render('task/wait.html.twig', [
-            'tasks' => $repository->findWaitByUser($this->getUser()),
+        return $this->render('task/waiting.html.twig', [
+            'tasks' => $repository->findWaitingByUser($this->getUser()),
         ]);
     }
 
