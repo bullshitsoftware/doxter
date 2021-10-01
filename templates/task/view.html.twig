@@ -26,15 +26,15 @@
     <div>{{ task.description|markdown_to_html }}</div>
 
     <div><strong>Created</strong></div>
-    <div>{{ task.created|date('Y-m-d H:i:s') }}</div>
+    <div>{{ task.created|user_datetime }}</div>
 
     <div><strong>Updated</strong></div>
-    <div>{{ task.updated|date('Y-m-d H:i:s') }}</div>
+    <div>{{ task.updated|user_datetime }}</div>
 
     <div><strong>Wait</strong></div>
     <div>
     {% if task.wait %}
-      {{ task.wait|date('Y-m-d H:i:s') }}
+      {{ task.wait|user_datetime }}
     {% else %}
       &mdash;
     {% endif %}
@@ -43,7 +43,7 @@
     <div><strong>Started</strong></div>
     <div>
     {% if task.started %}
-      {{ task.started|date('Y-m-d H:i:s') }}
+      {{ task.started|user_datetime }}
     {% else %}
       &mdash;
     {% endif %}
@@ -52,7 +52,7 @@
     <div><strong>Ended</strong></div>
     <div>
     {% if task.ended %}
-      {{ task.ended|date('Y-m-d H:i:s') }}
+      {{ task.ended|user_datetime }}
     {% else %}
       &mdash;
     {% endif %}

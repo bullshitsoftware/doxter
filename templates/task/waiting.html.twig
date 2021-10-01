@@ -18,7 +18,7 @@
       <div>{{ task.created|date_diff(now) }}</div>
 
       <div class="sm-only"><strong>Wait</strong></div>
-      <div>{{ task.wait|date('Y-m-d')}}</div>
+      <div>{{ task.wait|user_date }}</div>
 
       <div class="sm-only"><strong>Remaining</strong></div>
       <div>{{ task.wait|date_diff(now) }}</div>

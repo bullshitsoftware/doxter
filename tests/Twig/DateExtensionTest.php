@@ -2,18 +2,31 @@
 
 namespace App\Tests\Twig;
 
+use App\Entity\User;
 use App\Twig\DateExtension;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
 class DateExtensionTest extends TestCase 
 {
     private DateExtension $extension;
+    private TokenStorageInterface $tokenStorage;
+    private User $user;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->extension = new DateExtension();
+        /** @var TokenStorageInterface|MockObject $tokenStorage */
+        $tokenStorage = $this->createMock(TokenStorageInterface::class);
+        $tokenStorage->method('getToken')->will($this->returnValue(
+            $token = $this->createMock(TokenInterface::class)
+        ));
+        $token->method('getUser')->will($this->returnValue($this->user = new User()));
+
+        $this->extension = new DateExtension($tokenStorage);
     }
 
     public function testDateDiff(): void
@@ -24,5 +37,25 @@ class DateExtensionTest extends TestCase
         self::assertSame('1h', $this->extension->dateDiff(new \DateTime('now'), new \DateTime('+1 hour')));
         self::assertSame('1m', $this->extension->dateDiff(new \DateTime('now'), new \DateTime('+1 minute')));
         self::assertSame('1s', $this->extension->dateDiff(new \DateTime('now'), new \DateTime('+1 second')));
+    }
+
+    public function testUserDate(): void
+    {
+        $this->user->getSettings()->setTimezone('Europe/Moscow');
+
+        self::assertSame(
+            '2007-01-01', 
+            $this->extension->userDate(new \DateTimeImmutable('2006-12-31 23:00')),
+        );
+    }
+
+    public function testUserDateTime(): void
+    {
+        $this->user->getSettings()->setTimezone('Europe/Moscow');
+
+        self::assertSame(
+            '2007-01-01 02:00:00', 
+            $this->extension->userDateTime(new \DateTimeImmutable('2006-12-31 23:00')),
+        );
     }
 }

@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\UserRepository;
 use Doctrine\ORM\Mapping\Id;
 use Doctrine\ORM\Mapping\Entity;
+use Doctrine\ORM\Mapping\Embedded;
 use Doctrine\ORM\Mapping\Column;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -22,9 +23,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Column(type: 'string')]
     private string $password;
 
+    #[Embedded(class: UserSettings::class)]
+    private UserSettings $settings;
+
     public function __construct()
     {
         $this->id = Uuid::v4();
+        $this->settings = new UserSettings();
     }
 
     public function getId(): Uuid
@@ -78,5 +83,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function eraseCredentials(): void
     {
+    }
+
+    public function getSettings(): UserSettings
+    {
+        return $this->settings;
     }
 }
