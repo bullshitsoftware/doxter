@@ -1,5 +1,5 @@
-$backround: lightgrey;
-
-body {
-    background-color: $backround;
-}
+@import 'color';
+@import 'layout';
+@import 'typo';
+@import 'form';
+@import 'nav';

@@ -2,9 +2,19 @@
 
 {% block title %}Current{% endblock %}
 
-{% block body %}
-{{ form_start(form) }}
-{{ form_widget(form) }}
-<button type="submit">Save</button>
-{{ form_end(form) }}
+{% block content %}
+<main class="container container_lg">
+  <div class="row">
+    <a href="{{ url('task_view', {id: task.id}) }}" class="btn">View</a>
+    <form method="POST" action="{{ url('task_delete', {id: task.id}) }}">
+      <input type="hidden" name="_token" value="{{ csrf_token('task') }}">
+      <button type="submit" class="pink">Delete</button>
+    </form>
+  </div>
+
+  {{ form_start(form) }}
+  {{ form_widget(form) }}
+  <button type="submit">Save</button>
+  {{ form_end(form) }}
+</div>
 {% endblock %}

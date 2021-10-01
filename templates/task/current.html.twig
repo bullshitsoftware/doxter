@@ -2,25 +2,26 @@
 
 {% block title %}Current{% endblock %}
 
-{% block body %}
-<table>
-  <thead>
-    <tr>
-      <th scope="col">ID</th>
-      <th scope="col">Title</th>
-    </tr>
-  </thead>
-  <tbody>
+{% block content %}
+<main class="container container_lg">
+  <div class="grid grid_current">
+    <div class="md-only"><strong>ID</strong></div>
+    <div class="md-only"><strong>Active</strong></div>
+    <div class="md-only"><strong>Age</strong></div>
+    <div class="md-only"><strong>Title</strong></div>
     {% for task in tasks %}
-    <tr>
-      <td><a href="{{ url('task_view', {id: task.id}) }}">{{ task.id }}</a></td>
-      <td>{{ task.title }}</td>
-    </tr>
-    {% else %}
-    <tr>
-      <td colspan="2">No tasks</td>
-    </tr>
+      <div class="sm-only"><strong>ID</strong></div>
+      <div><a href="{{ url('task_view', {id: task.id}) }}" class="mono">{{ task.id|slice(0,8) }}</a></div>
+
+      <div class="sm-only"><strong>Active</strong></div>
+      <div>365d</div>
+
+      <div class="sm-only"><strong>Age</strong></div>
+      <div>365d</div>
+
+      <div class="sm-only"><strong>Title</strong></div>
+      <div>{{ task.title }}</div>
     {% endfor %}
-  </tbody>
-</table>
+  </div>
+</div>
 {% endblock %}

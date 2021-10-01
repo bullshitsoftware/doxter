@@ -1,0 +1,45 @@
+nav {
+  display: block;
+  max-width: $lg;
+  margin: auto;
+  border-bottom: 1px solid $orange;
+}
+
+nav a {
+  display: inline-block;
+  text-decoration: none;
+  font-weight: bold;
+  padding: 0.5rem;
+}
+
+nav a.active {
+  color: $black;
+  background-color: $orange;
+}
+
+nav .toggle {
+  display: none;
+}
+
+@media screen and (max-width: $md) {
+  nav a {
+    display: none;
+  }
+  nav .toggle {
+    display: block;
+  }
+
+  nav.show {
+    position: absolute;
+    background-color: $black;
+    width: 100%;
+    height: 100%;
+  }
+
+  nav.show a {
+    display: block;
+    margin: 0;
+    padding: 0.5rem;
+    text-align: left;
+  }
+}

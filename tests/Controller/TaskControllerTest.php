@@ -30,11 +30,11 @@ class TaskControllerTest extends WebTestCase
         $this->client->loginUser($this->userRepository->findOneByEmail('john.doe@example.com'));
         $crawler = $this->client->request('GET', '/');
         self::assertResponseIsSuccessful();
-        self::assertCount(10, $crawler->filter('tr'));
+        self::assertCount(4 * 9, $crawler->filter('.sm-only'));
 
         $crawler = $this->client->request('GET', '/current');
         self::assertResponseIsSuccessful();
-        self::assertCount(10, $crawler->filter('tr'));
+        self::assertCount(4 * 9, $crawler->filter('.sm-only'));
     }
 
     public function testWait(): void
@@ -45,7 +45,7 @@ class TaskControllerTest extends WebTestCase
         $this->client->loginUser($this->userRepository->findOneByEmail('john.doe@example.com'));
         $crawler = $this->client->request('GET', '/wait');
         self::assertResponseIsSuccessful();
-        self::assertCount(9, $crawler->filter('tr'));
+        self::assertCount(5 * 8, $crawler->filter('.sm-only'));
     }
 
     public function testDone(): void
@@ -56,7 +56,7 @@ class TaskControllerTest extends WebTestCase
         $this->client->loginUser($this->userRepository->findOneByEmail('john.doe@example.com'));
         $crawler = $this->client->request('GET', '/done');
         self::assertResponseIsSuccessful();
-        self::assertCount(11, $crawler->filter('tr'));
+        self::assertCount(5 * 10, $crawler->filter('.sm-only'));
     }
 
     public function testAdd(): void

@@ -2,19 +2,63 @@
 
 {% block title %}View {{ task.title }}{% endblock %}
 
-{% block body %}
-<div>
-  <a href="{{ url('task_edit', {id: task.id}) }}">Edit</a>
-  <form method="POST" action="{{ url('task_delete', {id: task.id}) }}">
-    <input type="hidden" name="_token" value="{{ csrf_token('task') }}">
-    <button type="submit">Delete</button>
-  </form>
-</div>
-<div>
-  <h1>{{ task.title }}</h1>
-</div>
-<div>
-  <div>Id</div>
-  <div>{{ task.id }}</div>
-</div>
+{% block content %}
+<main class="container container_lg">
+
+  <div class="row">
+    <a href="{{ url('task_edit', {id: task.id}) }}" class="btn">Edit</a>
+    <form method="POST" action="{{ url('task_delete', {id: task.id}) }}">
+      <input type="hidden" name="_token" value="{{ csrf_token('task') }}">
+      <button type="submit" class="pink">Delete</button>
+    </form>
+  </div>
+
+  <div>
+    <h1>{{ task.title }}</h1>
+  </div>
+
+  <div class="grid grid_task">
+
+    <div><strong>Id</strong></div>
+    <div>{{ task.id }}</div>
+
+    <div><strong>Description</strong></div>
+    <div>{{ task.description|nl2br }}</div>
+
+    <div><strong>Created</strong></div>
+    <div>{{ task.created|date('Y-m-d H:i:s') }}</div>
+
+    <div><strong>Updated</strong></div>
+    <div>{{ task.updated|date('Y-m-d H:i:s') }}</div>
+
+    <div><strong>Wait</strong></div>
+    <div>
+    {% if task.wait %}
+      {{ task.wait|date('Y-m-d H:i:s') }}
+    {% else %}
+      &mdash;
+    {% endif %}
+    </div>
+
+    <div><strong>Started</strong></div>
+    <div>
+    {% if task.started %}
+      {{ task.started|date('Y-m-d H:i:s') }}
+    {% else %}
+      &mdash;
+    {% endif %}
+    </div>
+
+    <div><strong>Ended</strong></div>
+    <div>
+    {% if task.ended %}
+      {{ task.ended|date('Y-m-d H:i:s') }}
+    {% else %}
+      &mdash;
+    {% endif %}
+    </div>
+
+  </div>
+
+</main>
 {% endblock %}

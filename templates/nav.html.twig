@@ -1,0 +1,16 @@
+{% set nav = [
+  { route: 'task_wait', label: 'Wait' },
+  { route: 'home', label: 'Current' },
+  { route: 'task_done', label: 'Done' },
+  { route: 'task_add', label: 'Add'},
+  { route: 'logout', label: 'Logout'},
+] %}
+{% set current_route = app.request.attributes.get('_route') %}
+<nav>
+  <a href="#" class="toggle">Menu</a>
+  {% for item in nav %}
+  <a href="{{ url(item.route) }}" 
+     {% if current_route == item.route %}class="active"{% endif %}
+  >{{ item.label }}</a>
+  {% endfor %}
+</nav>
