@@ -14,6 +14,9 @@
             "config/packages/test/dama_doctrine_test_bundle.yaml"
         ]
     },
+    "dflydev/dot-access-data": {
+        "version": "v3.0.1"
+    },
     "doctrine/annotations": {
         "version": "1.0",
         "recipe": {
@@ -115,8 +118,20 @@
     "laminas/laminas-code": {
         "version": "4.4.3"
     },
+    "league/commonmark": {
+        "version": "2.0.2"
+    },
+    "league/config": {
+        "version": "v1.1.1"
+    },
     "myclabs/deep-copy": {
         "version": "1.10.2"
+    },
+    "nette/schema": {
+        "version": "v1.2.1"
+    },
+    "nette/utils": {
+        "version": "v3.2.5"
     },
     "nikic/php-parser": {
         "version": "v4.13.0"
@@ -539,6 +554,9 @@
         "version": "1.2.1"
     },
     "twig/extra-bundle": {
+        "version": "v3.3.3"
+    },
+    "twig/markdown-extra": {
         "version": "v3.3.3"
     },
     "twig/twig": {
