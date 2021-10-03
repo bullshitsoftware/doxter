@@ -16,7 +16,6 @@ class DateExtension extends AbstractExtension
         $this->tokenStorage = $tokenStorage;
     }
     
-    
     public function getFilters(): array
     {
         return [

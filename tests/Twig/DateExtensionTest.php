@@ -12,7 +12,6 @@ use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 class DateExtensionTest extends TestCase 
 {
     private DateExtension $extension;
-    private TokenStorageInterface $tokenStorage;
     private User $user;
 
     protected function setUp(): void
@@ -21,10 +20,10 @@ class DateExtensionTest extends TestCase
 
         /** @var TokenStorageInterface|MockObject $tokenStorage */
         $tokenStorage = $this->createMock(TokenStorageInterface::class);
-        $tokenStorage->method('getToken')->will($this->returnValue(
+        $tokenStorage->method('getToken')->will(self::returnValue(
             $token = $this->createMock(TokenInterface::class)
         ));
-        $token->method('getUser')->will($this->returnValue($this->user = new User()));
+        $token->method('getUser')->will(self::returnValue($this->user = new User()));
 
         $this->extension = new DateExtension($tokenStorage);
     }
