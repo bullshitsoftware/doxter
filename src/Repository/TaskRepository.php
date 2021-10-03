@@ -26,12 +26,14 @@ class TaskRepository extends ServiceEntityRepository
      */
     public function findCurrentByUser(User $user): array
     {
-        return $this->createQueryBuilder('t')
-            ->andWhere('t.user = :user')
+        return $this->createQueryBuilder('task')
+            ->select('task', 'tags')
+            ->leftJoin('task.tags', 'tags')
+            ->andWhere('task.user = :user')
             ->setParameter('user', $user->getId()->toBinary())
-            ->andWhere('t.wait IS NULL OR t.wait < :now')
+            ->andWhere('task.wait IS NULL OR task.wait < :now')
             ->setParameter('now', new \DateTimeImmutable())
-            ->andWhere('t.ended IS NULL')
+            ->andWhere('task.ended IS NULL')
             ->getQuery()
             ->getResult();
     }
@@ -41,12 +43,14 @@ class TaskRepository extends ServiceEntityRepository
      */
     public function findWaitingByUser(User $user): array
     {
-        return $this->createQueryBuilder('t')
-            ->andWhere('t.user = :user')
+        return $this->createQueryBuilder('task')
+            ->select('task', 'tags')
+            ->leftJoin('task.tags', 'tags')
+            ->andWhere('task.user = :user')
             ->setParameter('user', $user->getId()->toBinary())
-            ->andWhere('t.wait IS NOT NULL AND t.wait > :now')
+            ->andWhere('task.wait IS NOT NULL AND task.wait > :now')
             ->setParameter('now', new \DateTimeImmutable())
-            ->andWhere('t.ended IS NULL')
+            ->andWhere('task.ended IS NULL')
             ->getQuery()
             ->getResult();
     }
@@ -56,10 +60,12 @@ class TaskRepository extends ServiceEntityRepository
      */
     public function findCompletedByUser(User $user): array
     {
-        return $this->createQueryBuilder('t')
-            ->andWhere('t.user = :user')
+        return $this->createQueryBuilder('task')
+            ->select('task', 'tags')
+            ->leftJoin('task.tags', 'tags')
+            ->andWhere('task.user = :user')
             ->setParameter('user', $user->getId()->toBinary())
-            ->andWhere('t.ended IS NOT NULL')
+            ->andWhere('task.ended IS NOT NULL')
             ->getQuery()
             ->getResult();
     }

@@ -22,6 +22,13 @@
     <div><strong>Id</strong></div>
     <div>{{ task.id }}</div>
 
+    <div><strong>Tag</strong></div>
+    <div>
+    {% for tag in task.tags %}
+      {{ tag.name }}
+    {% endfor %}
+    </div>
+
     <div><strong>Description</strong></div>
     <div>{{ task.description|markdown_to_html }}</div>
 

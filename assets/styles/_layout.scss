@@ -33,15 +33,15 @@ body {
 }
 
 .grid_current {
-  grid-template-columns: min-content min-content min-content auto;
+  grid-template-columns: min-content min-content min-content max-content auto;
 }
 
 .grid_waiting {
-  grid-template-columns: min-content min-content min-content min-content auto;
+  grid-template-columns: min-content min-content max-content min-content min-content auto;
 }
 
 .grid_completed {
-  grid-template-columns: min-content min-content min-content min-content auto;
+  grid-template-columns: min-content min-content min-content min-content max-content auto;
 }
 
 .grid > div {

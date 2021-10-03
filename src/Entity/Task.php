@@ -3,10 +3,13 @@
 namespace App\Entity;
 
 use App\Repository\TaskRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping\Entity;
 use Doctrine\ORM\Mapping\Id;
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\ManyToOne;
+use Doctrine\ORM\Mapping\ManyToMany;
 use Symfony\Component\Uid\Uuid;
 
 #[Entity(repositoryClass: TaskRepository::class)]
@@ -15,8 +18,11 @@ class Task
     #[Id(), Column(type: 'uuid')]
     private Uuid $id;
 
-    #[ManyToOne(targetEntity:User::class)]
+    #[ManyToOne(targetEntity: User::class)]
     private User $user;
+
+    #[ManyToMany(targetEntity: Tag::class, cascade: ['persist'])]
+    private Collection $tags;
 
     #[Column(type: 'string', length: 144)]
     private string $title = '';
@@ -42,6 +48,7 @@ class Task
     public function __construct()
     {
         $this->id = Uuid::v4();
+        $this->tags = new ArrayCollection();
         $this->created = $this->updated = new \DateTimeImmutable();
     }
 
@@ -50,7 +57,7 @@ class Task
         return $this->id;
     }
 
-    public function getUser(): User 
+    public function getUser(): User
     {
         return $this->user;
     }
@@ -58,6 +65,24 @@ class Task
     public function setUser(User $user): self
     {
         $this->user = $user;
+
+        return $this;
+    }
+
+    /**
+     * @return Tag[]
+     */
+    public function getTags(): Collection
+    {
+        return $this->tags;
+    }
+
+    /**
+     * @param Tag[]
+     */
+    public function setTags(Collection $tags): self
+    {
+        $this->tags = $tags;
 
         return $this;
     }
@@ -142,7 +167,7 @@ class Task
     public function setEnded(?\DateTimeImmutable $ended): self
     {
         $this->ended = $ended;
-        
+
         return $this;
     }
 }

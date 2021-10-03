@@ -14,6 +14,7 @@ class TaskType extends AbstractType
     {
         $builder
             ->add('title')
+            ->add('tags', TagsType::class)
             ->add('description', TextareaType::class, [
                 'required' => false,
                 'empty_data' => '',
