@@ -6,6 +6,7 @@
     "extensions": [
         "bmewburn.vscode-intelephense-client",
         "whatwedo.twig",
-        "editorconfig.editorconfig"
+        "editorconfig.editorconfig",
+        "alexcvzz.vscode-sqlite"
     ]
 }

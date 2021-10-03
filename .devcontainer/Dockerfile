@@ -33,6 +33,7 @@ RUN apk add --no-cache \
     make \
     git \
     nodejs npm \
+    sqlite \
     curl
 
 RUN ln -s /usr/bin/php8 /usr/bin/php
