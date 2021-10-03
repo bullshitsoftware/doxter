@@ -3,17 +3,17 @@
 namespace App\Twig;
 
 use App\Entity\User;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\Security\Core\Security;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
 
 class DateExtension extends AbstractExtension
 {
-    private TokenStorageInterface $tokenStorage;
+    private Security $security;
 
-    public function __construct(TokenStorageInterface $tokenStorage)
+    public function __construct(Security $security)
     {
-        $this->tokenStorage = $tokenStorage;
+        $this->security = $security;
     }
     
     public function getFilters(): array
@@ -69,16 +69,10 @@ class DateExtension extends AbstractExtension
 
     private function getUserTimezone(): \DateTimeZone
     {
-        $token = $this->tokenStorage->getToken();
-        if ($token === null) {
+        /** @var User|null */
+        $user = $this->security->getUser();
+        if ($user === null) {
             throw new \LogicException('The filter should only be used for authorized users');
-        }
-        $user = $token->getUser();
-        if (!$user instanceof User) {
-            throw new \LogicException(sprintf(
-                'Unsupported user instance: %s', 
-                is_object($user) ? get_class($user) : gettype($user),
-            ));
         }
         
         return new \DateTimeZone($user->getSettings()->getTimezone());

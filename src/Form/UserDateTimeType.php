@@ -6,15 +6,15 @@ use App\Entity\User;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\Security\Core\Security;
 
 class UserDateTimeType extends AbstractType
 {
-    private TokenStorageInterface $tokenStorage;
+    private Security $security;
 
-    public function __construct(TokenStorageInterface $tokenStorage)
+    public function __construct(Security $security)
     {
-        $this->tokenStorage = $tokenStorage;
+        $this->security = $security;
     }
     
     public function getParent(): string
@@ -24,16 +24,10 @@ class UserDateTimeType extends AbstractType
 
     public function configureOptions(OptionsResolver $resolver): void
     {
-        $token = $this->tokenStorage->getToken();
-        if ($token === null) {
+        /** @var User|null $user */
+        $user = $this->security->getUser();
+        if ($user === null) {
             throw new \LogicException('The type should only be used for authorized users');
-        }
-        $user = $token->getUser();
-        if (!$user instanceof User) {
-            throw new \LogicException(sprintf(
-                'Unsupported user instance: %s', 
-                is_object($user) ? get_class($user) : gettype($user),
-            ));
         }
 
         $resolver

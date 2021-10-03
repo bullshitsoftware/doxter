@@ -6,8 +6,7 @@ use App\Entity\User;
 use App\Twig\DateExtension;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
-use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
+use Symfony\Component\Security\Core\Security;
 
 class DateExtensionTest extends TestCase 
 {
@@ -18,14 +17,11 @@ class DateExtensionTest extends TestCase
     {
         parent::setUp();
 
-        /** @var TokenStorageInterface|MockObject $tokenStorage */
-        $tokenStorage = $this->createMock(TokenStorageInterface::class);
-        $tokenStorage->method('getToken')->will(self::returnValue(
-            $token = $this->createMock(TokenInterface::class)
-        ));
-        $token->method('getUser')->will(self::returnValue($this->user = new User()));
+        /** @var Security|MockObject $security */
+        $security = $this->createMock(Security::class);
+        $security->method('getUser')->will(self::returnValue($this->user = new User()));
 
-        $this->extension = new DateExtension($tokenStorage);
+        $this->extension = new DateExtension($security);
     }
 
     public function testDateDiff(): void

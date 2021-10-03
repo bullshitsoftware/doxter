@@ -2,7 +2,6 @@
 
 ## TODO
 
-- TokenStorageInterface => Security
 - task search
 - order lists
 - import from taskwarrior
