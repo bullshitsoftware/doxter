@@ -2,9 +2,11 @@
 
 namespace App\Repository;
 
+use App\Doctrine\OrderByNullSqlWalker;
 use App\Entity\Task;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Query;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -34,7 +36,11 @@ class TaskRepository extends ServiceEntityRepository
             ->andWhere('task.wait IS NULL OR task.wait < :now')
             ->setParameter('now', new \DateTimeImmutable())
             ->andWhere('task.ended IS NULL')
+            ->addOrderBy('task.started', 'ASC')
+            ->addOrderBy('task.created', 'ASC')
             ->getQuery()
+            ->setHint(Query::HINT_CUSTOM_OUTPUT_WALKER, OrderByNullSqlWalker::class)
+            ->setHint(OrderByNullSqlWalker::HINT, ['started' => OrderByNullSqlWalker::LAST])
             ->getResult();
     }
 
@@ -51,6 +57,8 @@ class TaskRepository extends ServiceEntityRepository
             ->andWhere('task.wait IS NOT NULL AND task.wait > :now')
             ->setParameter('now', new \DateTimeImmutable())
             ->andWhere('task.ended IS NULL')
+            ->addOrderBy('task.wait', 'ASC')
+            ->addOrderBy('task.created', 'ASC')
             ->getQuery()
             ->getResult();
     }
@@ -66,6 +74,8 @@ class TaskRepository extends ServiceEntityRepository
             ->andWhere('task.user = :user')
             ->setParameter('user', $user->getId()->toBinary())
             ->andWhere('task.ended IS NOT NULL')
+            ->addOrderBy('task.ended', 'ASC')
+            ->addOrderBy('task.created', 'ASC')
             ->getQuery()
             ->getResult();
     }

@@ -2,8 +2,7 @@
 
 ## TODO
 
-- task search
-- order lists
+- task search 
 - import from taskwarrior
 - completed list pagination
 - validation errors look
