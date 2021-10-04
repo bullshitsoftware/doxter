@@ -1,12 +1,19 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Current{% endblock %}
+{% block title %}Settings{% endblock %}
 
 {% block content %}
 <main class="container container_lg">
-  {{ form_start(form) }}
-  {{ form_widget(form) }}
+  <h1>Settings</h1>
+  {{ form_start(settings_form) }}
+  {{ form_widget(settings_form) }}
   <button type="submit">Save</button>
-  {{ form_end(form) }}
+  {{ form_end(settings_form) }}
+
+  <h1>Import from TaskWarrior</h1>
+  {{ form_start(import_form) }}
+  {{ form_widget(import_form) }}
+  <button type="submit">Import</button>
+  {{ form_end(import_form) }}
 </main>
 {% endblock %}
