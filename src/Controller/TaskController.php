@@ -64,7 +64,7 @@ class TaskController extends AbstractController
             $entityManager->persist($task);
             $entityManager->flush();
 
-            return $this->redirectToRoute('home');
+            return $this->redirectToList($task);
         }
 
         return $this->render('task/add.html.twig', [
@@ -92,7 +92,7 @@ class TaskController extends AbstractController
             $entityManager->persist($task);
             $entityManager->flush();
 
-            return $this->redirectToRoute('home');
+            return $this->redirectToList($task);
         }
 
         return $this->render('task/edit.html.twig', [
@@ -112,6 +112,19 @@ class TaskController extends AbstractController
         $entityManager->remove($task);
         $entityManager->flush();
 
-        return $this->redirectToRoute('home');
+        return $this->redirectToList($task);
+    }
+
+    private function redirectToList(Task $task): Response
+    {
+        if ($task->getEnded() !== null) {
+            return $this->redirectToRoute('task_completed');
+        }
+
+        if ($task->getWait() === null || $task->getWait() < new \DateTimeImmutable('now')) {
+            return $this->redirectToRoute('home');
+        }
+
+        return $this->redirectToRoute('task_waiting');
     }
 }
