@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping\Entity;
 use Doctrine\ORM\Mapping\Id;
 use Doctrine\ORM\Mapping\Column;
+use Doctrine\ORM\Mapping\JoinColumn;
 use Doctrine\ORM\Mapping\ManyToOne;
 use Doctrine\ORM\Mapping\ManyToMany;
 use Symfony\Component\Uid\Uuid;
@@ -18,7 +19,10 @@ class Task
     #[Id(), Column(type: 'uuid')]
     private Uuid $id;
 
-    #[ManyToOne(targetEntity: User::class)]
+    #[
+        ManyToOne(targetEntity: User::class),
+        JoinColumn(nullable: false),
+    ]
     private User $user;
 
     #[ManyToMany(targetEntity: Tag::class, cascade: ['persist'])]
