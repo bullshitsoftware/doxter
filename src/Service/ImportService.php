@@ -59,6 +59,7 @@ class ImportService
             );
         }
 
+        // it is possible to move a task from one user to another, but nobody cares
         $this->connection->executeStatement(
             'INSERT OR REPLACE INTO task (id, user_id, title, description, created, updated, wait, started, ended) 
              VALUES (:id, :user_id, :title, :description, :created, :updated, :wait, :started, :ended)
