@@ -40,13 +40,18 @@ class TaskController extends AbstractController
     }
 
     #[Route('/completed', name: 'task_completed')]
-    public function completed(TaskRepository $repository): Response
+    public function completed(TaskRepository $repository, Request $request): Response
     {
         $this->denyAccessUnlessGranted('ROLE_USER');
 
+        $page = $request->get('page', 1);
+        $pagination = $repository->findCompletedByUser($this->getUser(), $page);
+
         return $this->render('task/completed.html.twig', [
             'now' => new \DateTimeImmutable(),
-            'tasks' => $repository->findCompletedByUser($this->getUser()),
+            'tasks' => $pagination->getItems(),
+            'page' => $page,
+            'more' => $pagination->hasMore(),
         ]);
     }
 

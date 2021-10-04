@@ -35,5 +35,14 @@
       <div>{{ task.title }}</div>
     {% endfor %}
   </div>
+
+  <div class="row">
+    {% if page > 1 %}
+      <a href="{{ url('task_completed', { page: page-1 }) }}">Prev</a>
+    {% endif %}
+    {% if more %}
+      <a href="{{ url('task_completed', { page: page+1 }) }}">Next</a>
+    {% endif %}
+  </div>
 </main>
 {% endblock %}

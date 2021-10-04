@@ -3,10 +3,12 @@
 namespace App\Repository;
 
 use App\Doctrine\OrderByNullSqlWalker;
+use App\Doctrine\Pagination;
 use App\Entity\Task;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\Query;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -66,17 +68,27 @@ class TaskRepository extends ServiceEntityRepository
     /**
      * @return Task[]
      */
-    public function findCompletedByUser(User $user): array
+    public function findCompletedByUser(User $user, int $page): Pagination
     {
-        return $this->createQueryBuilder('task')
-            ->select('task', 'tags')
-            ->leftJoin('task.tags', 'tags')
-            ->andWhere('task.user = :user')
-            ->setParameter('user', $user->getId()->toBinary())
-            ->andWhere('task.ended IS NOT NULL')
-            ->addOrderBy('task.ended', 'ASC')
-            ->addOrderBy('task.created', 'ASC')
-            ->getQuery()
-            ->getResult();
+        $paginator = new Paginator(
+            $this->createQueryBuilder('task')
+                ->select('task', 'tags')
+                ->leftJoin('task.tags', 'tags')
+                ->andWhere('task.user = :user')
+                ->setParameter('user', $user->getId()->toBinary())
+                ->andWhere('task.ended IS NOT NULL')
+                ->addOrderBy('task.ended', 'DESC')
+                ->addOrderBy('task.created', 'ASC')
+                ->setFirstResult(($page - 1) * 30)
+                ->setMaxResults(31)
+                ->getQuery()
+        );
+
+        $items = iterator_to_array($paginator);
+        if (count($items) > 10) {
+            return new Pagination(array_slice($items, 0, -1), true);
+        }
+
+        return new Pagination($items, false);
     }
 }
