@@ -8,6 +8,7 @@ use App\Repository\TaskRepository;
 use App\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class UserControllerTest extends WebTestCase
 {
@@ -66,6 +67,9 @@ class UserControllerTest extends WebTestCase
             ],
         ]);
         self::assertResponseRedirects('/settings');
+        $user = $this->userRepository->findOneByEmail('john.doe@example.com');
+        $hasher = self::getContainer()->get(UserPasswordHasherInterface::class);
+        self::assertTrue($hasher->isPasswordValid($user, 'qwerty'));
     }
 
     public function testImport(): void
