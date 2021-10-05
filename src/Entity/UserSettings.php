@@ -13,7 +13,7 @@ class UserSettings
         Column(type: 'string', length: 32, options: ['default' => 'UTC']),
         Timezone(),
     ]
-    private $timezone = 'UTC';
+    private string $timezone = 'UTC';
 
     public function getTimezone(): string
     {

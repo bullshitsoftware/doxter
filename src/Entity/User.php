@@ -18,7 +18,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private Uuid $id;
 
     #[Column(type: 'string', length: 180, unique: true)]
-    private $email;
+    private string $email;
 
     #[Column(type: 'string')]
     private string $password;
