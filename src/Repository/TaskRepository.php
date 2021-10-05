@@ -21,6 +21,8 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class TaskRepository extends ServiceEntityRepository
 {
+    private const TASK_PER_PAGE = 30;
+
     private TaskSearchFilter $searchFilter;
 
     public function __construct(ManagerRegistry $registry, TaskSearchFilter $searchFilter)
@@ -92,8 +94,8 @@ class TaskRepository extends ServiceEntityRepository
             ->andWhere('task.ended IS NOT NULL')
             ->addOrderBy('task.ended', 'DESC')
             ->addOrderBy('task.created', 'ASC')
-            ->setFirstResult(($page - 1) * 30)
-            ->setMaxResults(31);
+            ->setFirstResult(($page - 1) * self::TASK_PER_PAGE)
+            ->setMaxResults(self::TASK_PER_PAGE + 1);
 
         if ($search !== null) {
             $this->searchFilter->apply($queryBuilder, 'task', $search);
@@ -101,7 +103,7 @@ class TaskRepository extends ServiceEntityRepository
         $paginator = new Paginator($queryBuilder->getQuery());
 
         $items = iterator_to_array($paginator);
-        if (count($items) > 10) {
+        if (count($items) > self::TASK_PER_PAGE) {
             return new Pagination(array_slice($items, 0, -1), true);
         }
 

@@ -18,7 +18,7 @@
       <div><a href="{{ url('task_view', {id: task.id}) }}" class="mono">{{ task.id|slice(0,8) }}</a></div>
 
       <div class="sm-only"><strong>Created</strong></div>
-      <div>{{ task.created|user_date }}</div> {# user date #}
+      <div>{{ task.created|user_date }}</div>
 
       <div class="sm-only"><strong>Completed</strong></div>
       <div>{{ task.ended|user_date }}</div>
@@ -39,11 +39,12 @@
   </div>
 
   <div class="row">
+    {% set query = app.request.query.all() %}
     {% if page > 1 %}
-      <a href="{{ url('task_completed', { page: page-1 }) }}">Prev</a>
+      <a href="{{ url('task_completed', query|merge({ page: page-1 })) }}">Prev</a>
     {% endif %}
     {% if more %}
-      <a href="{{ url('task_completed', { page: page+1 }) }}">Next</a>
+      <a href="{{ url('task_completed', query|merge({ page: page+1 })) }}">Next</a>
     {% endif %}
   </div>
 </main>
