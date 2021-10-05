@@ -30,3 +30,10 @@ button, .btn {
   font-size: 1rem;
   font-weight: bold;
 }
+
+form ul {
+  padding: 0.5em;
+  margin: 0.5em 0;
+  background-color: $pink;
+  list-style: none;
+}
