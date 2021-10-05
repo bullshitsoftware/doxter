@@ -41,10 +41,10 @@
   <div class="row">
     {% set query = app.request.query.all() %}
     {% if page > 1 %}
-      <a href="{{ url('task_completed', query|merge({ page: page-1 })) }}">Prev</a>
+      <a href="{{ url('task_completed', query|merge({ page: page-1 })) }}" class="btn btn_orange">Prev</a>
     {% endif %}
     {% if more %}
-      <a href="{{ url('task_completed', query|merge({ page: page+1 })) }}">Next</a>
+      <a href="{{ url('task_completed', query|merge({ page: page+1 })) }}" class="btn btn_orange">Next</a>
     {% endif %}
   </div>
 </main>
