@@ -6,6 +6,7 @@ use App\Doctrine\OrderByNullSqlWalker;
 use App\Doctrine\Pagination;
 use App\Entity\Task;
 use App\Entity\User;
+use App\Service\TaskSearchFilter;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\Tools\Pagination\Paginator;
@@ -20,17 +21,21 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class TaskRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    private TaskSearchFilter $searchFilter;
+
+    public function __construct(ManagerRegistry $registry, TaskSearchFilter $searchFilter)
     {
+        $this->searchFilter = $searchFilter;
+
         parent::__construct($registry, Task::class);
     }
 
     /**
      * @return Task[]
      */
-    public function findCurrentByUser(User $user): array
+    public function findCurrentByUser(User $user, ?string $search = null): array
     {
-        return $this->createQueryBuilder('task')
+        $queryBuilder = $this->createQueryBuilder('task')
             ->select('task', 'tags')
             ->leftJoin('task.tags', 'tags')
             ->andWhere('task.user = :user')
@@ -39,8 +44,13 @@ class TaskRepository extends ServiceEntityRepository
             ->setParameter('now', new \DateTimeImmutable())
             ->andWhere('task.ended IS NULL')
             ->addOrderBy('task.started', 'ASC')
-            ->addOrderBy('task.created', 'ASC')
-            ->getQuery()
+            ->addOrderBy('task.created', 'ASC');
+
+        if ($search !== null) {
+            $this->searchFilter->apply($queryBuilder, 'task', $search);
+        }
+
+        return $queryBuilder->getQuery()
             ->setHint(Query::HINT_CUSTOM_OUTPUT_WALKER, OrderByNullSqlWalker::class)
             ->setHint(OrderByNullSqlWalker::HINT, ['started' => OrderByNullSqlWalker::LAST])
             ->getResult();
@@ -49,9 +59,9 @@ class TaskRepository extends ServiceEntityRepository
     /**
      * @return Task[]
      */
-    public function findWaitingByUser(User $user): array
+    public function findWaitingByUser(User $user, ?string $search = null): array
     {
-        return $this->createQueryBuilder('task')
+        $queryBuilder = $this->createQueryBuilder('task')
             ->select('task', 'tags')
             ->leftJoin('task.tags', 'tags')
             ->andWhere('task.user = :user')
@@ -60,29 +70,35 @@ class TaskRepository extends ServiceEntityRepository
             ->setParameter('now', new \DateTimeImmutable())
             ->andWhere('task.ended IS NULL')
             ->addOrderBy('task.wait', 'ASC')
-            ->addOrderBy('task.created', 'ASC')
-            ->getQuery()
-            ->getResult();
+            ->addOrderBy('task.created', 'ASC');
+
+        if ($search !== null) {
+            $this->searchFilter->apply($queryBuilder, 'task', $search);
+        }
+
+        return $queryBuilder->getQuery()->getResult();
     }
 
     /**
      * @return Task[]
      */
-    public function findCompletedByUser(User $user, int $page): Pagination
+    public function findCompletedByUser(User $user, int $page, ?string $search = null): Pagination
     {
-        $paginator = new Paginator(
-            $this->createQueryBuilder('task')
-                ->select('task', 'tags')
-                ->leftJoin('task.tags', 'tags')
-                ->andWhere('task.user = :user')
-                ->setParameter('user', $user->getId()->toBinary())
-                ->andWhere('task.ended IS NOT NULL')
-                ->addOrderBy('task.ended', 'DESC')
-                ->addOrderBy('task.created', 'ASC')
-                ->setFirstResult(($page - 1) * 30)
-                ->setMaxResults(31)
-                ->getQuery()
-        );
+        $queryBuilder = $this->createQueryBuilder('task')
+            ->select('task', 'tags')
+            ->leftJoin('task.tags', 'tags')
+            ->andWhere('task.user = :user')
+            ->setParameter('user', $user->getId()->toBinary())
+            ->andWhere('task.ended IS NOT NULL')
+            ->addOrderBy('task.ended', 'DESC')
+            ->addOrderBy('task.created', 'ASC')
+            ->setFirstResult(($page - 1) * 30)
+            ->setMaxResults(31);
+
+        if ($search !== null) {
+            $this->searchFilter->apply($queryBuilder, 'task', $search);
+        }
+        $paginator = new Paginator($queryBuilder->getQuery());
 
         $items = iterator_to_array($paginator);
         if (count($items) > 10) {

@@ -4,6 +4,8 @@
 
 {% block content %}
 <main class="container container_lg">
+  {% include 'task/_search.html.twig' with {} only %}
+
   <div class="grid grid_current">
     <div class="md-only"><strong>ID</strong></div>
     <div class="md-only"><strong>Active</strong></div>

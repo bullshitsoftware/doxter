@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\SearchFilter;
 use App\Entity\Task;
 use App\Form\TaskType;
 use App\Repository\TaskRepository;
@@ -18,24 +19,24 @@ class TaskController extends AbstractController
         Route('/', name: 'home'),
         Route('/current', name: 'task_current'),
     ]
-    public function current(TaskRepository $repository): Response
+    public function current(TaskRepository $repository, Request $request): Response
     {
         $this->denyAccessUnlessGranted('ROLE_USER');
 
         return $this->render('task/current.html.twig', [
             'now' => new \DateTimeImmutable(),
-            'tasks' => $repository->findCurrentByUser($this->getUser()),
+            'tasks' => $repository->findCurrentByUser($this->getUser(), $request->get('q')),
         ]);
     }
 
     #[Route('/waiting', name: 'task_waiting')]
-    public function waiting(TaskRepository $repository): Response
+    public function waiting(TaskRepository $repository, Request $request): Response
     {
         $this->denyAccessUnlessGranted('ROLE_USER');
 
         return $this->render('task/waiting.html.twig', [
             'now' => new \DateTimeImmutable(),
-            'tasks' => $repository->findWaitingByUser($this->getUser()),
+            'tasks' => $repository->findWaitingByUser($this->getUser(), $request->get('q')),
         ]);
     }
 
@@ -45,7 +46,7 @@ class TaskController extends AbstractController
         $this->denyAccessUnlessGranted('ROLE_USER');
 
         $page = $request->get('page', 1);
-        $pagination = $repository->findCompletedByUser($this->getUser(), $page);
+        $pagination = $repository->findCompletedByUser($this->getUser(), $page, $request->get('q'));
 
         return $this->render('task/completed.html.twig', [
             'now' => new \DateTimeImmutable(),

@@ -44,6 +44,10 @@ body {
   grid-template-columns: min-content min-content min-content min-content max-content auto;
 }
 
+.grid_search {
+  grid-template-columns: auto min-content;
+}
+
 .grid > div {
   padding: 0.25rem;
 }
@@ -55,6 +59,10 @@ body {
 
   .grid_task {
     display: block;
+  }
+
+  .grid_search {
+    grid-template-columns: auto min-content;
   }
 
   .md-only {
