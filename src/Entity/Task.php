@@ -41,13 +41,13 @@ class Task
     private \DateTimeImmutable $updated;
 
     #[Column(type: 'datetime_immutable', nullable: true)]
-    private ?\DateTimeImmutable $wait;
+    private ?\DateTimeImmutable $wait = null;
 
     #[Column(type: 'datetime_immutable', nullable: true)]
-    private ?\DateTimeImmutable $started;
+    private ?\DateTimeImmutable $started = null;
 
     #[Column(type: 'datetime_immutable', nullable: true)]
-    private ?\DateTimeImmutable $ended;
+    private ?\DateTimeImmutable $ended = null;
 
     public function __construct()
     {

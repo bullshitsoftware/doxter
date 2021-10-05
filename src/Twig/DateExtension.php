@@ -3,6 +3,7 @@
 namespace App\Twig;
 
 use App\Entity\User;
+use App\Entity\UserSettings;
 use Symfony\Component\Security\Core\Security;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
@@ -53,21 +54,23 @@ class DateExtension extends AbstractExtension
 
     public function userDate(\DateTimeInterface $date): string
     {
+        $userSettings = $this->getUserSettings();
         $date = new \DateTimeImmutable($date->format('Y-m-d H:i:s'), $date->getTimezone());
-        $date = $date->setTimezone($this->getUserTimezone());
+        $date = $date->setTimezone(new \DateTimeZone($userSettings->getTimezone()));
 
-        return $date->format('Y-m-d');
+        return $date->format($userSettings->getDateFormat());
     }
 
     public function userDateTime(\DateTimeInterface $date): string
     {
+        $userSettings = $this->getUserSettings();
         $date = new \DateTimeImmutable($date->format('Y-m-d H:i:s'), $date->getTimezone());
-        $date = $date->setTimezone($this->getUserTimezone());
+        $date = $date->setTimezone(new \DateTimeZone($userSettings->getTimezone()));
 
-        return $date->format('Y-m-d H:i:s');
+        return $date->format($userSettings->getDateTimeFormat());
     }
 
-    private function getUserTimezone(): \DateTimeZone
+    private function getUserSettings(): UserSettings
     {
         /** @var User|null */
         $user = $this->security->getUser();
@@ -75,6 +78,6 @@ class DateExtension extends AbstractExtension
             throw new \LogicException('The filter should only be used for authorized users');
         }
         
-        return new \DateTimeZone($user->getSettings()->getTimezone());
+        return $user->getSettings();
     }
 }

@@ -12,7 +12,10 @@ class UserSettingsType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $builder->add('timezone', TextType::class, ['empty_data' => 'UTC']);
+        $builder
+            ->add('timezone', TextType::class, ['empty_data' => 'UTC'])
+            ->add('dateFormat', TextType::class, ['empty_data' => 'Y-m-d'])
+            ->add('dateTimeFormat', TextType::class, ['empty_data' => 'Y-m-d H:i:s']);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

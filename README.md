@@ -7,6 +7,3 @@ Features:
 - Tags
 - Import from TaskWarrior
 
-## TODO
-
-- user date and datetime format

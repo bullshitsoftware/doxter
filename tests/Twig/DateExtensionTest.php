@@ -36,20 +36,24 @@ class DateExtensionTest extends TestCase
 
     public function testUserDate(): void
     {
-        $this->user->getSettings()->setTimezone('Europe/Moscow');
+        $settings = $this->user->getSettings();
+        $settings->setTimezone('Europe/Moscow');
+        $settings->setDateFormat('d.m.Y');
 
         self::assertSame(
-            '2007-01-01', 
+            '01.01.2007', 
             $this->extension->userDate(new \DateTimeImmutable('2006-12-31 23:00')),
         );
     }
 
     public function testUserDateTime(): void
     {
-        $this->user->getSettings()->setTimezone('Europe/Moscow');
+        $settings = $this->user->getSettings();
+        $settings->setTimezone('Europe/Moscow');
+        $settings->setDateTimeFormat('d.m.Y H:i:s');
 
         self::assertSame(
-            '2007-01-01 02:00:00', 
+            '01.01.2007 02:00:00', 
             $this->extension->userDateTime(new \DateTimeImmutable('2006-12-31 23:00')),
         );
     }
