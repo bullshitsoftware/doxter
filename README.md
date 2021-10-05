@@ -10,4 +10,3 @@ Features:
 ## TODO
 
 - user date and datetime format
-- password update

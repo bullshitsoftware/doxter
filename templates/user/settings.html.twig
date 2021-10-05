@@ -10,6 +10,12 @@
   <button type="submit">Save</button>
   {{ form_end(settings_form) }}
 
+  <h1>Change password</h1>
+  {{ form_start(password_form) }}
+  {{ form_widget(password_form) }}
+  <button type="submit">Update password</button>
+  {{ form_end(password_form) }}
+
   <h1>Import from TaskWarrior</h1>
   {{ form_start(import_form) }}
   {{ form_widget(import_form) }}

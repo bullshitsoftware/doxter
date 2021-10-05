@@ -39,6 +39,35 @@ class UserControllerTest extends WebTestCase
         self::assertSame('Europe/Moscow', $user->getSettings()->getTimezone());
     }
 
+    public function testPasswordChange(): void
+    {
+        $this->client->request('GET', '/settings');
+        self::assertResponseRedirects('/login');
+
+        $this->client->loginUser($this->userRepository->findOneByEmail('john.doe@example.com'));
+        $this->client->request('GET', '/settings');
+        $crawler = $this->client->submitForm('Update password', [
+            'password_change' => [
+                'oldPassword' => 'qwerty',
+                'password' => 'qwerty',
+                'passwordConfirm' => '',
+            ],
+        ]);
+        self::assertResponseIsSuccessful();
+        $errors = $crawler->filter('form ul');
+        self::assertSame("This value should be the user's current password.", $errors->first()->text());
+        self::assertSame("Passwords don't match", $errors->last()->text());
+
+        $crawler = $this->client->submitForm('Update password', [
+            'password_change' => [
+                'oldPassword' => 'john.doe@example.com',
+                'password' => 'qwerty',
+                'passwordConfirm' => 'qwerty',
+            ],
+        ]);
+        self::assertResponseRedirects('/settings');
+    }
+
     public function testImport(): void
     {
         $this->client->request('GET', '/settings');
