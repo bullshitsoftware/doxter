@@ -1,6 +1,6 @@
 <?php
 
-namespace App\From;
+namespace App\Form;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;

@@ -4,7 +4,7 @@ namespace App\Controller;
 
 use App\Form\ImportType;
 use App\Form\UserSettingsType;
-use App\From\PasswordChangeType;
+use App\Form\PasswordChangeType;
 use App\Service\ImportService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
