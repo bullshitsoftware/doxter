@@ -3,8 +3,9 @@ FROM ghcr.io/bullshitsoftware/doxter-php:latest
 COPY --from=symfonycorp/cli /symfony /usr/bin/symfony
 COPY --from=composer /usr/bin/composer /usr/bin/composer
 
-RUN apk add --no-cache make git nodejs npm sqlite curl
+RUN apk add --no-cache php8-xdebug make git nodejs npm sqlite curl
 
+COPY .devcontainer/50_xdebug.ini /etc/php8/conf.d/50_xdebug.ini
 RUN ln -s /usr/bin/php8 /usr/bin/php
 
 ARG USERNAME=user
