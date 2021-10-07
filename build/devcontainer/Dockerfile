@@ -1,4 +1,5 @@
 FROM ghcr.io/bullshitsoftware/doxter-php:latest
+LABEL org.opencontainers.image.source="https://github.com/bullshitsoftware/doxter"
 
 COPY --from=symfonycorp/cli /symfony /usr/bin/symfony
 COPY --from=composer /usr/bin/composer /usr/bin/composer

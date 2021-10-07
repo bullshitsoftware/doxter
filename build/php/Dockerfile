@@ -1,4 +1,5 @@
 FROM alpine:3.14
+LABEL org.opencontainers.image.source="https://github.com/bullshitsoftware/doxter"
 
 RUN apk add --no-cache \
     coreutils \
