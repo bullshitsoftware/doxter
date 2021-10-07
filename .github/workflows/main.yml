@@ -23,7 +23,7 @@ jobs:
                 echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${USERNAME} --password-stdin
                 docker buildx build --push -f build/php/Dockerfile \
                 -t ghcr.io/${USERNAME}/doxter-php:${ref} -t ghcr.io/${USERNAME}/doxter-php:latest .
-                docker buildx build --push -f .devcontainer/Dockerfile \
+                docker buildx build --push -f build/devcontainer/Dockerfile \
                 -t ghcr.io/${USERNAME}/doxter-devcontainer:${ref} -t ghcr.io/${USERNAME}/doxter-devcontainer:latest .
             
             - name: install front deps

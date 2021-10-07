@@ -5,7 +5,7 @@ COPY --from=composer /usr/bin/composer /usr/bin/composer
 
 RUN apk add --no-cache php8-xdebug make git nodejs npm sqlite curl
 
-COPY .devcontainer/50_xdebug.ini /etc/php8/conf.d/50_xdebug.ini
+COPY build/devcontainer/50_xdebug.ini /etc/php8/conf.d/50_xdebug.ini
 RUN ln -s /usr/bin/php8 /usr/bin/php
 
 ARG USERNAME=user
