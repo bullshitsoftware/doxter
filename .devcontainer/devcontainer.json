@@ -1,7 +1,5 @@
 {
-    "build": {
-        "dockerfile": "Dockerfile"
-    },
+    "image": "ghcr.io/bullshitsoftware/doxter-devcontainer:latest",
     "remoteUser": "user",
     "extensions": [
         "bmewburn.vscode-intelephense-client",
