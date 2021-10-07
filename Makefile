@@ -1,10 +1,15 @@
-.PHONY: tests
-tests:
+.PHONY: prepare-tests tests cover
+prepare-tests:
 	rm -rf var/test_data.db
 	bin/console --env=test doctrine:database:create 
 	bin/console --env=test doctrine:schema:create 
 	bin/console --env=test doctrine:fixtures:load --no-interaction
+
+tests: prepare-tests
 	bin/phpunit
+
+cover: prepare-tests
+	XDEBUG_MODE=coverage bin/phpunit --coverage-clover cover.xml
 
 .PHONY: build-php
 build-php:

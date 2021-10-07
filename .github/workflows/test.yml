@@ -16,7 +16,11 @@ jobs:
             - name: install php dev deps
               run: docker run -v $GITHUB_WORKSPACE:/app -w /app -e APP_ENV=test --rm composer install
 
-            - name: run tests
+            - name: run tests with coverage
               run: |
                 docker run -v $GITHUB_WORKSPACE:/app -w /app -e APP_ENV=test -u $(id -u $USER):$(id -g $USER) \
-                ghcr.io/bullshitsoftware/doxter-devcontainer:latest make tests
+                ghcr.io/bullshitsoftware/doxter-devcontainer:latest make cover
+            - name: upload coverage result
+              uses: codecov/codecov-action@v2
+              with:
+                files: cover.xml
