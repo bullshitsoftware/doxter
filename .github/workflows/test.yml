@@ -1,0 +1,22 @@
+name: test
+
+on: push
+
+jobs:
+    test:
+        runs-on: ubuntu-latest
+        steps:
+            - name: checkout
+              uses: actions/checkout@v2
+
+            - name: install front deps
+              run: docker run -v $GITHUB_WORKSPACE:/app -w /app --rm --entrypoint npm node install
+            - name: build front
+              run: docker run -v $GITHUB_WORKSPACE:/app -w /app --rm --entrypoint npm node run build        
+            - name: install php dev deps
+              run: docker run -v $GITHUB_WORKSPACE:/app -w /app -e APP_ENV=test --rm composer install
+
+            - name: run tests
+              run: |
+                docker run -v $GITHUB_WORKSPACE:/app -w /app -e APP_ENV=test -u $(id -u $USER):$(id -g $USER) \
+                ghcr.io/bullshitsoftware/doxter-devcontainer:latest make tests
