@@ -14,7 +14,7 @@
     <div class="md-only"><strong>Title</strong></div>
     {% for task in tasks %}
       <div class="sm-only"><strong>ID</strong></div>
-      <div><a href="{{ url('task_view', {id: task.id}) }}" class="mono">{{ task.id|slice(0,8) }}</a></div>
+      <div><a href="{{ path('task_view', {id: task.id}) }}" class="mono">{{ task.id|slice(0,8) }}</a></div>
 
       <div class="sm-only"><strong>Active</strong></div>
       <div>

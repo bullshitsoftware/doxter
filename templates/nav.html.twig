@@ -10,7 +10,7 @@
 <nav>
   <a href="#" class="toggle">Menu</a>
   {% for item in nav %}
-  <a href="{{ url(item.route) }}" 
+  <a href="{{ path(item.route) }}" 
      {% if current_route == item.route %}class="active"{% endif %}
   >{{ item.label }}</a>
   {% endfor %}
