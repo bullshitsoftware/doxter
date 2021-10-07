@@ -1,5 +1,7 @@
 # doXter
 
+[![codecov](https://codecov.io/gh/bullshitsoftware/doxter/branch/master/graph/badge.svg?token=ZOCEX7HP0U)](https://codecov.io/gh/bullshitsoftware/doxter)
+
 Simple web todo application inspired by TaskWarrior.
 
 Features:
