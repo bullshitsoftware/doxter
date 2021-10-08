@@ -28,6 +28,7 @@ class TaskFixture extends Fixture implements DependentFixtureInterface
                 $task->setStarted($task->getCreated());
             }
             $manager->persist($task);
+            $this->addReference(self::referenceName('current', $i), $task);
         }
 
         for ($i = 1; $i < 9; $i++) {
@@ -36,6 +37,7 @@ class TaskFixture extends Fixture implements DependentFixtureInterface
             $task->setTitle("Delayed task $i");
             $task->setWait($task->getCreated()->modify("+$i day"));
             $manager->persist($task);
+            $this->addReference(self::referenceName('waiting', $i), $task);
         }
 
         for ($i = 1; $i < 11; $i++) {
@@ -44,8 +46,14 @@ class TaskFixture extends Fixture implements DependentFixtureInterface
             $task->setTitle("Done task $i");
             $task->setEnded($task->getCreated()->modify("+$i day"));
             $manager->persist($task);
+            $this->addReference(self::referenceName('completed', $i), $task);
         }
 
         $manager->flush();
+    }
+
+    static public function referenceName(string $list, int $i): string
+    {
+        return sprintf('task_%s_%d', $list, $i);
     }
 }

@@ -37,6 +37,30 @@ class TaskControllerTest extends WebTestCase
         self::assertCount(5 * 9, $crawler->filter('.sm-only'));
     }
 
+    public function testCurrentFilter(): void
+    {
+        $this->client->loginUser($this->userRepository->findOneByEmail('john.doe@example.com'));
+        $crawler = $this->client->request('GET', '/', ['q' => '+foo']);
+        self::assertResponseIsSuccessful();
+        self::assertCount(5 * 2, $crawler->filter('.sm-only'));
+
+        $crawler = $this->client->request('GET', '/', ['q' => '+foo +bar']);
+        self::assertResponseIsSuccessful();
+        self::assertCount(5 * 1, $crawler->filter('.sm-only'));
+
+        $crawler = $this->client->request('GET', '/', ['q' => '+foo -bar']);
+        self::assertResponseIsSuccessful();
+        self::assertCount(5 * 1, $crawler->filter('.sm-only'));
+
+        $crawler = $this->client->request('GET', '/', ['q' => '-foo']);
+        self::assertResponseIsSuccessful();
+        self::assertCount(5 * 7, $crawler->filter('.sm-only'));
+
+        $crawler = $this->client->request('GET', '/', ['q' => '-foo -baz']);
+        self::assertResponseIsSuccessful();
+        self::assertCount(5 * 6, $crawler->filter('.sm-only'));
+    }
+
     public function testWaiting(): void
     {
         $this->client->request('GET', '/waiting');
@@ -48,6 +72,30 @@ class TaskControllerTest extends WebTestCase
         self::assertCount(6 * 8, $crawler->filter('.sm-only'));
     }
 
+    public function testWaitingFilter(): void
+    {
+        $this->client->loginUser($this->userRepository->findOneByEmail('john.doe@example.com'));
+        $crawler = $this->client->request('GET', '/waiting', ['q' => '+foo']);
+        self::assertResponseIsSuccessful();
+        self::assertCount(6 * 2, $crawler->filter('.sm-only'));
+
+        $crawler = $this->client->request('GET', '/waiting', ['q' => '+foo +bar']);
+        self::assertResponseIsSuccessful();
+        self::assertCount(6 * 1, $crawler->filter('.sm-only'));
+
+        $crawler = $this->client->request('GET', '/waiting', ['q' => '+foo -bar']);
+        self::assertResponseIsSuccessful();
+        self::assertCount(6 * 1, $crawler->filter('.sm-only'));
+
+        $crawler = $this->client->request('GET', '/waiting', ['q' => '-foo']);
+        self::assertResponseIsSuccessful();
+        self::assertCount(6 * 6, $crawler->filter('.sm-only'));
+
+        $crawler = $this->client->request('GET', '/waiting', ['q' => '-foo -baz']);
+        self::assertResponseIsSuccessful();
+        self::assertCount(6 * 5, $crawler->filter('.sm-only'));
+    }
+
     public function testCompleted(): void
     {
         $this->client->request('GET', '/completed');
@@ -57,6 +105,30 @@ class TaskControllerTest extends WebTestCase
         $crawler = $this->client->request('GET', '/completed');
         self::assertResponseIsSuccessful();
         self::assertCount(6 * 10, $crawler->filter('.sm-only'));
+    }
+
+    public function testCompletedFilter(): void
+    {
+        $this->client->loginUser($this->userRepository->findOneByEmail('john.doe@example.com'));
+        $crawler = $this->client->request('GET', '/completed', ['q' => '+foo']);
+        self::assertResponseIsSuccessful();
+        self::assertCount(6 * 2, $crawler->filter('.sm-only'));
+
+        $crawler = $this->client->request('GET', '/waiting', ['q' => '+foo +bar']);
+        self::assertResponseIsSuccessful();
+        self::assertCount(6 * 1, $crawler->filter('.sm-only'));
+
+        $crawler = $this->client->request('GET', '/completed', ['q' => '+foo -bar']);
+        self::assertResponseIsSuccessful();
+        self::assertCount(6 * 1, $crawler->filter('.sm-only'));
+
+        $crawler = $this->client->request('GET', '/completed', ['q' => '-foo']);
+        self::assertResponseIsSuccessful();
+        self::assertCount(6 * 8, $crawler->filter('.sm-only'));
+
+        $crawler = $this->client->request('GET', '/completed', ['q' => '-foo -baz']);
+        self::assertResponseIsSuccessful();
+        self::assertCount(6 * 7, $crawler->filter('.sm-only'));
     }
 
     public function testAdd(): void

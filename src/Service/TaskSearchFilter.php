@@ -42,10 +42,14 @@ class TaskSearchFilter
     {
         $queryBuilder->andWhere(
             $queryBuilder->expr()->exists("
-                SELECT ti FROM App\Entity\Task ti JOIN ti.tags gi 
+                SELECT gi FROM App\Entity\Task ti JOIN ti.tags gi 
                 WHERE ti = $taskAlias AND gi.name IN (:includeTags)
+                GROUP BY ti
+                HAVING COUNT(ti) = :includeTagsCount
             ")
-        )->setParameter('includeTags', $tags);
+        )
+            ->setParameter('includeTags', $tags)
+            ->setParameter('includeTagsCount', count($tags));
     }
 
     private function applyExcludeTags(QueryBuilder $queryBuilder, string $taskAlias, array $tags): void
