@@ -1,0 +1,3 @@
+#!/bin/sh
+
+php -dxdebug.mode=debug -dxdebug.start_with_request=yes $@

@@ -5,6 +5,7 @@
         "bmewburn.vscode-intelephense-client",
         "whatwedo.twig",
         "editorconfig.editorconfig",
-        "alexcvzz.vscode-sqlite"
+        "alexcvzz.vscode-sqlite",
+        "felixfbecker.php-debug"
     ]
 }
