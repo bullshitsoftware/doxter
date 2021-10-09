@@ -34,3 +34,8 @@ jobs:
               uses: codecov/codecov-action@v2
               with:
                 files: cover.xml
+
+            - name: validate db schema
+              run: |
+                docker run -v $GITHUB_WORKSPACE:/app -w /app -e APP_ENV=test -u $(id -u $USER):$(id -g $USER) \
+                $IMAGE bin/console doctrine:schema:validate
