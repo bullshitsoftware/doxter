@@ -6,6 +6,7 @@ use App\Repository\TaskRepository;
 use App\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Symfony\Component\DomCrawler\Crawler;
 
 class TaskControllerTest extends WebTestCase
 {
@@ -30,11 +31,24 @@ class TaskControllerTest extends WebTestCase
         $this->client->loginUser($this->userRepository->findOneByEmail('john.doe@example.com'));
         $crawler = $this->client->request('GET', '/');
         self::assertResponseIsSuccessful();
-        self::assertCount(5 * 9, $crawler->filter('.sm-only'));
+        $titles = $crawler->filter('.grid__col-title')->each(fn (Crawler $c) => $c->text());
+        $expectTitles = [
+            'Current task 1',
+            'Current task 3',
+            'Current task 5',
+            'Current task 7',
+            'Current task 9',
+            'Current task 2',
+            'Current task 4',
+            'Current task 6',
+            'Current task 8',
+        ];
+        self::assertSame($expectTitles, $titles);
 
         $crawler = $this->client->request('GET', '/current');
         self::assertResponseIsSuccessful();
-        self::assertCount(5 * 9, $crawler->filter('.sm-only'));
+        $titles = $crawler->filter('.grid__col-title')->each(fn (Crawler $node) => $node->text());
+        self::assertSame($expectTitles, $titles);
     }
 
     public function testCurrentFilter(): void
@@ -42,23 +56,59 @@ class TaskControllerTest extends WebTestCase
         $this->client->loginUser($this->userRepository->findOneByEmail('john.doe@example.com'));
         $crawler = $this->client->request('GET', '/', ['q' => '+foo']);
         self::assertResponseIsSuccessful();
-        self::assertCount(5 * 2, $crawler->filter('.sm-only'));
+        $tags = $crawler->filter('.grid__col-tag')->each(fn (Crawler $c) => $c->text());
+        self::assertSame(['bar foo', 'foo'], $tags);
+        $titles = $crawler->filter('.grid__col-title')->each(fn (Crawler $c) => $c->text());
+        self::assertSame(['Current task 1', 'Current task 2'], $titles);
 
         $crawler = $this->client->request('GET', '/', ['q' => '+foo +bar']);
         self::assertResponseIsSuccessful();
-        self::assertCount(5 * 1, $crawler->filter('.sm-only'));
+        $tags = $crawler->filter('.grid__col-tag')->each(fn (Crawler $c) => $c->text());
+        self::assertSame(['bar foo'], $tags);
+        $titles = $crawler->filter('.grid__col-title')->each(fn (Crawler $c) => $c->text());
+        self::assertSame(['Current task 1'], $titles);
 
         $crawler = $this->client->request('GET', '/', ['q' => '+foo -bar']);
         self::assertResponseIsSuccessful();
-        self::assertCount(5 * 1, $crawler->filter('.sm-only'));
+        $tags = $crawler->filter('.grid__col-tag')->each(fn (Crawler $c) => $c->text());
+        self::assertSame(['foo'], $tags);
+        $titles = $crawler->filter('.grid__col-title')->each(fn (Crawler $c) => $c->text());
+        self::assertSame(['Current task 2'], $titles);
 
         $crawler = $this->client->request('GET', '/', ['q' => '-foo']);
         self::assertResponseIsSuccessful();
-        self::assertCount(5 * 7, $crawler->filter('.sm-only'));
+        $tags = $crawler->filter('.grid__col-tag')->each(fn (Crawler $c) => $c->text());
+        self::assertSame(['baz', '', '', '', '', '', ''], $tags);
+        $titles = $crawler->filter('.grid__col-title')->each(fn (Crawler $c) => $c->text());
+        self::assertSame(
+            [
+                'Current task 3',
+                'Current task 5',
+                'Current task 7',
+                'Current task 9',
+                'Current task 4',
+                'Current task 6',
+                'Current task 8',
+            ],
+            $titles,
+        );
 
         $crawler = $this->client->request('GET', '/', ['q' => '-foo -baz']);
         self::assertResponseIsSuccessful();
-        self::assertCount(5 * 6, $crawler->filter('.sm-only'));
+        $tags = $crawler->filter('.grid__col-tag')->each(fn (Crawler $c) => $c->text());
+        self::assertSame(['', '', '', '', '', ''], $tags);
+        $titles = $crawler->filter('.grid__col-title')->each(fn (Crawler $c) => $c->text());
+        self::assertSame(
+            [
+                'Current task 5',
+                'Current task 7',
+                'Current task 9',
+                'Current task 4',
+                'Current task 6',
+                'Current task 8',
+            ],
+            $titles,
+        );
     }
 
     public function testWaiting(): void
@@ -69,7 +119,20 @@ class TaskControllerTest extends WebTestCase
         $this->client->loginUser($this->userRepository->findOneByEmail('john.doe@example.com'));
         $crawler = $this->client->request('GET', '/waiting');
         self::assertResponseIsSuccessful();
-        self::assertCount(6 * 8, $crawler->filter('.sm-only'));
+        $titles = $crawler->filter('.grid__col-title')->each(fn (Crawler $c) => $c->text());
+        self::assertSame(
+            [
+                'Delayed task 1',
+                'Delayed task 2',
+                'Delayed task 3',
+                'Delayed task 4',
+                'Delayed task 5',
+                'Delayed task 6',
+                'Delayed task 7',
+                'Delayed task 8',
+            ],
+            $titles,
+        );
     }
 
     public function testWaitingFilter(): void
@@ -77,23 +140,57 @@ class TaskControllerTest extends WebTestCase
         $this->client->loginUser($this->userRepository->findOneByEmail('john.doe@example.com'));
         $crawler = $this->client->request('GET', '/waiting', ['q' => '+foo']);
         self::assertResponseIsSuccessful();
-        self::assertCount(6 * 2, $crawler->filter('.sm-only'));
+        $tags = $crawler->filter('.grid__col-tag')->each(fn (Crawler $c) => $c->text());
+        self::assertSame(['bar foo', 'foo'], $tags);
+        $titles = $crawler->filter('.grid__col-title')->each(fn (Crawler $c) => $c->text());
+        self::assertSame(['Delayed task 1', 'Delayed task 2'], $titles);
 
         $crawler = $this->client->request('GET', '/waiting', ['q' => '+foo +bar']);
         self::assertResponseIsSuccessful();
-        self::assertCount(6 * 1, $crawler->filter('.sm-only'));
+        $tags = $crawler->filter('.grid__col-tag')->each(fn (Crawler $c) => $c->text());
+        self::assertSame(['bar foo'], $tags);
+        $titles = $crawler->filter('.grid__col-title')->each(fn (Crawler $c) => $c->text());
+        self::assertSame(['Delayed task 1'], $titles);
 
         $crawler = $this->client->request('GET', '/waiting', ['q' => '+foo -bar']);
         self::assertResponseIsSuccessful();
-        self::assertCount(6 * 1, $crawler->filter('.sm-only'));
+        $tags = $crawler->filter('.grid__col-tag')->each(fn (Crawler $c) => $c->text());
+        self::assertSame(['foo'], $tags);
+        $titles = $crawler->filter('.grid__col-title')->each(fn (Crawler $c) => $c->text());
+        self::assertSame(['Delayed task 2'], $titles);
 
         $crawler = $this->client->request('GET', '/waiting', ['q' => '-foo']);
         self::assertResponseIsSuccessful();
-        self::assertCount(6 * 6, $crawler->filter('.sm-only'));
+        $tags = $crawler->filter('.grid__col-tag')->each(fn (Crawler $c) => $c->text());
+        self::assertSame(['baz', '', '', '', '', ''], $tags);
+        $titles = $crawler->filter('.grid__col-title')->each(fn (Crawler $c) => $c->text());
+        self::assertSame(
+            [
+                'Delayed task 3',
+                'Delayed task 4',
+                'Delayed task 5',
+                'Delayed task 6',
+                'Delayed task 7',
+                'Delayed task 8',
+            ],
+            $titles,
+        );
 
         $crawler = $this->client->request('GET', '/waiting', ['q' => '-foo -baz']);
         self::assertResponseIsSuccessful();
-        self::assertCount(6 * 5, $crawler->filter('.sm-only'));
+        $tags = $crawler->filter('.grid__col-tag')->each(fn (Crawler $c) => $c->text());
+        self::assertSame(['', '', '', '', ''], $tags);
+        $titles = $crawler->filter('.grid__col-title')->each(fn (Crawler $c) => $c->text());
+        self::assertSame(
+            [
+                'Delayed task 4',
+                'Delayed task 5',
+                'Delayed task 6',
+                'Delayed task 7',
+                'Delayed task 8',
+            ],
+            $titles,
+        );
     }
 
     public function testCompleted(): void
@@ -104,7 +201,22 @@ class TaskControllerTest extends WebTestCase
         $this->client->loginUser($this->userRepository->findOneByEmail('john.doe@example.com'));
         $crawler = $this->client->request('GET', '/completed');
         self::assertResponseIsSuccessful();
-        self::assertCount(6 * 10, $crawler->filter('.sm-only'));
+        $titles = $crawler->filter('.grid__col-title')->each(fn (Crawler $c) => $c->text());
+        self::assertSame(
+            [
+                'Done task 10',
+                'Done task 9',
+                'Done task 8',
+                'Done task 7',
+                'Done task 6',
+                'Done task 5',
+                'Done task 4',
+                'Done task 3',
+                'Done task 2',
+                'Done task 1',
+            ],
+            $titles,
+        );
     }
 
     public function testCompletedFilter(): void
@@ -112,23 +224,62 @@ class TaskControllerTest extends WebTestCase
         $this->client->loginUser($this->userRepository->findOneByEmail('john.doe@example.com'));
         $crawler = $this->client->request('GET', '/completed', ['q' => '+foo']);
         self::assertResponseIsSuccessful();
-        self::assertCount(6 * 2, $crawler->filter('.sm-only'));
+        $tags = $crawler->filter('.grid__col-tag')->each(fn (Crawler $c) => $c->text());
+        self::assertSame(['foo', 'bar foo'], $tags);
+        $titles = $crawler->filter('.grid__col-title')->each(fn (Crawler $c) => $c->text());
+        self::assertSame(['Done task 2', 'Done task 1'], $titles);
 
-        $crawler = $this->client->request('GET', '/waiting', ['q' => '+foo +bar']);
+        $crawler = $this->client->request('GET', '/completed', ['q' => '+foo +bar']);
         self::assertResponseIsSuccessful();
-        self::assertCount(6 * 1, $crawler->filter('.sm-only'));
+        $tags = $crawler->filter('.grid__col-tag')->each(fn (Crawler $c) => $c->text());
+        self::assertSame(['bar foo'], $tags);
+        $titles = $crawler->filter('.grid__col-title')->each(fn (Crawler $c) => $c->text());
+        self::assertSame(['Done task 1'], $titles);
 
         $crawler = $this->client->request('GET', '/completed', ['q' => '+foo -bar']);
         self::assertResponseIsSuccessful();
-        self::assertCount(6 * 1, $crawler->filter('.sm-only'));
+        $tags = $crawler->filter('.grid__col-tag')->each(fn (Crawler $c) => $c->text());
+        self::assertSame(['foo'], $tags);
+        $titles = $crawler->filter('.grid__col-title')->each(fn (Crawler $c) => $c->text());
+        self::assertSame(['Done task 2'], $titles);
 
         $crawler = $this->client->request('GET', '/completed', ['q' => '-foo']);
         self::assertResponseIsSuccessful();
         self::assertCount(6 * 8, $crawler->filter('.sm-only'));
+        $tags = $crawler->filter('.grid__col-tag')->each(fn (Crawler $c) => $c->text());
+        self::assertSame(['', '', '', '', '', '', '', 'baz'], $tags);
+        $titles = $crawler->filter('.grid__col-title')->each(fn (Crawler $c) => $c->text());
+        self::assertSame(
+            [
+                'Done task 10',
+                'Done task 9',
+                'Done task 8',
+                'Done task 7',
+                'Done task 6',
+                'Done task 5',
+                'Done task 4',
+                'Done task 3',
+            ],
+            $titles,
+        );
 
         $crawler = $this->client->request('GET', '/completed', ['q' => '-foo -baz']);
         self::assertResponseIsSuccessful();
-        self::assertCount(6 * 7, $crawler->filter('.sm-only'));
+        $tags = $crawler->filter('.grid__col-tag')->each(fn (Crawler $c) => $c->text());
+        self::assertSame(['', '', '', '', '', '', ''], $tags);
+        $titles = $crawler->filter('.grid__col-title')->each(fn (Crawler $c) => $c->text());
+        self::assertSame(
+            [
+                'Done task 10',
+                'Done task 9',
+                'Done task 8',
+                'Done task 7',
+                'Done task 6',
+                'Done task 5',
+                'Done task 4',
+            ],
+            $titles,
+        );
     }
 
     public function testAdd(): void
