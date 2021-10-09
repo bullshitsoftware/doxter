@@ -11,6 +11,7 @@ use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\JoinColumn;
 use Doctrine\ORM\Mapping\ManyToOne;
 use Doctrine\ORM\Mapping\ManyToMany;
+use Doctrine\ORM\Mapping\OrderBy;
 use Symfony\Component\Uid\Uuid;
 
 #[Entity(repositoryClass: TaskRepository::class)]
@@ -25,7 +26,10 @@ class Task
     ]
     private User $user;
 
-    #[ManyToMany(targetEntity: Tag::class, cascade: ['persist'])]
+    #[
+        ManyToMany(targetEntity: Tag::class, cascade: ['persist']),
+        OrderBy(['name' => 'ASC']),
+    ]
     private Collection $tags;
 
     #[Column(type: 'string', length: 144)]

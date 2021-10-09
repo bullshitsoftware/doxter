@@ -21,6 +21,8 @@ class TaskFixture extends Fixture implements DependentFixtureInterface
             $task = new Task();
             $task->setUser($user);
             $task->setTitle("Current task $i");
+            $minutesAgo = 10 - $i;
+            $task->setCreated(new \DateTimeImmutable("-${minutesAgo}minutes"));
             if ($i == 0) {
                 $task->setWait($task->getCreated());
             }
