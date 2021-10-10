@@ -57,7 +57,6 @@ class Task
     {
         $this->id = Uuid::v4();
         $this->tags = new ArrayCollection();
-        $this->created = $this->updated = new \DateTimeImmutable();
     }
 
     public function getId(): Uuid

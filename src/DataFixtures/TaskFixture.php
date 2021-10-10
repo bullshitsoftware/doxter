@@ -3,12 +3,20 @@
 namespace App\DataFixtures;
 
 use App\Entity\Task;
+use App\Service\DateTime\DateTimeFactory;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
 
 class TaskFixture extends Fixture implements DependentFixtureInterface
 {
+    private DateTimeFactory $dateTimeFactory;
+
+    public function __construct(DateTimeFactory $dateTimeFactory)
+    {
+        $this->dateTimeFactory = $dateTimeFactory;
+    }
+
     public function getDependencies(): array
     {
         return [UserFixture::class];
@@ -16,13 +24,15 @@ class TaskFixture extends Fixture implements DependentFixtureInterface
 
     public function load(ObjectManager $manager): void
     {
+        $now = $this->dateTimeFactory->now();
         $user = $this->getReference(UserFixture::JOHN_DOE);
         for ($i = 1; $i < 10; $i++) {
             $task = new Task();
             $task->setUser($user);
             $task->setTitle("Current task $i");
             $minutesAgo = 10 - $i;
-            $task->setCreated(new \DateTimeImmutable("-${minutesAgo}minutes"));
+            $task->setCreated($now->modify("-${minutesAgo}minutes"));
+            $task->setUpdated($task->getCreated());
             if ($i == 0) {
                 $task->setWait($task->getCreated());
             }
@@ -37,6 +47,9 @@ class TaskFixture extends Fixture implements DependentFixtureInterface
             $task = new Task();
             $task->setUser($user);
             $task->setTitle("Delayed task $i");
+            $minutesAgo = 9 - $i;
+            $task->setCreated($now->modify("-${minutesAgo}minutes"));
+            $task->setUpdated($task->getCreated());
             $task->setWait($task->getCreated()->modify("+$i day"));
             $manager->persist($task);
             $this->addReference(self::referenceName('waiting', $i), $task);
@@ -46,7 +59,11 @@ class TaskFixture extends Fixture implements DependentFixtureInterface
             $task = new Task();
             $task->setUser($user);
             $task->setTitle("Done task $i");
-            $task->setEnded($task->getCreated()->modify("+$i day"));
+            $daysAgo = 11 - $i;
+            $task->setCreated($now->modify("-${daysAgo}days"));
+            $task->setUpdated($task->getCreated());
+            $hoursOffset = $i % 2 == 1 ? 36 : 12;
+            $task->setEnded($task->getCreated()->modify("+${hoursOffset}hours"));
             $manager->persist($task);
             $this->addReference(self::referenceName('completed', $i), $task);
         }

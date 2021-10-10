@@ -35,7 +35,7 @@ class TaskRepository extends ServiceEntityRepository
     /**
      * @return Task[]
      */
-    public function findCurrentByUser(User $user, ?string $search = null): array
+    public function findCurrentByUser(User $user, ?string $search = null, \DateTimeInterface $now): array
     {
         $queryBuilder = $this->createQueryBuilder('task')
             ->select('task', 'tags')
@@ -43,7 +43,7 @@ class TaskRepository extends ServiceEntityRepository
             ->andWhere('task.user = :user')
             ->setParameter('user', $user->getId()->toBinary())
             ->andWhere('task.wait IS NULL OR task.wait < :now')
-            ->setParameter('now', new \DateTimeImmutable())
+            ->setParameter('now', $now)
             ->andWhere('task.ended IS NULL')
             ->addOrderBy('task.started', 'ASC')
             ->addOrderBy('task.created', 'ASC');
@@ -61,7 +61,7 @@ class TaskRepository extends ServiceEntityRepository
     /**
      * @return Task[]
      */
-    public function findWaitingByUser(User $user, ?string $search = null): array
+    public function findWaitingByUser(User $user, ?string $search = null, \DateTimeInterface $now): array
     {
         $queryBuilder = $this->createQueryBuilder('task')
             ->select('task', 'tags')
@@ -69,7 +69,7 @@ class TaskRepository extends ServiceEntityRepository
             ->andWhere('task.user = :user')
             ->setParameter('user', $user->getId()->toBinary())
             ->andWhere('task.wait IS NOT NULL AND task.wait > :now')
-            ->setParameter('now', new \DateTimeImmutable())
+            ->setParameter('now', $now)
             ->andWhere('task.ended IS NULL')
             ->addOrderBy('task.wait', 'ASC')
             ->addOrderBy('task.created', 'ASC');
@@ -93,7 +93,7 @@ class TaskRepository extends ServiceEntityRepository
             ->setParameter('user', $user->getId()->toBinary())
             ->andWhere('task.ended IS NOT NULL')
             ->addOrderBy('task.ended', 'DESC')
-            ->addOrderBy('task.created', 'ASC')
+            ->addOrderBy('task.created', 'DESC')
             ->setFirstResult(($page - 1) * self::TASK_PER_PAGE)
             ->setMaxResults(self::TASK_PER_PAGE + 1);
 

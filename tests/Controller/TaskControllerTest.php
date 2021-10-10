@@ -44,11 +44,21 @@ class TaskControllerTest extends WebTestCase
             'Current task 8',
         ];
         self::assertSame($expectTitles, $titles);
+        $active = $crawler->filter('.grid__col-active')->each(fn (Crawler $c) => $c->text());
+        $expectedActive = ['9m', '7m', '5m', '3m', '1m', '', '', '', ''];
+        self::assertSame($expectedActive, $active);
+        $age = $crawler->filter('.grid__col-age')->each(fn (Crawler $c) => $c->text());
+        $expectedAge = ['9m', '7m', '5m', '3m', '1m', '8m', '6m', '4m', '2m'];
+        self::assertSame($expectedAge, $age);
 
         $crawler = $this->client->request('GET', '/current');
         self::assertResponseIsSuccessful();
         $titles = $crawler->filter('.grid__col-title')->each(fn (Crawler $node) => $node->text());
         self::assertSame($expectTitles, $titles);
+        $active = $crawler->filter('.grid__col-active')->each(fn (Crawler $c) => $c->text());
+        self::assertSame($expectedActive, $active);
+        $age = $crawler->filter('.grid__col-age')->each(fn (Crawler $c) => $c->text());
+        self::assertSame($expectedAge, $age);
     }
 
     public function testCurrentFilter(): void
@@ -119,7 +129,6 @@ class TaskControllerTest extends WebTestCase
         $this->client->loginUser($this->userRepository->findOneByEmail('john.doe@example.com'));
         $crawler = $this->client->request('GET', '/waiting');
         self::assertResponseIsSuccessful();
-        $titles = $crawler->filter('.grid__col-title')->each(fn (Crawler $c) => $c->text());
         self::assertSame(
             [
                 'Delayed task 1',
@@ -131,7 +140,28 @@ class TaskControllerTest extends WebTestCase
                 'Delayed task 7',
                 'Delayed task 8',
             ],
-            $titles,
+            $crawler->filter('.grid__col-title')->each(fn (Crawler $c) => $c->text()),
+        );
+        self::assertSame(
+            ['8m', '7m', '6m', '5m', '4m', '3m', '2m', '1m'], 
+            $crawler->filter('.grid__col-age')->each(fn (Crawler $c) => $c->text()),
+        );
+        self::assertSame(
+            [
+                '2007-01-03', 
+                '2007-01-04', 
+                '2007-01-05', 
+                '2007-01-06', 
+                '2007-01-07', 
+                '2007-01-08', 
+                '2007-01-09', 
+                '2007-01-10',
+            ], 
+            $crawler->filter('.grid__col-wait')->each(fn (Crawler $c) => $c->text()),
+        );
+        self::assertSame(
+            ['23h', '1d', '2d', '3d', '4d', '5d', '6d', '7d'], 
+            $crawler->filter('.grid__col-remaining')->each(fn (Crawler $c) => $c->text()),
         );
     }
 
@@ -201,7 +231,6 @@ class TaskControllerTest extends WebTestCase
         $this->client->loginUser($this->userRepository->findOneByEmail('john.doe@example.com'));
         $crawler = $this->client->request('GET', '/completed');
         self::assertResponseIsSuccessful();
-        $titles = $crawler->filter('.grid__col-title')->each(fn (Crawler $c) => $c->text());
         self::assertSame(
             [
                 'Done task 10',
@@ -215,7 +244,41 @@ class TaskControllerTest extends WebTestCase
                 'Done task 2',
                 'Done task 1',
             ],
-            $titles,
+            $crawler->filter('.grid__col-title')->each(fn (Crawler $c) => $c->text()),
+        );
+        self::assertSame(
+            [
+                '2007-01-01',
+                '2006-12-31',
+                '2006-12-30',
+                '2006-12-29',
+                '2006-12-28',
+                '2006-12-27',
+                '2006-12-26',
+                '2006-12-25',
+                '2006-12-24',
+                '2006-12-23',
+            ],
+            $crawler->filter('.grid__col-created')->each(fn (Crawler $c) => $c->text()),
+        );
+        self::assertSame(
+            [
+                '2007-01-01',
+                '2007-01-01',
+                '2006-12-30',
+                '2006-12-30',
+                '2006-12-28',
+                '2006-12-28',
+                '2006-12-26',
+                '2006-12-26',
+                '2006-12-24',
+                '2006-12-24',
+            ],
+            $crawler->filter('.grid__col-completed')->each(fn (Crawler $c) => $c->text()),
+        );
+        self::assertSame(
+            ['1d', '2d', '3d', '4d', '5d', '6d', '7d', '8d', '9d', '10d'],
+            $crawler->filter('.grid__col-age')->each(fn (Crawler $c) => $c->text()),
         );
     }
 

@@ -2,11 +2,11 @@
 
 namespace App\Controller;
 
-use App\Entity\SearchFilter;
 use App\Entity\Task;
 use App\Form\TaskType;
 use App\Repository\TaskRepository;
 use App\Security\Voter\TaskVoter;
+use App\Service\DateTime\DateTimeFactory;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -19,29 +19,33 @@ class TaskController extends AbstractController
         Route('/', name: 'home'),
         Route('/current', name: 'task_current'),
     ]
-    public function current(TaskRepository $repository, Request $request): Response
+    public function current(TaskRepository $repository, DateTimeFactory $dateTimeFactory, Request $request): Response
     {
         $this->denyAccessUnlessGranted('ROLE_USER');
 
+        $now = $dateTimeFactory->now();
+
         return $this->render('task/current.html.twig', [
-            'now' => new \DateTimeImmutable(),
-            'tasks' => $repository->findCurrentByUser($this->getUser(), $request->get('q')),
+            'now' => $now,
+            'tasks' => $repository->findCurrentByUser($this->getUser(), $request->get('q'), $now),
         ]);
     }
 
     #[Route('/waiting', name: 'task_waiting')]
-    public function waiting(TaskRepository $repository, Request $request): Response
+    public function waiting(TaskRepository $repository, DateTimeFactory $dateTimeFactory, Request $request): Response
     {
         $this->denyAccessUnlessGranted('ROLE_USER');
 
+        $now = $dateTimeFactory->now();
+
         return $this->render('task/waiting.html.twig', [
-            'now' => new \DateTimeImmutable(),
-            'tasks' => $repository->findWaitingByUser($this->getUser(), $request->get('q')),
+            'now' => $now,
+            'tasks' => $repository->findWaitingByUser($this->getUser(), $request->get('q'), $now),
         ]);
     }
 
     #[Route('/completed', name: 'task_completed')]
-    public function completed(TaskRepository $repository, Request $request): Response
+    public function completed(TaskRepository $repository, DateTimeFactory $dateTimeFactory, Request $request): Response
     {
         $this->denyAccessUnlessGranted('ROLE_USER');
 
@@ -49,7 +53,7 @@ class TaskController extends AbstractController
         $pagination = $repository->findCompletedByUser($this->getUser(), $page, $request->get('q'));
 
         return $this->render('task/completed.html.twig', [
-            'now' => new \DateTimeImmutable(),
+            'now' => $dateTimeFactory->now(),
             'tasks' => $pagination->getItems(),
             'page' => $page,
             'more' => $pagination->hasMore(),
@@ -57,20 +61,24 @@ class TaskController extends AbstractController
     }
 
     #[Route('/add', name: 'task_add')]
-    public function add(EntityManagerInterface $entityManager, Request $request): Response
-    {
+    public function add(
+        EntityManagerInterface $entityManager, 
+        DateTimeFactory $dateTimeFactory, 
+        Request $request
+    ): Response {
         $this->denyAccessUnlessGranted('ROLE_USER');
 
         $task = new Task();
         $task->setUser($this->getUser());
+        $task->setCreated($dateTimeFactory->now());
         $form = $this->createForm(TaskType::class, $task);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $task->setUpdated(new \DateTimeImmutable());
+            $task->setUpdated($dateTimeFactory->now());
             $entityManager->persist($task);
             $entityManager->flush();
 
-            return $this->redirectToList($task);
+            return $this->redirectToList($dateTimeFactory->now(), $task);
         }
 
         return $this->render('task/add.html.twig', [
@@ -87,18 +95,22 @@ class TaskController extends AbstractController
     }
 
     #[Route('/edit/{id}', name: 'task_edit')]
-    public function edit(EntityManagerInterface $entityManager, Request $request, Task $task): Response
-    {
+    public function edit(
+        EntityManagerInterface $entityManager, 
+        DateTimeFactory $dateTimeFactory, 
+        Request $request, 
+        Task $task
+    ): Response {
         $this->denyAccessUnlessGranted(TaskVoter::EDIT, $task);
 
         $form = $this->createForm(TaskType::class, $task);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $task->setUpdated(new \DateTimeImmutable());
+            $task->setUpdated($dateTimeFactory->now());
             $entityManager->persist($task);
             $entityManager->flush();
 
-            return $this->redirectToList($task);
+            return $this->redirectToList($dateTimeFactory->now(), $task);
         }
 
         return $this->render('task/edit.html.twig', [
@@ -108,7 +120,7 @@ class TaskController extends AbstractController
     }
 
     #[Route('/delete/{id}', name: 'task_delete', methods: ['POST'])]
-    public function delete(EntityManagerInterface $entityManager, Request $request, Task $task): Response
+    public function delete(EntityManagerInterface $entityManager, DateTimeFactory $dateTimeFactory, Request $request, Task $task): Response
     {
         $this->denyAccessUnlessGranted(TaskVoter::DELETE, $task);
         if (!$this->isCsrfTokenValid('task', $request->request->get('_token'))) {
@@ -118,16 +130,16 @@ class TaskController extends AbstractController
         $entityManager->remove($task);
         $entityManager->flush();
 
-        return $this->redirectToList($task);
+        return $this->redirectToList($dateTimeFactory->now(), $task);
     }
 
-    private function redirectToList(Task $task): Response
+    private function redirectToList(\DateTimeInterface $now, Task $task): Response
     {
         if ($task->getEnded() !== null) {
             return $this->redirectToRoute('task_completed');
         }
 
-        if ($task->getWait() === null || $task->getWait() < new \DateTimeImmutable('now')) {
+        if ($task->getWait() === null || $task->getWait() < $now) {
             return $this->redirectToRoute('home');
         }
 
