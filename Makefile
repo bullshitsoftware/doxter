@@ -1,3 +1,7 @@
+.PHONY: serve-debug
+serve-debug:
+	bin/debug -S localhost:8000 -t public
+
 .PHONY: prepare-tests tests cover
 prepare-tests:
 	rm -rf var/test_data.db
