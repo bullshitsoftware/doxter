@@ -78,6 +78,13 @@ class TaskControllerTest extends WebTestCase
         $titles = $crawler->filter('.grid__col-title')->each(fn (Crawler $c) => $c->text());
         self::assertSame(['Current task 1'], $titles);
 
+        $crawler = $this->client->request('GET', '/', ['q' => '+foo 1']);
+        self::assertResponseIsSuccessful();
+        $tags = $crawler->filter('.grid__col-tag')->each(fn (Crawler $c) => $c->text());
+        self::assertSame(['bar foo'], $tags);
+        $titles = $crawler->filter('.grid__col-title')->each(fn (Crawler $c) => $c->text());
+        self::assertSame(['Current task 1'], $titles);
+
         $crawler = $this->client->request('GET', '/', ['q' => '+foo -bar']);
         self::assertResponseIsSuccessful();
         $tags = $crawler->filter('.grid__col-tag')->each(fn (Crawler $c) => $c->text());
@@ -176,6 +183,13 @@ class TaskControllerTest extends WebTestCase
         self::assertSame(['Delayed task 1', 'Delayed task 2'], $titles);
 
         $crawler = $this->client->request('GET', '/waiting', ['q' => '+foo +bar']);
+        self::assertResponseIsSuccessful();
+        $tags = $crawler->filter('.grid__col-tag')->each(fn (Crawler $c) => $c->text());
+        self::assertSame(['bar foo'], $tags);
+        $titles = $crawler->filter('.grid__col-title')->each(fn (Crawler $c) => $c->text());
+        self::assertSame(['Delayed task 1'], $titles);
+
+        $crawler = $this->client->request('GET', '/waiting', ['q' => '+foo 1']);
         self::assertResponseIsSuccessful();
         $tags = $crawler->filter('.grid__col-tag')->each(fn (Crawler $c) => $c->text());
         self::assertSame(['bar foo'], $tags);
@@ -293,6 +307,13 @@ class TaskControllerTest extends WebTestCase
         self::assertSame(['Done task 2', 'Done task 1'], $titles);
 
         $crawler = $this->client->request('GET', '/completed', ['q' => '+foo +bar']);
+        self::assertResponseIsSuccessful();
+        $tags = $crawler->filter('.grid__col-tag')->each(fn (Crawler $c) => $c->text());
+        self::assertSame(['bar foo'], $tags);
+        $titles = $crawler->filter('.grid__col-title')->each(fn (Crawler $c) => $c->text());
+        self::assertSame(['Done task 1'], $titles);
+
+        $crawler = $this->client->request('GET', '/completed', ['q' => '+foo 1']);
         self::assertResponseIsSuccessful();
         $tags = $crawler->filter('.grid__col-tag')->each(fn (Crawler $c) => $c->text());
         self::assertSame(['bar foo'], $tags);
