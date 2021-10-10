@@ -68,7 +68,10 @@ class TaskSearchFilter
     {
         foreach ($terms as $i => $term) {
             $queryBuilder
-                ->andWhere("LOWER($taskAlias.title) LIKE :term_$i OR LOWER($taskAlias.description) LIKE :term_$i")
+                ->andWhere($queryBuilder->expr()->orX(
+                    "mb_strtolower($taskAlias.title) LIKE :term_$i",
+                    "mb_strtolower($taskAlias.description) LIKE :term_$i",
+                ))
                 ->setParameter("term_$i", '%' . mb_strtolower($term) . '%');
         }
     }

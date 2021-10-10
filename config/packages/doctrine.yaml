@@ -1,6 +1,11 @@
 doctrine:
     dbal:
         url: '%env(resolve:DATABASE_URL)%'
+        options:
+            userDefinedFunctions:
+                mb_strtolower:
+                    callback: mb_strtolower
+                    numArgs: 1
     orm:
         auto_generate_proxy_classes: true
         naming_strategy: doctrine.orm.naming_strategy.underscore_number_aware
@@ -12,3 +17,6 @@ doctrine:
                 dir: '%kernel.project_dir%/src/Entity'
                 prefix: 'App\Entity'
                 alias: App
+        dql:
+            string_functions:
+                mb_strtolower: App\Doctrine\MbStrtolower
