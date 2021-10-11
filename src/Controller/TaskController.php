@@ -59,7 +59,8 @@ class TaskController extends Controller
     }
 
     #[Route('/add', name: 'task_add')]
-    public function add(EntityManagerInterface $entityManager, Request $request): Response {
+    public function add(EntityManagerInterface $entityManager, Request $request): Response
+    {
         $this->denyAccessUnlessGranted('ROLE_USER');
 
         $task = new Task();
@@ -91,7 +92,8 @@ class TaskController extends Controller
     }
 
     #[Route('/edit/{id}', name: 'task_edit')]
-    public function edit(EntityManagerInterface $entityManager,  Request $request, Task $task): Response {
+    public function edit(EntityManagerInterface $entityManager, Request $request, Task $task): Response
+    {
         $this->denyAccessUnlessGranted(TaskVoter::EDIT, $task);
 
         $form = $this->createForm(TaskType::class, $task);
@@ -103,10 +105,9 @@ class TaskController extends Controller
 
             $this->addFlash(self::FLASH_SUCCESS, sprintf('Task "%s" updated', $task->getTitle()));
 
-            return $request->request->has('apply') 
+            return $request->request->has('apply')
                 ? $this->redirectToRoute('task_view', ['id' => $task->getId()])
                 : $this->redirectToList($task);
-
         }
 
         return $this->render('task/edit.html.twig', [
@@ -116,12 +117,12 @@ class TaskController extends Controller
     }
 
     #[Route('/delete/{id}', name: 'task_delete', methods: ['POST'])]
-    public function delete(EntityManagerInterface $entityManager, Request $request, Task $task): Response 
+    public function delete(EntityManagerInterface $entityManager, Request $request, Task $task): Response
     {
         $this->denyAccessUnlessGranted(TaskVoter::DELETE, $task);
         if (!$this->isCsrfTokenValid('task', $request->request->get('_token'))) {
             $this->addFlash(
-                self::FLASH_ERROR, 
+                self::FLASH_ERROR,
                 sprintf('Failed to delete "%s" task. Please try again', $task->getTitle())
             );
 
@@ -138,11 +139,11 @@ class TaskController extends Controller
 
     private function redirectToList(Task $task): Response
     {
-        if ($task->getEnded() !== null) {
+        if (null !== $task->getEnded()) {
             return $this->redirectToRoute('task_completed');
         }
 
-        if ($task->getWait() === null || $task->getWait() < $this->now()) {
+        if (null === $task->getWait() || $task->getWait() < $this->now()) {
             return $this->redirectToRoute('home');
         }
 

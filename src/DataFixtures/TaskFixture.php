@@ -26,24 +26,24 @@ class TaskFixture extends Fixture implements DependentFixtureInterface
     {
         $now = $this->dateTimeFactory->now();
         $user = $this->getReference(UserFixture::JOHN_DOE);
-        for ($i = 1; $i < 10; $i++) {
+        for ($i = 1; $i < 10; ++$i) {
             $task = new Task();
             $task->setUser($user);
             $task->setTitle("Current task $i");
             $minutesAgo = 10 - $i;
             $task->setCreated($now->modify("-${minutesAgo}minutes"));
             $task->setUpdated($task->getCreated());
-            if ($i == 0) {
+            if (0 == $i) {
                 $task->setWait($task->getCreated());
             }
-            if ($i % 2 === 1) {
+            if (1 === $i % 2) {
                 $task->setStarted($task->getCreated());
             }
             $manager->persist($task);
             $this->addReference(self::referenceName('current', $i), $task);
         }
 
-        for ($i = 1; $i < 9; $i++) {
+        for ($i = 1; $i < 9; ++$i) {
             $task = new Task();
             $task->setUser($user);
             $task->setTitle("Delayed task $i");
@@ -55,14 +55,14 @@ class TaskFixture extends Fixture implements DependentFixtureInterface
             $this->addReference(self::referenceName('waiting', $i), $task);
         }
 
-        for ($i = 1; $i < 11; $i++) {
+        for ($i = 1; $i < 11; ++$i) {
             $task = new Task();
             $task->setUser($user);
             $task->setTitle("Done task $i");
             $daysAgo = 11 - $i;
             $task->setCreated($now->modify("-${daysAgo}days"));
             $task->setUpdated($task->getCreated());
-            $hoursOffset = $i % 2 == 1 ? 36 : 12;
+            $hoursOffset = 1 == $i % 2 ? 36 : 12;
             $task->setEnded($task->getCreated()->modify("+${hoursOffset}hours"));
             $manager->persist($task);
             $this->addReference(self::referenceName('completed', $i), $task);
@@ -71,7 +71,7 @@ class TaskFixture extends Fixture implements DependentFixtureInterface
         $manager->flush();
     }
 
-    static public function referenceName(string $list, int $i): string
+    public static function referenceName(string $list, int $i): string
     {
         return sprintf('task_%s_%d', $list, $i);
     }

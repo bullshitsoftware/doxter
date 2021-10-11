@@ -6,6 +6,7 @@ use App\Entity\Tag;
 use App\Entity\Task;
 use App\Repository\TaskRepository;
 use App\Repository\UserRepository;
+use function in_array;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
@@ -91,7 +92,7 @@ class UserControllerTest extends WebTestCase
         ];
         $this->client->submitForm('Import', ['import' => ['content' => json_encode([
             $taskData,
-            ['status' => 'deleted']
+            ['status' => 'deleted'],
         ])]]);
         self::assertResponseRedirects('/settings');
         $task = self::getContainer()->get('doctrine')->getManager()->getRepository(Task::class)->findOneByTitle('Imported');

@@ -8,7 +8,7 @@ use Doctrine\ORM\Query\Lexer;
 use Doctrine\ORM\Query\Parser;
 use Doctrine\ORM\Query\SqlWalker;
 
-class MbStrtolower extends FunctionNode 
+class MbStrtolower extends FunctionNode
 {
     private ?Node $string = null;
 
@@ -24,6 +24,6 @@ class MbStrtolower extends FunctionNode
 
     public function getSql(SqlWalker $sqlWalker): string
     {
-        return 'mb_strtolower(' . $this->string->dispatch($sqlWalker) . ')';
+        return 'mb_strtolower('.$this->string->dispatch($sqlWalker).')';
     }
 }

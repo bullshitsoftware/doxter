@@ -2,10 +2,12 @@
 
 namespace App\Service\DateTime;
 
+use DateTimeImmutable;
+
 class DateTimeRealFactory implements DateTimeFactory
 {
-    public function now(): \DateTimeImmutable
+    public function now(): DateTimeImmutable
     {
-        return new \DateTimeImmutable();
+        return new DateTimeImmutable();
     }
 }

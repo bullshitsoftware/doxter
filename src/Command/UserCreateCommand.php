@@ -40,16 +40,16 @@ class UserCreateCommand extends Command
         $io = new SymfonyStyle($input, $output);
         $helper = $this->getHelper('question');
 
-        $usernameQuestion = new Question("Email: ");
+        $usernameQuestion = new Question('Email: ');
         $email = $helper->ask($input, $output, $usernameQuestion);
         $user = $this->userRepository->findOneByEmail($email);
-        if ($user !== null) {
+        if (null !== $user) {
             $io->error('User already exist');
 
             return Command::FAILURE;
         }
 
-        $passwordQuestion = new Question("Password: ");
+        $passwordQuestion = new Question('Password: ');
         $passwordQuestion->setHidden(true);
         $passwordQuestion->setHiddenFallback(false);
         $password = $helper->ask($input, $output, $passwordQuestion);

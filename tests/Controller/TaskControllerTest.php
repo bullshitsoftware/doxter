@@ -7,6 +7,7 @@ use App\Entity\Task;
 use App\Repository\TaskRepository;
 use App\Repository\UserRepository;
 use App\Service\DateTime\DateTimeFactory;
+use function in_array;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\DomCrawler\Crawler;
@@ -436,7 +437,7 @@ class TaskControllerTest extends WebTestCase
     {
         $task = $this->taskRepository->findOneByTitle('Current task 1');
         $this->client->loginUser($this->userRepository->findOneByEmail('john.doe@example.com'));
-        $this->client->request('GET', '/view/' . $task->getId());
+        $this->client->request('GET', '/view/'.$task->getId());
         self::assertResponseIsSuccessful();
         self::assertSelectorTextContains('h1', $task->getTitle());
     }
@@ -445,7 +446,7 @@ class TaskControllerTest extends WebTestCase
     {
         $task = $this->taskRepository->findOneByTitle('Current task 1');
         $this->client->loginUser($this->userRepository->findOneByEmail('john.doe@example.com'));
-        $this->client->request('GET', '/edit/' . $task->getId());
+        $this->client->request('GET', '/edit/'.$task->getId());
         self::assertResponseIsSuccessful();
 
         $this->client->submitForm('Save', [
@@ -481,7 +482,7 @@ class TaskControllerTest extends WebTestCase
     {
         $task = $this->taskRepository->findOneByTitle('Current task 1');
         $this->client->loginUser($this->userRepository->findOneByEmail('john.doe@example.com'));
-        $this->client->request('GET', '/edit/' . $task->getId());
+        $this->client->request('GET', '/edit/'.$task->getId());
         $this->client->submitForm('Save', [
             'task' => [
                 'title' => 'test',
@@ -495,17 +496,17 @@ class TaskControllerTest extends WebTestCase
     {
         $this->client->loginUser($this->userRepository->findOneByEmail('john.doe@example.com'));
         $task = $this->taskRepository->findOneByTitle('Current task 1');
-        $this->client->request('GET', '/edit/' . $task->getId());
+        $this->client->request('GET', '/edit/'.$task->getId());
         self::assertResponseIsSuccessful();
         $this->client->submitForm('Apply');
-        self::assertResponseRedirects('/view/' . $task->getId());
+        self::assertResponseRedirects('/view/'.$task->getId());
     }
 
     public function testEditRedirectWaiting(): void
     {
         $task = $this->taskRepository->findOneByTitle('Current task 1');
         $this->client->loginUser($this->userRepository->findOneByEmail('john.doe@example.com'));
-        $this->client->request('GET', '/edit/' . $task->getId());
+        $this->client->request('GET', '/edit/'.$task->getId());
         self::assertResponseIsSuccessful();
 
         $this->client->submitForm('Save', ['task' => ['wait' => '2007-01-31 00:00:00']]);
@@ -516,7 +517,7 @@ class TaskControllerTest extends WebTestCase
     {
         $task = $this->taskRepository->findOneByTitle('Current task 1');
         $this->client->loginUser($this->userRepository->findOneByEmail('john.doe@example.com'));
-        $this->client->request('GET', '/edit/' . $task->getId());
+        $this->client->request('GET', '/edit/'.$task->getId());
         self::assertResponseIsSuccessful();
 
         $this->client->submitForm('Save', [
@@ -529,7 +530,7 @@ class TaskControllerTest extends WebTestCase
     {
         $task = $this->taskRepository->findOneByTitle('Current task 1');
         $this->client->loginUser($this->userRepository->findOneByEmail('john.doe@example.com'));
-        $this->client->request('GET', '/view/' . $task->getId());
+        $this->client->request('GET', '/view/'.$task->getId());
         self::assertResponseIsSuccessful();
         $this->client->submitForm('Delete');
         self::assertResponseRedirects('/');
@@ -542,8 +543,8 @@ class TaskControllerTest extends WebTestCase
     {
         $task = $this->taskRepository->findOneByTitle('Current task 1');
         $this->client->loginUser($this->userRepository->findOneByEmail('john.doe@example.com'));
-        $this->client->request('POST', '/delete/' . $task->getId(), ['_token' => 'wrong one']);
-        self::assertResponseRedirects('/view/' . $task->getId());
+        $this->client->request('POST', '/delete/'.$task->getId(), ['_token' => 'wrong one']);
+        self::assertResponseRedirects('/view/'.$task->getId());
         $this->client->followRedirect();
         self::assertSelectorTextSame('.flash', 'Failed to delete "Current task 1" task. Please try again');
     }

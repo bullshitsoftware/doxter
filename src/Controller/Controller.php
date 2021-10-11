@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Service\DateTime\DateTimeFactory;
+use DateTimeImmutable;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 abstract class Controller extends AbstractController
@@ -20,7 +21,7 @@ abstract class Controller extends AbstractController
         );
     }
 
-    protected function now(): \DateTimeImmutable
+    protected function now(): DateTimeImmutable
     {
         return $this->get('datetime.factory')->now();
     }

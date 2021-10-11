@@ -3,11 +3,12 @@
 namespace App\Test;
 
 use App\Repository\TaskRepository;
+use function array_key_exists;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\Routing\RouterInterface;
 
-class AccessTest extends WebTestCase 
+class AccessTest extends WebTestCase
 {
     private KernelBrowser $client;
     private RouterInterface $router;
@@ -28,10 +29,10 @@ class AccessTest extends WebTestCase
     public function testAccess(string $route, ?callable $params = null): void
     {
         $routeParams = [];
-        if ($params !== null) {
+        if (null !== $params) {
             $routeParams = $params($this);
         }
-        
+
         $method = 'GET';
         $redirect = '/login';
         if (array_key_exists('route_overrides', $routeParams)) {
@@ -67,12 +68,12 @@ class AccessTest extends WebTestCase
             ['task_waiting'],
             ['task_completed'],
             ['task_add'],
-            ['task_view', fn(self $s) => ['id' => $s->taskRepository->findOneByTitle('Current task 1')->getId()]],
-            ['task_edit', fn(self $s) => ['id' => $s->taskRepository->findOneByTitle('Current task 1')->getId()]],
+            ['task_view', fn (self $s) => ['id' => $s->taskRepository->findOneByTitle('Current task 1')->getId()]],
+            ['task_edit', fn (self $s) => ['id' => $s->taskRepository->findOneByTitle('Current task 1')->getId()]],
             [
-                'task_delete', 
-                fn(self $s) => [
-                    'route_overrides' => ['method' => 'POST'], 
+                'task_delete',
+                fn (self $s) => [
+                    'route_overrides' => ['method' => 'POST'],
                     'id' => $s->taskRepository->findOneByTitle('Current task 1')->getId(),
                 ],
             ],

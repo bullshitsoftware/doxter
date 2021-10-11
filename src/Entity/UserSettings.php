@@ -15,10 +15,10 @@ class UserSettings
     ]
     private string $timezone = 'UTC';
 
-    #[Column(type: "string", length: 16, options: ['default' => 'Y-m-d'])]
+    #[Column(type: 'string', length: 16, options: ['default' => 'Y-m-d'])]
     private string $dateFormat = 'Y-m-d';
 
-    #[Column(type: "string", length: 16, options: ['default' => 'Y-m-d H:i:s'])]
+    #[Column(type: 'string', length: 16, options: ['default' => 'Y-m-d H:i:s'])]
     private string $dateTimeFormat = 'Y-m-d H:i:s';
 
     public function getTimezone(): string

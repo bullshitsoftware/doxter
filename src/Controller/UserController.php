@@ -3,8 +3,8 @@
 namespace App\Controller;
 
 use App\Form\ImportType;
-use App\Form\UserSettingsType;
 use App\Form\PasswordChangeType;
+use App\Form\UserSettingsType;
 use App\Service\ImportService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -16,9 +16,9 @@ class UserController extends Controller
 {
     #[Route('/settings', name: 'settings')]
     public function settings(
-        EntityManagerInterface $entityManager, 
-        UserPasswordHasherInterface $passwordHasher, 
-        ImportService $import, 
+        EntityManagerInterface $entityManager,
+        UserPasswordHasherInterface $passwordHasher,
+        ImportService $import,
         Request $request
     ): Response {
         $this->denyAccessUnlessGranted('ROLE_USER');

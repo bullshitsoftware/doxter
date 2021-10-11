@@ -22,7 +22,7 @@ class PasswordChangeType extends AbstractType
             ->add('passwordConfirm', PasswordType::class, [
                 'label' => 'Confirm new password',
                 'constraints' => [
-                    new Callback(function($object, ExecutionContextInterface $context) {
+                    new Callback(function ($object, ExecutionContextInterface $context): void {
                         if ($object === $context->getRoot()->get('password')->getData()) {
                             return;
                         }

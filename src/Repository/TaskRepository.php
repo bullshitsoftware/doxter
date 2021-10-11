@@ -7,6 +7,9 @@ use App\Doctrine\Pagination;
 use App\Entity\Task;
 use App\Entity\User;
 use App\Service\TaskSearchFilter;
+use function array_slice;
+use function count;
+use DateTimeInterface;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\Tools\Pagination\Paginator;
@@ -35,7 +38,7 @@ class TaskRepository extends ServiceEntityRepository
     /**
      * @return Task[]
      */
-    public function findCurrentByUser(User $user, ?string $search = null, \DateTimeInterface $now): array
+    public function findCurrentByUser(User $user, ?string $search = null, DateTimeInterface $now): array
     {
         $queryBuilder = $this->createQueryBuilder('task')
             ->select('task', 'tags')
@@ -48,7 +51,7 @@ class TaskRepository extends ServiceEntityRepository
             ->addOrderBy('task.started', 'ASC')
             ->addOrderBy('task.created', 'ASC');
 
-        if ($search !== null) {
+        if (null !== $search) {
             $this->searchFilter->apply($queryBuilder, 'task', $search);
         }
 
@@ -61,7 +64,7 @@ class TaskRepository extends ServiceEntityRepository
     /**
      * @return Task[]
      */
-    public function findWaitingByUser(User $user, ?string $search = null, \DateTimeInterface $now): array
+    public function findWaitingByUser(User $user, ?string $search = null, DateTimeInterface $now): array
     {
         $queryBuilder = $this->createQueryBuilder('task')
             ->select('task', 'tags')
@@ -74,7 +77,7 @@ class TaskRepository extends ServiceEntityRepository
             ->addOrderBy('task.wait', 'ASC')
             ->addOrderBy('task.created', 'ASC');
 
-        if ($search !== null) {
+        if (null !== $search) {
             $this->searchFilter->apply($queryBuilder, 'task', $search);
         }
 
@@ -97,7 +100,7 @@ class TaskRepository extends ServiceEntityRepository
             ->setFirstResult(($page - 1) * self::TASK_PER_PAGE)
             ->setMaxResults(self::TASK_PER_PAGE + 1);
 
-        if ($search !== null) {
+        if (null !== $search) {
             $this->searchFilter->apply($queryBuilder, 'task', $search);
         }
         $paginator = new Paginator($queryBuilder->getQuery());

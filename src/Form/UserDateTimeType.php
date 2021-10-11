@@ -4,6 +4,9 @@ namespace App\Form;
 
 use App\Entity\User;
 use App\Entity\UserSettings;
+use DateTimeImmutable;
+use DateTimeZone;
+use LogicException;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\CallbackTransformer;
 use Symfony\Component\Form\Exception\TransformationFailedException;
@@ -29,29 +32,29 @@ class UserDateTimeType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder->addModelTransformer(new CallbackTransformer(
-            function (?\DateTimeImmutable $date): string {
-                if ($date === null) {
+            function (?DateTimeImmutable $date): string {
+                if (null === $date) {
                     return '';
                 }
                 $settings = $this->getUserSettings();
-                $date = $date->setTimezone(new \DateTimeZone($settings->getTimezone()));
+                $date = $date->setTimezone(new DateTimeZone($settings->getTimezone()));
 
                 return $date->format($settings->getDateTimeFormat());
             },
-            function (string $date): ?\DateTimeImmutable {
-                if (trim($date) === '') {
+            function (string $date): ?DateTimeImmutable {
+                if ('' === trim($date)) {
                     return null;
                 }
                 $settings = $this->getUserSettings();
-                $date = \DateTimeImmutable::createFromFormat(
+                $date = DateTimeImmutable::createFromFormat(
                     $settings->getDateTimeFormat(),
                     $date,
-                    new \DateTimeZone($settings->getTimezone()),
+                    new DateTimeZone($settings->getTimezone()),
                 );
-                if ($date === false) {
+                if (false === $date) {
                     throw new TransformationFailedException('Invalid datetime string');
                 }
-                $date = $date->setTimezone(new \DateTimeZone(date_default_timezone_get()));
+                $date = $date->setTimezone(new DateTimeZone(date_default_timezone_get()));
 
                 return $date;
             }
@@ -72,8 +75,8 @@ class UserDateTimeType extends AbstractType
     {
         /** @var User|null $user */
         $user = $this->security->getUser();
-        if ($user === null) {
-            throw new \LogicException('The type should only be used for authorized users');
+        if (null === $user) {
+            throw new LogicException('The type should only be used for authorized users');
         }
 
         return $user->getSettings();

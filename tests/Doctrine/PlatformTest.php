@@ -9,11 +9,11 @@ class PlatformTest extends TestCase
 {
     private Platform $platform;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
 
-        $this->platform = new Platform;
+        $this->platform = new Platform();
     }
 
     public function testSupportsForeignKeyConstraints(): void

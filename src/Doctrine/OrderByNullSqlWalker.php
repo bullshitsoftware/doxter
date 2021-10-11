@@ -14,7 +14,7 @@ class OrderByNullSqlWalker extends SqlWalker
     {
         $sql = parent::walkOrderByClause($orderByClause);
         $fields = $this->getQuery()->getHint(self::HINT);
-        if ($fields === false) {
+        if (false === $fields) {
             return $sql;
         }
         foreach ($fields as $field => $nullOrder) {

@@ -4,6 +4,10 @@ namespace App\Twig;
 
 use App\Entity\User;
 use App\Entity\UserSettings;
+use DateTimeImmutable;
+use DateTimeInterface;
+use DateTimeZone;
+use LogicException;
 use Symfony\Component\Security\Core\Security;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
@@ -16,7 +20,7 @@ class DateExtension extends AbstractExtension
     {
         $this->security = $security;
     }
-    
+
     public function getFilters(): array
     {
         return [
@@ -26,46 +30,46 @@ class DateExtension extends AbstractExtension
         ];
     }
 
-    public function dateDiff(\DateTimeInterface $dateA, \DateTimeInterface $dateB): string
+    public function dateDiff(DateTimeInterface $dateA, DateTimeInterface $dateB): string
     {
         $diff = $dateA->diff($dateB);
         if ($diff->y > 0) {
-            return $diff->y . 'y';
+            return $diff->y.'y';
         }
 
         if ($diff->m > 0) {
-            return $diff->m . 'mon';
+            return $diff->m.'mon';
         }
 
         if ($diff->d > 0) {
-            return $diff->d . 'd';
+            return $diff->d.'d';
         }
 
         if ($diff->h > 0) {
-            return $diff->h . 'h';
+            return $diff->h.'h';
         }
 
         if ($diff->i > 0) {
-            return $diff->i . 'm';
+            return $diff->i.'m';
         }
 
-        return $diff->s . 's';
+        return $diff->s.'s';
     }
 
-    public function userDate(\DateTimeInterface $date): string
+    public function userDate(DateTimeInterface $date): string
     {
         $userSettings = $this->getUserSettings();
-        $date = new \DateTimeImmutable($date->format('Y-m-d H:i:s'), $date->getTimezone());
-        $date = $date->setTimezone(new \DateTimeZone($userSettings->getTimezone()));
+        $date = new DateTimeImmutable($date->format('Y-m-d H:i:s'), $date->getTimezone());
+        $date = $date->setTimezone(new DateTimeZone($userSettings->getTimezone()));
 
         return $date->format($userSettings->getDateFormat());
     }
 
-    public function userDateTime(\DateTimeInterface $date): string
+    public function userDateTime(DateTimeInterface $date): string
     {
         $userSettings = $this->getUserSettings();
-        $date = new \DateTimeImmutable($date->format('Y-m-d H:i:s'), $date->getTimezone());
-        $date = $date->setTimezone(new \DateTimeZone($userSettings->getTimezone()));
+        $date = new DateTimeImmutable($date->format('Y-m-d H:i:s'), $date->getTimezone());
+        $date = $date->setTimezone(new DateTimeZone($userSettings->getTimezone()));
 
         return $date->format($userSettings->getDateTimeFormat());
     }
@@ -74,10 +78,10 @@ class DateExtension extends AbstractExtension
     {
         /** @var User|null */
         $user = $this->security->getUser();
-        if ($user === null) {
-            throw new \LogicException('The filter should only be used for authorized users');
+        if (null === $user) {
+            throw new LogicException('The filter should only be used for authorized users');
         }
-        
+
         return $user->getSettings();
     }
 }

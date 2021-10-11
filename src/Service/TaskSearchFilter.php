@@ -2,6 +2,7 @@
 
 namespace App\Service;
 
+use function count;
 use Doctrine\ORM\QueryBuilder;
 
 class TaskSearchFilter
@@ -42,7 +43,7 @@ class TaskSearchFilter
     {
         $queryBuilder->andWhere(
             $queryBuilder->expr()->exists("
-                SELECT gi FROM App\Entity\Task ti JOIN ti.tags gi 
+                SELECT gi FROM App\Entity\Task ti JOIN ti.tags gi
                 WHERE ti = $taskAlias AND gi.name IN (:includeTags)
                 GROUP BY ti
                 HAVING COUNT(ti) = :includeTagsCount
@@ -57,7 +58,7 @@ class TaskSearchFilter
         $queryBuilder->andWhere(
             $queryBuilder->expr()->not(
                 $queryBuilder->expr()->exists("
-                    SELECT te FROM App\Entity\Task te JOIN te.tags ge 
+                    SELECT te FROM App\Entity\Task te JOIN te.tags ge
                     WHERE te = $taskAlias AND ge.name IN (:excludeTags)
                 ")
             )
@@ -72,7 +73,7 @@ class TaskSearchFilter
                     "mb_strtolower($taskAlias.title) LIKE :term_$i",
                     "mb_strtolower($taskAlias.description) LIKE :term_$i",
                 ))
-                ->setParameter("term_$i", '%' . mb_strtolower($term) . '%');
+                ->setParameter("term_$i", '%'.mb_strtolower($term).'%');
         }
     }
 }

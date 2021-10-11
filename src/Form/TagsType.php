@@ -6,6 +6,7 @@ use App\Entity\Tag;
 use App\Repository\TagRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use LogicException;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\CallbackTransformer;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -41,13 +42,11 @@ class TagsType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder->addModelTransformer(new CallbackTransformer(
-            function (Collection $tags): string {
-                return implode(' ', $tags->map(fn (Tag $tag) => $tag->getName())->toArray());
-            },
+            fn (Collection $tags): string => implode(' ', $tags->map(fn (Tag $tag) => $tag->getName())->toArray()),
             function (string $tags): Collection {
                 $user = $this->security->getUser();
-                if ($user === null) {
-                    throw new \LogicException('The type should only be used for authorized users');
+                if (null === $user) {
+                    throw new LogicException('The type should only be used for authorized users');
                 }
 
                 $tags = array_map(

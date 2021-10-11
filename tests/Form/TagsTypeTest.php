@@ -60,11 +60,11 @@ class TagsTypeTest extends TypeTestCase
         $user = new User();
         $tag = new Tag();
         $tag->setName('tag');
-        $this->security->method('getUser')->will(self::returnValue($user));
+        $this->security->method('getUser')->willReturn($user);
         $this->repository->method('findBy')
             ->with(self::equalTo(['user' => $user, 'name' => ['tag', 'tag1']]))
-            ->will(self::returnValue([$tag]));
-        
+            ->willReturn([$tag]);
+
         $form->submit('tag tag1');
         self::assertTrue($form->isSynchronized());
         /** @var Tag[] $data */

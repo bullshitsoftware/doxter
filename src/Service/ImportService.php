@@ -3,19 +3,23 @@
 namespace App\Service;
 
 use App\Entity\User;
+use function array_key_exists;
+use DateTimeImmutable;
+use DateTimeZone;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Types\Types;
 use Symfony\Component\Uid\Uuid;
+use Throwable;
 
 class ImportService
 {
     private Connection $connection;
-    private \DateTimeZone $sourceTimezone;
+    private DateTimeZone $sourceTimezone;
 
     public function __construct(Connection $connection)
     {
         $this->connection = $connection;
-        $this->sourceTimezone = new \DateTimeZone('UTC');
+        $this->sourceTimezone = new DateTimeZone('UTC');
     }
 
     public function import(User $user, string $json): void
@@ -25,7 +29,7 @@ class ImportService
         try {
             $taskTagsMap = [];
             foreach ($items as $item) {
-                if ($item['status'] === 'deleted') {
+                if ('deleted' === $item['status']) {
                     continue;
                 }
                 $item['uuid'] = Uuid::fromString($item['uuid'])->toBinary();
@@ -41,7 +45,7 @@ class ImportService
                 $knownTags = $this->importTags($user, $knownTags, $taskId, $taskTags);
             }
             $this->connection->commit();
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             $this->connection->rollBack();
 
             throw $e;
@@ -54,14 +58,14 @@ class ImportService
         if (array_key_exists('annotations', $item)) {
             $description = array_reduce(
                 $item['annotations'],
-                fn (string $carry, array $item) => $carry . $item['description'] . "\n\n",
+                fn (string $carry, array $item) => $carry.$item['description']."\n\n",
                 $description,
             );
         }
 
         // it is possible to move a task from one user to another, but nobody cares
         $this->connection->executeStatement(
-            'INSERT OR REPLACE INTO task (id, user_id, title, description, created, updated, wait, started, ended) 
+            'INSERT OR REPLACE INTO task (id, user_id, title, description, created, updated, wait, started, ended)
              VALUES (:id, :user_id, :title, :description, :created, :updated, :wait, :started, :ended)
             ',
             [
@@ -130,12 +134,12 @@ class ImportService
         return $knownTags;
     }
 
-    private function prepareDate(?string $date): ?\DateTimeImmutable
+    private function prepareDate(?string $date): ?DateTimeImmutable
     {
-        if ($date === null) {
+        if (null === $date) {
             return null;
         }
 
-        return \DateTimeImmutable::createFromFormat('Ymd\THisZ', $date, $this->sourceTimezone);
+        return DateTimeImmutable::createFromFormat('Ymd\THisZ', $date, $this->sourceTimezone);
     }
 }
