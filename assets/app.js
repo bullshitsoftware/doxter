@@ -15,9 +15,14 @@ document.querySelector('nav .toggle').addEventListener('click', event => {
   event.currentTarget.closest('nav').classList.toggle('show');
 });
 
-document.querySelector('.flash').addEventListener('click', event => {
-  const container = event.currentTarget.closest('.container');
-  event.currentTarget.remove();
+document.addEventListener('click', event => {
+  const flash = event.target.closest('.flash');
+  if (!flash) {
+    return;
+  }
+
+  const container = flash.closest('.container');
+  flash.remove();
   if (container.children.length === 0) {
     container.remove();
   }
