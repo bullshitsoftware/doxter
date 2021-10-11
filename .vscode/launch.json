@@ -5,10 +5,30 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Listen for Xdebug",
+            "name": "PHP: Listen",
             "type": "php",
             "request": "launch",
             "port": 9003
+        },
+        {
+            "name": "NODE: Build assets",
+            "type": "node",
+            "request": "launch",
+            "cwd": "${workspaceRoot}",
+            "runtimeExecutable": "npm",
+            "runtimeArgs": [
+                "run-script", "build"
+            ],
+        },
+        {
+            "name": "NODE: Run JS dev-server",
+            "type": "node",
+            "request": "launch",
+            "cwd": "${workspaceRoot}",
+            "runtimeExecutable": "npm",
+            "runtimeArgs": [
+                "run-script", "dev-server"
+            ],
         }
     ]
 }
