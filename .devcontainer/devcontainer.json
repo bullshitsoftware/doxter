@@ -6,6 +6,10 @@
         "whatwedo.twig",
         "editorconfig.editorconfig",
         "alexcvzz.vscode-sqlite",
-        "felixfbecker.php-debug"
-    ]
+        "felixfbecker.php-debug",
+        "junstyle.php-cs-fixer"
+    ],
+    "settings": {
+        "php-cs-fixer.onsave": true,
+    }
 }

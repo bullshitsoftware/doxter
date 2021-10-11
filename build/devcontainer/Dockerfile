@@ -9,6 +9,9 @@ RUN apk add --no-cache php8-xdebug make git nodejs npm sqlite curl
 COPY build/devcontainer/50_xdebug.ini /etc/php8/conf.d/50_xdebug.ini
 RUN ln -s /usr/bin/php8 /usr/bin/php
 
+RUN curl -L https://cs.symfony.com/download/php-cs-fixer-v3.phar -o /usr/bin/php-cs-fixer
+RUN chmod +x /usr/bin/php-cs-fixer
+
 ARG USERNAME=user
 ARG UID=1000
 ARG GID=1000
