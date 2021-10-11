@@ -48,6 +48,10 @@ body {
   grid-template-columns: auto min-content;
 }
 
+.grid__label {
+  color: $yellow;
+}
+
 .grid > div {
   padding: 0.25rem;
 }

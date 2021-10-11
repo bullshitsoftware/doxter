@@ -19,26 +19,26 @@
 
   <div class="grid grid_task">
 
-    <div><strong>Id</strong></div>
+    <div class="grid__label"><strong>Id</strong></div>
     <div>{{ task.id }}</div>
 
-    <div><strong>Tag</strong></div>
+    <div class="grid__label"><strong>Tag</strong></div>
     <div>
     {% for tag in task.tags %}
       {{ tag.name }}
     {% endfor %}
     </div>
 
-    <div><strong>Description</strong></div>
+    <div class="grid__label"><strong>Description</strong></div>
     <div>{{ task.description|markdown_to_html }}</div>
 
-    <div><strong>Created</strong></div>
+    <div class="grid__label"><strong>Created</strong></div>
     <div>{{ task.created|user_datetime }}</div>
 
-    <div><strong>Updated</strong></div>
+    <div class="grid__label"><strong>Updated</strong></div>
     <div>{{ task.updated|user_datetime }}</div>
 
-    <div><strong>Wait</strong></div>
+    <div class="grid__label"><strong>Wait</strong></div>
     <div>
     {% if task.wait %}
       {{ task.wait|user_datetime }}
@@ -47,7 +47,7 @@
     {% endif %}
     </div>
 
-    <div><strong>Started</strong></div>
+    <div class="grid__label"><strong>Started</strong></div>
     <div>
     {% if task.started %}
       {{ task.started|user_datetime }}
@@ -56,7 +56,7 @@
     {% endif %}
     </div>
 
-    <div><strong>Ended</strong></div>
+    <div class="grid__label"><strong>Ended</strong></div>
     <div>
     {% if task.ended %}
       {{ task.ended|user_datetime }}
