@@ -543,7 +543,7 @@ class TaskControllerTest extends WebTestCase
         $task = $this->taskRepository->findOneByTitle('Current task 1');
         $this->client->loginUser($this->userRepository->findOneByEmail('john.doe@example.com'));
         $this->client->request('POST', '/delete/' . $task->getId(), ['_token' => 'wrong one']);
-        self::assertResponseRedirects('/');
+        self::assertResponseRedirects('/view/' . $task->getId());
         $this->client->followRedirect();
         self::assertSelectorTextSame('.flash', 'Failed to delete "Current task 1" task. Please try again');
     }

@@ -139,7 +139,7 @@ class TaskController extends Controller
                 sprintf('Failed to delete "%s" task. Please try again', $task->getTitle())
             );
 
-            return $this->redirectToList($dateTimeFactory->now(), $task);
+            return $this->redirectToRoute('task_view', ['id' => $task->getId()]);
         }
 
         $entityManager->remove($task);
