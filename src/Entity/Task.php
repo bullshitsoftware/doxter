@@ -77,7 +77,7 @@ class Task
     }
 
     /**
-     * @return Tag[]
+     * @return Tag[]|Collection
      */
     public function getTags(): Collection
     {
@@ -85,7 +85,7 @@ class Task
     }
 
     /**
-     * @param Tag[]
+     * @param Tag[]|Collection
      */
     public function setTags(Collection $tags): self
     {

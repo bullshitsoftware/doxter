@@ -78,6 +78,10 @@ class UserControllerTest extends WebTestCase
             'id' => 0,
             'uuid' => '19ce47f7-a453-42f3-a60c-845818f4a9b1',
             'description' => 'Imported',
+            'annotations' => [
+                ['description' => 'line1'],
+                ['description' => 'line2'],
+            ],
             'entry' => '20210909T220901Z',
             'start' => '20210909T220902Z',
             'modified' => '20210914T193310Z',
@@ -85,10 +89,14 @@ class UserControllerTest extends WebTestCase
             'status' => 'completed',
             'tags' => ['tag1', 'tag2'],
         ];
-        $this->client->submitForm('Import', ['import' => ['content' => json_encode([$taskData])]]);
+        $this->client->submitForm('Import', ['import' => ['content' => json_encode([
+            $taskData,
+            ['status' => 'deleted']
+        ])]]);
         self::assertResponseRedirects('/settings');
         $task = self::getContainer()->get('doctrine')->getManager()->getRepository(Task::class)->findOneByTitle('Imported');
         self::assertNotNull($task);
+        self::assertSame("line1\n\nline2\n\n", $task->getDescription());
         self::assertSame('2021-09-09 22:09:01', $task->getCreated()->format('Y-m-d H:i:s'));
         self::assertSame('2021-09-09 22:09:02', $task->getStarted()->format('Y-m-d H:i:s'));
         self::assertSame('2021-09-14 19:33:10', $task->getUpdated()->format('Y-m-d H:i:s'));

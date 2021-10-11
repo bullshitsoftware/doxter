@@ -126,11 +126,20 @@ class TaskController extends Controller
     }
 
     #[Route('/delete/{id}', name: 'task_delete', methods: ['POST'])]
-    public function delete(EntityManagerInterface $entityManager, DateTimeFactory $dateTimeFactory, Request $request, Task $task): Response
-    {
+    public function delete(
+        EntityManagerInterface $entityManager, 
+        DateTimeFactory $dateTimeFactory,
+        Request $request, 
+        Task $task
+    ): Response {
         $this->denyAccessUnlessGranted(TaskVoter::DELETE, $task);
         if (!$this->isCsrfTokenValid('task', $request->request->get('_token'))) {
-            throw $this->createAccessDeniedException();
+            $this->addFlash(
+                self::FLASH_ERROR, 
+                sprintf('Failed to delete "%s" task. Please try again', $task->getTitle())
+            );
+
+            return $this->redirectToList($dateTimeFactory->now(), $task);
         }
 
         $entityManager->remove($task);
