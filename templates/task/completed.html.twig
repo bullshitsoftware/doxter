@@ -15,28 +15,28 @@
     <div class="md-only"><strong>Title</strong></div>
     {% for task in tasks %}
       <div class="sm-only"><strong>ID</strong></div>
-      <div class="grid__col-id">
+      <div class="grid__cell-id">
         <a href="{{ path('task_view', {id: task.id}) }}" class="mono">{{ task.id|slice(0,8) }}</a>
       </div>
 
       <div class="sm-only"><strong>Created</strong></div>
-      <div class="grid__col-created">{{ task.created|user_date }}</div>
+      <div class="grid__cell-created">{{ task.created|user_date }}</div>
 
       <div class="sm-only"><strong>Completed</strong></div>
-      <div class="grid__col-completed">{{ task.ended|user_date }}</div>
+      <div class="grid__cell-completed">{{ task.ended|user_date }}</div>
 
       <div class="sm-only"><strong>Age</strong></div>
-      <div class="grid__col-age">{{ task.created|date_diff(now) }}</div>
+      <div class="grid__cell-age">{{ task.created|date_diff(now) }}</div>
 
       <div class="sm-only"><strong>Tag</strong></div>
-      <div class="grid__col-tag">
+      <div class="grid__cell-tag">
       {% for tag in task.tags %}
         {{ tag.name }}
       {% endfor %}
       </div>
 
       <div class="sm-only"><strong>Title</strong></div>
-      <div class="grid__col-title">{{ task.title }}</div>
+      <div class="grid__cell-title">{{ task.title }}</div>
     {% endfor %}
   </div>
 
