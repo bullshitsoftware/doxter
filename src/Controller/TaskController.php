@@ -113,7 +113,10 @@ class TaskController extends Controller
 
             $this->addFlash(self::FLASH_SUCCESS, sprintf('Task "%s" updated', $task->getTitle()));
 
-            return $this->redirectToList($dateTimeFactory->now(), $task);
+            return $request->request->has('apply') 
+                ? $this->redirectToRoute('task_view', ['id' => $task->getId()])
+                : $this->redirectToList($dateTimeFactory->now(), $task);
+
         }
 
         return $this->render('task/edit.html.twig', [

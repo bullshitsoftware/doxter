@@ -14,7 +14,8 @@
 
   {{ form_start(form) }}
   {{ form_widget(form) }}
-  <button type="submit">Save</button>
+  <button type="submit" name="apply" title="Redirects to task view page">Apply</button>
+  <button type="submit" name="save" title="Redirects to task list">Save</button>
   {{ form_end(form) }}
 </div>
 {% endblock %}

@@ -415,6 +415,16 @@ class TaskControllerTest extends WebTestCase
         self::assertSelectorTextSame('.flash', 'Task "test" updated');
     }
 
+    public function testEditApply(): void
+    {
+        $this->client->loginUser($this->userRepository->findOneByEmail('john.doe@example.com'));
+        $task = $this->taskRepository->findOneByTitle('Current task 1');
+        $this->client->request('GET', '/edit/' . $task->getId());
+        self::assertResponseIsSuccessful();
+        $this->client->submitForm('Apply');
+        self::assertResponseRedirects('/view/' . $task->getId());
+    }
+
     public function testDelete(): void
     {
         $task = $this->taskRepository->findOneByTitle('Current task 1');
