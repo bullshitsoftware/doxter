@@ -7,13 +7,12 @@ use App\Form\UserSettingsType;
 use App\Form\PasswordChangeType;
 use App\Service\ImportService;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
-class UserController extends AbstractController
+class UserController extends Controller
 {
     #[Route('/settings', name: 'settings')]
     public function settings(
@@ -31,6 +30,8 @@ class UserController extends AbstractController
             $entityManager->persist($user);
             $entityManager->flush();
 
+            $this->addFlash(self::FLASH_SUCCESS, 'User settings updated');
+
             return $this->redirectToRoute('settings');
         }
 
@@ -41,6 +42,8 @@ class UserController extends AbstractController
             $entityManager->persist($user);
             $entityManager->flush();
 
+            $this->addFlash(self::FLASH_SUCCESS, 'User password updated');
+
             return $this->redirectToRoute('settings');
         }
 
@@ -48,6 +51,8 @@ class UserController extends AbstractController
         $importForm->handleRequest($request);
         if ($importForm->isSubmitted() && $importForm->isValid()) {
             $import->import($this->getUser(), $importForm->get('content')->getData());
+
+            $this->addFlash(self::FLASH_SUCCESS, 'Import succeed');
 
             return $this->redirectToRoute('settings');
         }

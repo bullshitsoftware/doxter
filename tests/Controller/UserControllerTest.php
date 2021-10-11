@@ -38,6 +38,8 @@ class UserControllerTest extends WebTestCase
         self::assertResponseRedirects('/settings');
         $user = $this->userRepository->findOneByEmail('john.doe@example.com');
         self::assertSame('Europe/Moscow', $user->getSettings()->getTimezone());
+        $this->client->followRedirect();
+        self::assertSelectorTextSame('.flash', 'User settings updated');
     }
 
     public function testPasswordChange(): void
@@ -70,6 +72,8 @@ class UserControllerTest extends WebTestCase
         $user = $this->userRepository->findOneByEmail('john.doe@example.com');
         $hasher = self::getContainer()->get(UserPasswordHasherInterface::class);
         self::assertTrue($hasher->isPasswordValid($user, 'qwerty'));
+        $this->client->followRedirect();
+        self::assertSelectorTextSame('.flash', 'User password updated');
     }
 
     public function testImport(): void
@@ -102,6 +106,8 @@ class UserControllerTest extends WebTestCase
         self::assertCount(2, $tags);
         self::assertTrue(in_array('tag1', $tags));
         self::assertTrue(in_array('tag2', $tags));
+        $this->client->followRedirect();
+        self::assertSelectorTextSame('.flash', 'Import succeed');
 
         $this->client->request('GET', '/settings');
         $taskData['description'] = 'Imported2';
@@ -114,5 +120,7 @@ class UserControllerTest extends WebTestCase
         $tags = $task->getTags()->map(fn (Tag $tag) => $tag->getName())->toArray();
         self::assertCount(1, $tags);
         self::assertTrue(in_array('tag3', $tags));
+        $this->client->followRedirect();
+        self::assertSelectorTextSame('.flash', 'Import succeed');
     }
 }

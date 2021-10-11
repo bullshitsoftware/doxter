@@ -379,6 +379,8 @@ class TaskControllerTest extends WebTestCase
         ]);
         self::assertResponseRedirects('/');
         self::assertNotNull($this->taskRepository->findOneByTitle('test'));
+        $this->client->followRedirect();
+        self::assertSelectorTextSame('.flash', 'Task "test" created');
     }
 
     public function testView(): void
@@ -409,6 +411,8 @@ class TaskControllerTest extends WebTestCase
         self::assertResponseRedirects('/');
         self::assertNull($this->taskRepository->findOneByTitle('Current task 1'));
         self::assertNotNull($this->taskRepository->findOneByTitle('test'));
+        $this->client->followRedirect();
+        self::assertSelectorTextSame('.flash', 'Task "test" updated');
     }
 
     public function testDelete(): void
@@ -420,5 +424,7 @@ class TaskControllerTest extends WebTestCase
         $this->client->submitForm('Delete');
         self::assertResponseRedirects('/');
         self::assertNull($this->taskRepository->findOneByTitle('Current task 1'));
+        $this->client->followRedirect();
+        self::assertSelectorTextSame('.flash', 'Task "Current task 1" deleted');
     }
 }

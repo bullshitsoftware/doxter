@@ -21,6 +21,7 @@
   <body>
     {% block body %}
       {% include 'nav.html.twig' with {} only %}
+      {% include '_flash.html.twig' with {} only %}
       {% block content %}{% endblock %}
     {% endblock %}
   </body>

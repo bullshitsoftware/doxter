@@ -8,12 +8,11 @@ use App\Repository\TaskRepository;
 use App\Security\Voter\TaskVoter;
 use App\Service\DateTime\DateTimeFactory;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-class TaskController extends AbstractController
+class TaskController extends Controller
 {
     #[
         Route('/', name: 'home'),
@@ -78,6 +77,8 @@ class TaskController extends AbstractController
             $entityManager->persist($task);
             $entityManager->flush();
 
+            $this->addFlash(self::FLASH_SUCCESS, sprintf('Task "%s" created', $task->getTitle()));
+
             return $this->redirectToList($dateTimeFactory->now(), $task);
         }
 
@@ -110,6 +111,8 @@ class TaskController extends AbstractController
             $entityManager->persist($task);
             $entityManager->flush();
 
+            $this->addFlash(self::FLASH_SUCCESS, sprintf('Task "%s" updated', $task->getTitle()));
+
             return $this->redirectToList($dateTimeFactory->now(), $task);
         }
 
@@ -129,6 +132,8 @@ class TaskController extends AbstractController
 
         $entityManager->remove($task);
         $entityManager->flush();
+
+        $this->addFlash(self::FLASH_SUCCESS, sprintf('Task "%s" deleted', $task->getTitle()));
 
         return $this->redirectToList($dateTimeFactory->now(), $task);
     }
