@@ -25,9 +25,6 @@ class TaskControllerTest extends WebTestCase
 
     public function testCurrent(): void
     {
-        $this->client->request('GET', '/');
-        self::assertResponseRedirects('/login');
-
         $this->client->loginUser($this->userRepository->findOneByEmail('john.doe@example.com'));
         $crawler = $this->client->request('GET', '/');
         self::assertResponseIsSuccessful();
@@ -130,9 +127,6 @@ class TaskControllerTest extends WebTestCase
 
     public function testWaiting(): void
     {
-        $this->client->request('GET', '/waiting');
-        self::assertResponseRedirects('/login');
-
         $this->client->loginUser($this->userRepository->findOneByEmail('john.doe@example.com'));
         $crawler = $this->client->request('GET', '/waiting');
         self::assertResponseIsSuccessful();
@@ -239,9 +233,6 @@ class TaskControllerTest extends WebTestCase
 
     public function testCompleted(): void
     {
-        $this->client->request('GET', '/completed');
-        self::assertResponseRedirects('/login');
-
         $this->client->loginUser($this->userRepository->findOneByEmail('john.doe@example.com'));
         $crawler = $this->client->request('GET', '/completed');
         self::assertResponseIsSuccessful();
@@ -368,9 +359,6 @@ class TaskControllerTest extends WebTestCase
 
     public function testAdd(): void
     {
-        $this->client->request('GET', '/add');
-        self::assertResponseRedirects('/login');
-
         $this->client->loginUser($this->userRepository->findOneByEmail('john.doe@example.com'));
         $this->client->request('GET', '/add');
         self::assertResponseIsSuccessful();
@@ -386,9 +374,6 @@ class TaskControllerTest extends WebTestCase
     public function testView(): void
     {
         $task = $this->taskRepository->findOneByTitle('Current task 1');
-        $this->client->request('GET', '/view/' . $task->getId());
-        self::assertResponseRedirects('/login');
-
         $this->client->loginUser($this->userRepository->findOneByEmail('john.doe@example.com'));
         $this->client->request('GET', '/view/' . $task->getId());
         self::assertResponseIsSuccessful();
@@ -398,9 +383,6 @@ class TaskControllerTest extends WebTestCase
     public function testEdit(): void
     {
         $task = $this->taskRepository->findOneByTitle('Current task 1');
-        $this->client->request('GET', '/edit/' . $task->getId());
-        self::assertResponseRedirects('/login');
-
         $this->client->loginUser($this->userRepository->findOneByEmail('john.doe@example.com'));
         $this->client->request('GET', '/edit/' . $task->getId());
         self::assertResponseIsSuccessful();

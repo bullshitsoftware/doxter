@@ -27,9 +27,6 @@ class UserControllerTest extends WebTestCase
 
     public function testSettings(): void
     {
-        $this->client->request('GET', '/settings');
-        self::assertResponseRedirects('/login');
-
         $this->client->loginUser($this->userRepository->findOneByEmail('john.doe@example.com'));
         $this->client->request('GET', '/settings');
         $this->client->submitForm('Save', [
@@ -44,9 +41,6 @@ class UserControllerTest extends WebTestCase
 
     public function testPasswordChange(): void
     {
-        $this->client->request('GET', '/settings');
-        self::assertResponseRedirects('/login');
-
         $this->client->loginUser($this->userRepository->findOneByEmail('john.doe@example.com'));
         $this->client->request('GET', '/settings');
         $crawler = $this->client->submitForm('Update password', [
@@ -78,9 +72,6 @@ class UserControllerTest extends WebTestCase
 
     public function testImport(): void
     {
-        $this->client->request('GET', '/settings');
-        self::assertResponseRedirects('/login');
-
         $this->client->loginUser($this->userRepository->findOneByEmail('john.doe@example.com'));
         $this->client->request('GET', '/settings');
         $taskData = [
