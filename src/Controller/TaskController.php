@@ -6,7 +6,6 @@ use App\Entity\Task;
 use App\Form\TaskType;
 use App\Repository\TaskRepository;
 use App\Security\Voter\TaskVoter;
-use App\Service\DateTime\DateTimeFactory;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -18,11 +17,11 @@ class TaskController extends Controller
         Route('/', name: 'home'),
         Route('/current', name: 'task_current'),
     ]
-    public function current(TaskRepository $repository, DateTimeFactory $dateTimeFactory, Request $request): Response
+    public function current(TaskRepository $repository, Request $request): Response
     {
         $this->denyAccessUnlessGranted('ROLE_USER');
 
-        $now = $dateTimeFactory->now();
+        $now = $this->now();
 
         return $this->render('task/current.html.twig', [
             'now' => $now,
@@ -31,11 +30,11 @@ class TaskController extends Controller
     }
 
     #[Route('/waiting', name: 'task_waiting')]
-    public function waiting(TaskRepository $repository, DateTimeFactory $dateTimeFactory, Request $request): Response
+    public function waiting(TaskRepository $repository, Request $request): Response
     {
         $this->denyAccessUnlessGranted('ROLE_USER');
 
-        $now = $dateTimeFactory->now();
+        $now = $this->now();
 
         return $this->render('task/waiting.html.twig', [
             'now' => $now,
@@ -44,7 +43,7 @@ class TaskController extends Controller
     }
 
     #[Route('/completed', name: 'task_completed')]
-    public function completed(TaskRepository $repository, DateTimeFactory $dateTimeFactory, Request $request): Response
+    public function completed(TaskRepository $repository, Request $request): Response
     {
         $this->denyAccessUnlessGranted('ROLE_USER');
 
@@ -52,7 +51,7 @@ class TaskController extends Controller
         $pagination = $repository->findCompletedByUser($this->getUser(), $page, $request->get('q'));
 
         return $this->render('task/completed.html.twig', [
-            'now' => $dateTimeFactory->now(),
+            'now' => $this->now(),
             'tasks' => $pagination->getItems(),
             'page' => $page,
             'more' => $pagination->hasMore(),
@@ -60,26 +59,22 @@ class TaskController extends Controller
     }
 
     #[Route('/add', name: 'task_add')]
-    public function add(
-        EntityManagerInterface $entityManager, 
-        DateTimeFactory $dateTimeFactory, 
-        Request $request
-    ): Response {
+    public function add(EntityManagerInterface $entityManager, Request $request): Response {
         $this->denyAccessUnlessGranted('ROLE_USER');
 
         $task = new Task();
         $task->setUser($this->getUser());
-        $task->setCreated($dateTimeFactory->now());
+        $task->setCreated($this->now());
         $form = $this->createForm(TaskType::class, $task);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $task->setUpdated($dateTimeFactory->now());
+            $task->setUpdated($this->now());
             $entityManager->persist($task);
             $entityManager->flush();
 
             $this->addFlash(self::FLASH_SUCCESS, sprintf('Task "%s" created', $task->getTitle()));
 
-            return $this->redirectToList($dateTimeFactory->now(), $task);
+            return $this->redirectToList($task);
         }
 
         return $this->render('task/add.html.twig', [
@@ -96,18 +91,13 @@ class TaskController extends Controller
     }
 
     #[Route('/edit/{id}', name: 'task_edit')]
-    public function edit(
-        EntityManagerInterface $entityManager, 
-        DateTimeFactory $dateTimeFactory, 
-        Request $request, 
-        Task $task
-    ): Response {
+    public function edit(EntityManagerInterface $entityManager,  Request $request, Task $task): Response {
         $this->denyAccessUnlessGranted(TaskVoter::EDIT, $task);
 
         $form = $this->createForm(TaskType::class, $task);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $task->setUpdated($dateTimeFactory->now());
+            $task->setUpdated($this->now());
             $entityManager->persist($task);
             $entityManager->flush();
 
@@ -115,7 +105,7 @@ class TaskController extends Controller
 
             return $request->request->has('apply') 
                 ? $this->redirectToRoute('task_view', ['id' => $task->getId()])
-                : $this->redirectToList($dateTimeFactory->now(), $task);
+                : $this->redirectToList($task);
 
         }
 
@@ -126,12 +116,8 @@ class TaskController extends Controller
     }
 
     #[Route('/delete/{id}', name: 'task_delete', methods: ['POST'])]
-    public function delete(
-        EntityManagerInterface $entityManager, 
-        DateTimeFactory $dateTimeFactory,
-        Request $request, 
-        Task $task
-    ): Response {
+    public function delete(EntityManagerInterface $entityManager, Request $request, Task $task): Response 
+    {
         $this->denyAccessUnlessGranted(TaskVoter::DELETE, $task);
         if (!$this->isCsrfTokenValid('task', $request->request->get('_token'))) {
             $this->addFlash(
@@ -147,16 +133,16 @@ class TaskController extends Controller
 
         $this->addFlash(self::FLASH_SUCCESS, sprintf('Task "%s" deleted', $task->getTitle()));
 
-        return $this->redirectToList($dateTimeFactory->now(), $task);
+        return $this->redirectToList($task);
     }
 
-    private function redirectToList(\DateTimeInterface $now, Task $task): Response
+    private function redirectToList(Task $task): Response
     {
         if ($task->getEnded() !== null) {
             return $this->redirectToRoute('task_completed');
         }
 
-        if ($task->getWait() === null || $task->getWait() < $now) {
+        if ($task->getWait() === null || $task->getWait() < $this->now()) {
             return $this->redirectToRoute('home');
         }
 
