@@ -26,6 +26,13 @@ jobs:
                 docker run -v $GITHUB_WORKSPACE:/app -w /app --rm --entrypoint composer -e APP_ENV=test \
                 -u $(id -u $USER):$(id -g $USER) $IMAGE install
 
+            - name: lint container & twig
+              run: |
+                docker run -v $GITHUB_WORKSPACE:/app -w /app -e APP_ENV=test -u $(id -u $USER):$(id -g $USER) \
+                $IMAGE bin/console lint:container
+                docker run -v $GITHUB_WORKSPACE:/app -w /app -e APP_ENV=test -u $(id -u $USER):$(id -g $USER) \
+                $IMAGE bin/console lint:twig
+
             - name: run tests with coverage
               run: |
                 docker run -v $GITHUB_WORKSPACE:/app -w /app -e APP_ENV=test -u $(id -u $USER):$(id -g $USER) \
