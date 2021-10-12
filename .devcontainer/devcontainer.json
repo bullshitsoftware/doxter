@@ -7,9 +7,16 @@
         "editorconfig.editorconfig",
         "alexcvzz.vscode-sqlite",
         "felixfbecker.php-debug",
-        "junstyle.php-cs-fixer"
+        "junstyle.php-cs-fixer",
+        "esbenp.prettier-vscode"
     ],
     "settings": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
+        "editor.formatOnSave": true,
         "php-cs-fixer.onsave": true,
+        "prettier.prettierPath": "/usr/local/lib/node_modules/prettier/",
+        "[php]": {
+            "editor.defaultFormatter": "junstyle.php-cs-fixer"
+        }
     }
 }

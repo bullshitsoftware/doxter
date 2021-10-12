@@ -11,6 +11,7 @@ RUN ln -s /usr/bin/php8 /usr/bin/php
 
 RUN curl -L https://cs.symfony.com/download/php-cs-fixer-v3.phar -o /usr/bin/php-cs-fixer
 RUN chmod +x /usr/bin/php-cs-fixer
+RUN npm install -g prettier prettier-plugin-twig-melody
 
 ARG USERNAME=user
 ARG UID=1000
