@@ -18,6 +18,10 @@ textarea {
   font-family: monospace;
 }
 
+input[type="checkbox"] {
+  width: auto;
+}
+
 input:focus, textarea:focus {
   border: 1px solid $yellow;
 }
