@@ -30,6 +30,9 @@ services:
     App\Doctrine\EventListener:
         tags:
             - { name: doctrine.event_listener, event: postConnect }
+    
+    twig.markdown.default:
+        class: App\Twig\Markdown
 
 when@test:
     services:
