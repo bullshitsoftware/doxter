@@ -1,71 +1,113 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}View {{ task.title }}{% endblock %}
+{% block title %}
+  View {{ task.title }}
+{% endblock %}
 
 {% block content %}
-<main class="container container_lg">
-
-  <div class="row">
-    <a href="{{ path('task_edit', {id: task.id}) }}" class="btn">Edit</a>
-    <form method="POST" action="{{ path('task_delete', {id: task.id}) }}">
-      <input type="hidden" name="_token" value="{{ csrf_token('task') }}">
-      <button type="submit" class="pink">Delete</button>
-    </form>
-  </div>
-
-  <div>
-    <h1>{{ task.title }}</h1>
-  </div>
-
-  <div class="grid grid_task">
-
-    <div class="grid__label"><strong>Id</strong></div>
-    <div>{{ task.id }}</div>
-
-    <div class="grid__label"><strong>Tag</strong></div>
-    <div>
-    {% for tag in task.tags %}
-      {{ tag.name }}
-    {% endfor %}
+  <main class="container container_lg">
+    <div class="row">
+      <a href="{{
+        path(
+          'task_edit',
+          {
+            id: task.id
+          }
+        )
+        }}"
+        class="btn">
+        Edit
+      </a>
+      <form method="POST"
+        action="{{
+        path(
+          'task_delete',
+          {
+            id: task.id
+          }
+        )
+        }}">
+        <input type="hidden" name="_token" value="{{ csrf_token('task') }}" />
+        <button type="submit" class="pink">Delete</button>
+      </form>
     </div>
 
-    <div class="grid__label"><strong>Description</strong></div>
-    <div>{{ task.description|markdown_to_html }}</div>
-
-    <div class="grid__label"><strong>Created</strong></div>
-    <div>{{ task.created|user_datetime }}</div>
-
-    <div class="grid__label"><strong>Updated</strong></div>
-    <div>{{ task.updated|user_datetime }}</div>
-
-    <div class="grid__label"><strong>Wait</strong></div>
     <div>
-    {% if task.wait %}
-      {{ task.wait|user_datetime }}
-    {% else %}
-      &mdash;
-    {% endif %}
+      <h1>
+        {{ task.title }}
+      </h1>
     </div>
 
-    <div class="grid__label"><strong>Started</strong></div>
-    <div>
-    {% if task.started %}
-      {{ task.started|user_datetime }}
-    {% else %}
-      &mdash;
-    {% endif %}
+    <div class="grid grid_task">
+      <div class="grid__label">
+        <strong>Id</strong>
+      </div>
+      <div>
+        {{ task.id }}
+      </div>
+
+      <div class="grid__label">
+        <strong>Tag</strong>
+      </div>
+      <div>
+        {% for tag in task.tags %}
+          {{ tag.name }}
+        {% endfor %}
+      </div>
+
+      <div class="grid__label">
+        <strong>Description</strong>
+      </div>
+      <div>
+        {{ task.description|markdown_to_html }}
+      </div>
+
+      <div class="grid__label">
+        <strong>Created</strong>
+      </div>
+      <div>
+        {{ task.created|user_datetime }}
+      </div>
+
+      <div class="grid__label">
+        <strong>Updated</strong>
+      </div>
+      <div>
+        {{ task.updated|user_datetime }}
+      </div>
+
+      <div class="grid__label">
+        <strong>Wait</strong>
+      </div>
+      <div>
+        {% if task.wait %}
+          {{ task.wait|user_datetime }}
+        {% else %}
+          &mdash;
+        {% endif %}
+      </div>
+
+      <div class="grid__label">
+        <strong>Started</strong>
+      </div>
+      <div>
+        {% if task.started %}
+          {{ task.started|user_datetime }}
+        {% else %}
+          &mdash;
+        {% endif %}
+      </div>
+
+      <div class="grid__label">
+        <strong>Ended</strong>
+      </div>
+      <div>
+        {% if task.ended %}
+          {{ task.ended|user_datetime }}
+        {% else %}
+          &mdash;
+        {% endif %}
+      </div>
     </div>
-
-    <div class="grid__label"><strong>Ended</strong></div>
-    <div>
-    {% if task.ended %}
-      {{ task.ended|user_datetime }}
-    {% else %}
-      &mdash;
-    {% endif %}
-    </div>
-
-  </div>
-
-</main>
+  </main>
 {% endblock %}

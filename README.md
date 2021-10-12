@@ -5,9 +5,10 @@
 Simple web todo application inspired by TaskWarrior.
 
 Features:
-- Waiting, current and completed task lists
-- Tags
-- Import from TaskWarrior
+
+-   Waiting, current and completed task lists
+-   Tags
+-   Import from TaskWarrior
 
 # Docker compose usage
 

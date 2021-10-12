@@ -1,12 +1,14 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Current{% endblock %}
+{% block title %}
+  Current
+{% endblock %}
 
 {% block content %}
-<main class="container container_lg">
-  {{ form_start(form) }}
-  {{ form_widget(form) }}
-  <button type="submit">Create</button>
-  {{ form_end(form) }}
-</main>
+  <main class="container container_lg">
+    {{ form_start(form) }}
+    {{ form_widget(form) }}
+    <button type="submit">Create</button>
+    {{ form_end(form) }}
+  </main>
 {% endblock %}

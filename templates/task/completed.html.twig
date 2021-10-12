@@ -1,53 +1,117 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Completed{% endblock %}
+{% block title %}
+  Completed
+{% endblock %}
 
 {% block content %}
-<main class="container container_lg">
-  {% include 'task/_search.html.twig' with {} only %}
-  
-  <div class="grid grid_completed">
-    <div class="grid__label md-only"><strong>ID</strong></div>
-    <div class="grid__label md-only"><strong>Created</strong></div>
-    <div class="grid__label md-only"><strong>Completed</strong></div>
-    <div class="grid__label md-only"><strong>Age</strong></div>
-    <div class="grid__label md-only"><strong>Tag</strong></div>
-    <div class="grid__label md-only"><strong>Title</strong></div>
-    {% for task in tasks %}
-      <div class="grid__label sm-only"><strong>ID</strong></div>
-      <div class="grid__cell-id">
-        <a href="{{ path('task_view', {id: task.id}) }}" class="mono">{{ task.id|slice(0,8) }}</a>
+  <main class="container container_lg">
+    {% include 'task/_search.html.twig' with {} only %}
+
+    <div class="grid grid_completed">
+      <div class="grid__label md-only">
+        <strong>ID</strong>
       </div>
+      <div class="grid__label md-only">
+        <strong>Created</strong>
+      </div>
+      <div class="grid__label md-only">
+        <strong>Completed</strong>
+      </div>
+      <div class="grid__label md-only">
+        <strong>Age</strong>
+      </div>
+      <div class="grid__label md-only">
+        <strong>Tag</strong>
+      </div>
+      <div class="grid__label md-only">
+        <strong>Title</strong>
+      </div>
+      {% for task in tasks %}
+        <div class="grid__label sm-only">
+          <strong>ID</strong>
+        </div>
+        <div class="grid__cell-id">
+          <a href="{{
+            path(
+              'task_view',
+              {
+                id: task.id
+              }
+            )
+            }}"
+            class="mono">
+            {{ task.id|slice(0, 8) }}
+          </a>
+        </div>
 
-      <div class="grid__label sm-only"><strong>Created</strong></div>
-      <div class="grid__cell-created">{{ task.created|user_date }}</div>
+        <div class="grid__label sm-only">
+          <strong>Created</strong>
+        </div>
+        <div class="grid__cell-created">
+          {{ task.created|user_date }}
+        </div>
 
-      <div class="grid__label sm-only"><strong>Completed</strong></div>
-      <div class="grid__cell-completed">{{ task.ended|user_date }}</div>
+        <div class="grid__label sm-only">
+          <strong>Completed</strong>
+        </div>
+        <div class="grid__cell-completed">
+          {{ task.ended|user_date }}
+        </div>
 
-      <div class="grid__label sm-only"><strong>Age</strong></div>
-      <div class="grid__cell-age">{{ task.created|date_diff(now) }}</div>
+        <div class="grid__label sm-only">
+          <strong>Age</strong>
+        </div>
+        <div class="grid__cell-age">
+          {{ task.created|date_diff(now) }}
+        </div>
 
-      <div class="grid__label sm-only"><strong>Tag</strong></div>
-      <div class="grid__cell-tag">
-      {% for tag in task.tags %}
-        {{ tag.name }}
+        <div class="grid__label sm-only">
+          <strong>Tag</strong>
+        </div>
+        <div class="grid__cell-tag">
+          {% for tag in task.tags %}
+            {{ tag.name }}
+          {% endfor %}
+        </div>
+
+        <div class="grid__label sm-only">
+          <strong>Title</strong>
+        </div>
+        <div class="grid__cell-title">
+          {{ task.title }}
+        </div>
       {% endfor %}
-      </div>
+    </div>
 
-      <div class="grid__label sm-only"><strong>Title</strong></div>
-      <div class="grid__cell-title">{{ task.title }}</div>
-    {% endfor %}
-  </div>
-
-  <div class="row">
-    {% set query = app.request.query.all() %}
-    {% if page > 1 %}
-      <a href="{{ path('task_completed', query|merge({ page: page-1 })) }}" class="btn btn_orange">Prev</a>
-    {% endif %}
-    {% if more %}
-      <a href="{{ path('task_completed', query|merge({ page: page+1 })) }}" class="btn btn_orange">Next</a>
-    {% endif %}
-  </div>
-</main>
+    <div class="row">
+      {% set query = app.request.query.all() %}
+      {% if page > 1 %}
+        <a href="{{
+          path(
+            'task_completed',
+            query|merge({
+              page: page - 1
+            })
+          )
+          }}"
+          class="btn btn_orange">
+          Prev
+        </a>
+      {% endif %}
+      {% if more %}
+        <a href="{{
+          path(
+            'task_completed',
+            query|merge({
+              page: page + 1
+            })
+          )
+          }}"
+          class="btn btn_orange">
+          Next
+        </a>
+      {% endif %}
+    </div>
+  </main>
 {% endblock %}

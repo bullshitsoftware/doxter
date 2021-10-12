@@ -1,43 +1,87 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Waiting{% endblock %}
+{% block title %}
+  Waiting
+{% endblock %}
 
 {% block content %}
-<main class="container container_lg">
-  {% include 'task/_search.html.twig' with {} only %}
-  
-  <div class="grid grid_waiting">
-    <div class="grid__label md-only"><strong>ID</strong></div>
-    <div class="grid__label md-only"><strong>Age</strong></div>
-    <div class="grid__label md-only"><strong>Tag</strong></div>
-    <div class="grid__label md-only"><strong>Wait</strong></div>
-    <div class="grid__label md-only"><strong>Remaining</strong></div>
-    <div class="grid__label md-only"><strong>Title</strong></div>
-    {% for task in tasks %}
-      <div class="grid__label sm-only"><strong>ID</strong></div>
-      <div class="grid__cell-id">
-        <a href="{{ path('task_view', {id: task.id}) }}" class="mono">{{ task.id|slice(0,8) }}</a>
+  <main class="container container_lg">
+    {% include 'task/_search.html.twig' with {} only %}
+
+    <div class="grid grid_waiting">
+      <div class="grid__label md-only">
+        <strong>ID</strong>
       </div>
+      <div class="grid__label md-only">
+        <strong>Age</strong>
+      </div>
+      <div class="grid__label md-only">
+        <strong>Tag</strong>
+      </div>
+      <div class="grid__label md-only">
+        <strong>Wait</strong>
+      </div>
+      <div class="grid__label md-only">
+        <strong>Remaining</strong>
+      </div>
+      <div class="grid__label md-only">
+        <strong>Title</strong>
+      </div>
+      {% for task in tasks %}
+        <div class="grid__label sm-only">
+          <strong>ID</strong>
+        </div>
+        <div class="grid__cell-id">
+          <a href="{{
+            path(
+              'task_view',
+              {
+                id: task.id
+              }
+            )
+            }}"
+            class="mono">
+            {{ task.id|slice(0, 8) }}
+          </a>
+        </div>
 
-      <div class="grid__label sm-only"><strong>Age</strong></div>
-      <div class="grid__cell-age">{{ task.created|date_diff(now) }}</div>
+        <div class="grid__label sm-only">
+          <strong>Age</strong>
+        </div>
+        <div class="grid__cell-age">
+          {{ task.created|date_diff(now) }}
+        </div>
 
-      <div class="grid__label sm-only"><strong>Tag</strong></div>
-      <div class="grid__cell-tag">
-      {% for tag in task.tags %}
-        {{ tag.name }}
+        <div class="grid__label sm-only">
+          <strong>Tag</strong>
+        </div>
+        <div class="grid__cell-tag">
+          {% for tag in task.tags %}
+            {{ tag.name }}
+          {% endfor %}
+        </div>
+
+        <div class="grid__label sm-only">
+          <strong>Wait</strong>
+        </div>
+        <div class="grid__cell-wait">
+          {{ task.wait|user_date }}
+        </div>
+
+        <div class="grid__label sm-only">
+          <strong>Remaining</strong>
+        </div>
+        <div class="grid__cell-remaining">
+          {{ task.wait|date_diff(now) }}
+        </div>
+
+        <div class="grid__label sm-only">
+          <strong>Title</strong>
+        </div>
+        <div class="grid__cell-title">
+          {{ task.title }}
+        </div>
       {% endfor %}
-      </div>
-
-      <div class="grid__label sm-only"><strong>Wait</strong></div>
-      <div class="grid__cell-wait">{{ task.wait|user_date }}</div>
-
-      <div class="grid__label sm-only"><strong>Remaining</strong></div>
-      <div class="grid__cell-remaining">{{ task.wait|date_diff(now) }}</div>
-
-      <div class="grid__label sm-only"><strong>Title</strong></div>
-      <div class="grid__cell-title">{{ task.title }}</div>
-    {% endfor %}
-  </div>
-</main>
+    </div>
+  </main>
 {% endblock %}

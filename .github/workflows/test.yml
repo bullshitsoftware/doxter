@@ -3,62 +3,62 @@ name: test
 on: push
 
 jobs:
-    test:
-        runs-on: ubuntu-latest
-        env:
-            IMAGE: ghcr.io/bullshitsoftware/doxter-devcontainer:latest
-        steps:
-            - name: checkout
-              uses: actions/checkout@v2
+  test:
+    runs-on: ubuntu-latest
+    env:
+      IMAGE: ghcr.io/bullshitsoftware/doxter-devcontainer:latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v2
 
-            - name: pull dev image
-              run: docker pull $IMAGE
-            - name: install front deps
-              run: |
-                docker run -v $GITHUB_WORKSPACE:/app -w /app --rm --entrypoint npm -e HOME=/app \
-                -u $(id -u $USER):$(id -g $USER) $IMAGE install
-            - name: build front
-              run: |
-                docker run -v $GITHUB_WORKSPACE:/app -w /app --rm --entrypoint npm -e HOME=/app \
-                -u $(id -u $USER):$(id -g $USER) $IMAGE run build    
-            - name: install php dev deps
-              run: |
-                docker run -v $GITHUB_WORKSPACE:/app -w /app --rm --entrypoint composer -e APP_ENV=test \
-                -u $(id -u $USER):$(id -g $USER) $IMAGE install
+      - name: pull dev image
+        run: docker pull $IMAGE
+      - name: install front deps
+        run: |
+          docker run -v $GITHUB_WORKSPACE:/app -w /app --rm --entrypoint npm -e HOME=/app \
+          -u $(id -u $USER):$(id -g $USER) $IMAGE install
+      - name: build front
+        run: |
+          docker run -v $GITHUB_WORKSPACE:/app -w /app --rm --entrypoint npm -e HOME=/app \
+          -u $(id -u $USER):$(id -g $USER) $IMAGE run build
+      - name: install php dev deps
+        run: |
+          docker run -v $GITHUB_WORKSPACE:/app -w /app --rm --entrypoint composer -e APP_ENV=test \
+          -u $(id -u $USER):$(id -g $USER) $IMAGE install
 
-            - name: lint container & twig
-              run: |
-                docker run -v $GITHUB_WORKSPACE:/app -w /app -e APP_ENV=test -u $(id -u $USER):$(id -g $USER) \
-                $IMAGE bin/console lint:container
-                docker run -v $GITHUB_WORKSPACE:/app -w /app -e APP_ENV=test -u $(id -u $USER):$(id -g $USER) \
-                $IMAGE bin/console lint:twig
+      - name: lint container & twig
+        run: |
+          docker run -v $GITHUB_WORKSPACE:/app -w /app -e APP_ENV=test -u $(id -u $USER):$(id -g $USER) \
+          $IMAGE bin/console lint:container
+          docker run -v $GITHUB_WORKSPACE:/app -w /app -e APP_ENV=test -u $(id -u $USER):$(id -g $USER) \
+          $IMAGE bin/console lint:twig
 
-            - name: run tests with coverage
-              run: |
-                docker run -v $GITHUB_WORKSPACE:/app -w /app -e APP_ENV=test -u $(id -u $USER):$(id -g $USER) \
-                $IMAGE make cover
-            - name: upload coverage result
-              uses: codecov/codecov-action@v2
-              with:
-                files: cover.xml
+      - name: run tests with coverage
+        run: |
+          docker run -v $GITHUB_WORKSPACE:/app -w /app -e APP_ENV=test -u $(id -u $USER):$(id -g $USER) \
+          $IMAGE make cover
+      - name: upload coverage result
+        uses: codecov/codecov-action@v2
+        with:
+          files: cover.xml
 
-            - name: validate db schema
-              run: |
-                docker run -v $GITHUB_WORKSPACE:/app -w /app -e APP_ENV=test -u $(id -u $USER):$(id -g $USER) \
-                $IMAGE bin/console doctrine:schema:validate
+      - name: validate db schema
+        run: |
+          docker run -v $GITHUB_WORKSPACE:/app -w /app -e APP_ENV=test -u $(id -u $USER):$(id -g $USER) \
+          $IMAGE bin/console doctrine:schema:validate
 
-    cs:
-        runs-on: ubuntu-latest
-        env:
-            IMAGE: ghcr.io/bullshitsoftware/doxter-devcontainer:latest
-        steps:
-            - name: checkout
-              uses: actions/checkout@v2
-            - name: fix php code style
-              run: |
-                docker run -v $GITHUB_WORKSPACE:/app -w /app -e APP_ENV=test -u $(id -u $USER):$(id -g $USER) \
-                $IMAGE php-cs-fixer fix --dry-run --diff
-            - name: test code style
-              run: |
-                docker run -v $GITHUB_WORKSPACE:/app -w /app -e APP_ENV=test -u $(id -u $USER):$(id -g $USER) \
-                $IMAGE prettier -c .
+  cs:
+    runs-on: ubuntu-latest
+    env:
+      IMAGE: ghcr.io/bullshitsoftware/doxter-devcontainer:latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v2
+      - name: fix php code style
+        run: |
+          docker run -v $GITHUB_WORKSPACE:/app -w /app -e APP_ENV=test -u $(id -u $USER):$(id -g $USER) \
+          $IMAGE php-cs-fixer fix --dry-run --diff
+      - name: test code style
+        run: |
+          docker run -v $GITHUB_WORKSPACE:/app -w /app -e APP_ENV=test -u $(id -u $USER):$(id -g $USER) \
+          $IMAGE prettier -c .

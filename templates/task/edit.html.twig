@@ -1,21 +1,45 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Current{% endblock %}
+{% block title %}
+  Current
+{% endblock %}
 
 {% block content %}
-<main class="container container_lg">
-  <div class="row">
-    <a href="{{ path('task_view', {id: task.id}) }}" class="btn">View</a>
-    <form method="POST" action="{{ path('task_delete', {id: task.id}) }}">
-      <input type="hidden" name="_token" value="{{ csrf_token('task') }}">
-      <button type="submit" class="pink">Delete</button>
-    </form>
-  </div>
+  <main class="container container_lg">
+    <div class="row">
+      <a href="{{
+        path(
+          'task_view',
+          {
+            id: task.id
+          }
+        )
+        }}"
+        class="btn">
+        View
+      </a>
+      <form method="POST"
+        action="{{
+        path(
+          'task_delete',
+          {
+            id: task.id
+          }
+        )
+        }}">
+        <input type="hidden" name="_token" value="{{ csrf_token('task') }}" />
+        <button type="submit" class="pink">Delete</button>
+      </form>
+    </div>
 
-  {{ form_start(form) }}
-  {{ form_widget(form) }}
-  <button type="submit" name="apply" title="Redirects to task view page">Apply</button>
-  <button type="submit" name="save" title="Redirects to task list">Save</button>
-  {{ form_end(form) }}
-</main>
+    {{ form_start(form) }}
+    {{ form_widget(form) }}
+    <button type="submit" name="apply" title="Redirects to task view page">
+      Apply
+    </button>
+    <button type="submit" name="save" title="Redirects to task list">
+      Save
+    </button>
+    {{ form_end(form) }}
+  </main>
 {% endblock %}
