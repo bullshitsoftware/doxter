@@ -1,30 +1,29 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}
-  Log in!
+  Please sign in
 {% endblock %}
 
 {% block body %}
   <main class="container container_sm">
-    <form method="post">
-      <div>
-        <h1>
-          Please sign in
-        </h1>
-      </div>
+    <h1 class="mt mb">
+      {{ block('title') }}
+    </h1>
 
+    <form method="post">
       {% if error %}
-        <div class="alert bg-pink">
+        <div class="alert bg-pink mb">
           {{ error.messageKey|trans(error.messageData, 'security') }}
         </div>
       {% endif %}
 
       <div>
-        <label for="inputEmail">Email</label>
+        <label for="inputEmail" class="mb">Email</label>
         <input type="email"
           value="{{ last_username }}"
           name="email"
           id="inputEmail"
+          class="mb"
           autocomplete="email"
           required
           autofocus />
@@ -34,13 +33,15 @@
         <input type="password"
           name="password"
           id="inputPassword"
+          class="mb"
           autocomplete="current-password"
           required />
       </div>
 
-      <div class="row">
+      <div class="row mb">
         <label for="rememberMe">Remember me</label>
         <input id="rememberMe"
+          class="mb"
           type="checkbox"
           name="_remember_me"
           {{ remember_me ? 'checked' }} />
@@ -50,7 +51,7 @@
         name="_csrf_token"
         value="{{ csrf_token('authenticate') }}" />
 
-      <button type="submit">Sign in</button>
+      <button type="submit" class="mb">Sign in</button>
     </form>
   </main>
 {% endblock %}

@@ -324,7 +324,6 @@ class TaskControllerTest extends WebTestCase
 
         $crawler = $this->client->request('GET', '/completed', ['q' => '-foo']);
         self::assertResponseIsSuccessful();
-        self::assertCount(6 * 8, $crawler->filter('.sm-only'));
         $tags = $crawler->filter('.grid__cell-tag')->each(fn (Crawler $c) => $c->text());
         self::assertSame(['', '', '', '', '', '', '', 'baz'], $tags);
         $titles = $crawler->filter('.grid__cell-title')->each(fn (Crawler $c) => $c->text());
@@ -405,7 +404,7 @@ class TaskControllerTest extends WebTestCase
                 'created' => 'invalid',
             ],
         ]);
-        self::assertSelectorTextSame('li', 'This value is not valid.');
+        self::assertSelectorTextSame('.alert', 'This value is not valid.');
     }
 
     public function testAddRedirectWaiting(): void
@@ -489,7 +488,7 @@ class TaskControllerTest extends WebTestCase
                 'created' => 'invalid',
             ],
         ]);
-        self::assertSelectorTextSame('li', 'This value is not valid.');
+        self::assertSelectorTextSame('.alert', 'This value is not valid.');
     }
 
     public function testEditApply(): void

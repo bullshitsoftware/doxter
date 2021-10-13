@@ -1,13 +1,13 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}
-  {{ status_code }}
+  {{ status_code }} {{ status_text }}
 {% endblock %}
 
 {% block body %}
   <main class="container container_lg" style="text-align: center">
-    <h1>
-      {{ status_code }} {{ status_text }}
+    <h1 class="mt mb pink">
+      {{ block('title') }}
     </h1>
     <img src="https://placekitten.com/800/600"
       alt="random kitten"

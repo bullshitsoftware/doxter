@@ -1,6 +1,5 @@
 label {
   display: block;
-  margin: 0.5rem 0;
   font-weight: bold;
   color: $yellow;
 }
@@ -30,10 +29,10 @@ textarea:focus {
 
 button,
 .btn {
-  margin: 0.5rem 0;
+  padding: 0.5em;
   border: none;
-  background-color: $black;
-  color: $green;
+  background-color: $grey;
+  color: $yellow;
   text-decoration: none;
   font-size: 1rem;
   font-weight: bold;
@@ -41,11 +40,4 @@ button,
 
 .btn_orange {
   color: $orange;
-}
-
-form ul {
-  padding: 0.5em;
-  margin: 0.5em 0;
-  background-color: $pink;
-  list-style: none;
 }

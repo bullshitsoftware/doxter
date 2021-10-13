@@ -2,14 +2,29 @@ $sm: 420px;
 $md: 640px;
 $lg: 960px;
 
+$margin: 0.5em;
+
 body {
   width: 100%;
+}
+
+.mb {
+  margin-bottom: $margin;
+}
+
+.mt {
+  margin-top: $margin;
 }
 
 .container {
   width: 100%;
   margin: auto;
-  padding: 0.5rem;
+}
+
+@media screen and (max-width: $lg) {
+  .container {
+    padding: 0 0.5rem;
+  }
 }
 
 .container_sm {

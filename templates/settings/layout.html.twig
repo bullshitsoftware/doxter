@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block content %}
+{% block subnav %}
   {% include '_subnav.html.twig' with {
     label: 'Settings',
     nav: [
@@ -18,10 +18,4 @@
       }
     ]
   } only %}
-
-  <main class="container container_lg">
-    {% block main %}
-      Not implemened yet
-    {% endblock %}
-  </main>
 {% endblock %}

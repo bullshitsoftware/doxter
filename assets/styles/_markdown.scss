@@ -1,0 +1,23 @@
+.markdown {
+  * {
+    margin-bottom: $margin;
+  }
+
+  ul,
+  ol,
+  dl {
+    margin-bottom: $margin;
+    list-style-position: inside;
+  }
+
+  li {
+    margin-bottom: 0;
+  }
+
+  code {
+    font-family: monospace;
+    border: 1px solid $grey;
+    padding: 0.5em;
+    display: block;
+  }
+}

@@ -1,0 +1,32 @@
+{%- block form_widget_compound -%}
+  {%- if rootform is defined and form == rootform %}
+    {{ form_errors(form) }}
+  {%- endif -%}
+  {{- block('form_rows') -}}
+  {{- form_rest(form) -}}
+{%- endblock -%}
+
+{%- block form_row -%}
+  <div class="mb">
+    {{- form_label(form) -}}
+    {{- form_errors(form) -}}
+    {{- form_widget(form) -}}
+  </div>
+{%- endblock -%}
+
+{%- block form_errors -%}
+  {%- if (errors|length) > 0 -%}
+    {%- for error in errors -%}
+      <div class="alert bg-pink mb">
+        {{ error.message }}
+      </div>
+    {%- endfor -%}
+  {%- endif -%}
+{%- endblock -%}
+
+{%- block form_label -%}
+  {% if label is empty -%}
+    {%- set label = name|humanize -%}
+  {%- endif -%}
+  <label class="mb" for="{{ id }}">{{- label -}}</label>
+{%- endblock -%}

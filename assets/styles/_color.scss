@@ -8,10 +8,17 @@ $purple: #9e86c8;
 $pink: #b05279;
 $blue: #6c99bb;
 
-.bg-pink {
-  background-color: $pink;
+$colors: 'black' $black, 'grey' $grey, 'white' $white, 'yellow' $yellow, 'green' $green, 'orange' $orange, 'pink' $pink,
+  'blue' $blue;
+
+@each $name, $color in $colors {
+  .#{$name} {
+    color: $color;
+  }
 }
 
-.pink {
-  color: $pink;
+@each $name, $color in $colors {
+  .bg-#{$name} {
+    background-color: $color;
+  }
 }

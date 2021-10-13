@@ -1,5 +1,5 @@
 {% set current_route = app.request.attributes.get('_route') %}
-<nav class="sub">
+<nav class="sub mb">
   <a href="#" class="toggle">{{ label }}</a>
   {% for item in nav %}
     <a href="{{ path(item.route) }}"

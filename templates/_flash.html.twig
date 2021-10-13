@@ -3,7 +3,7 @@
   <div class="container container_lg">
     {% for type, messages in flashes %}
       {% for message in messages %}
-        <div class="flash {{ type }}">
+        <div class="flash {{ type }} mb">
           {{ message }}
         </div>
       {% endfor %}

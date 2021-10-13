@@ -1,7 +1,8 @@
 nav {
   display: block;
   max-width: $lg;
-  margin: auto;
+  margin-left: auto;
+  margin-right: auto;
   border-bottom: 1px solid $orange;
 }
 
@@ -33,6 +34,10 @@ nav .toggle {
   display: none;
 }
 
+nav a.right {
+  float: right;
+}
+
 @media screen and (max-width: $md) {
   nav a {
     display: none;
@@ -50,8 +55,11 @@ nav .toggle {
 
   nav.show a {
     display: block;
-    margin: 0;
     padding: 0.5rem;
     text-align: left;
+  }
+
+  nav a.right {
+    float: none;
   }
 }

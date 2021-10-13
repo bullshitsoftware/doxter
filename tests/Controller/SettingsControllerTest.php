@@ -52,7 +52,7 @@ class SettingsControllerTest extends WebTestCase
             ],
         ]);
         self::assertResponseIsSuccessful();
-        $errors = $crawler->filter('form ul');
+        $errors = $crawler->filter('form .alert');
         self::assertSame("This value should be the user's current password.", $errors->first()->text());
         self::assertSame("Passwords don't match", $errors->last()->text());
 

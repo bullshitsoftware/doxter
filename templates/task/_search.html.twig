@@ -1,9 +1,7 @@
-<div>
-  <form method="GET" class="grid grid_search">
-    <input type="text"
-      name="q"
-      placeholder="+tag1 -tag2 task"
-      value="{{ app.request.get('q', '') }}" />
-    <button type="submit">Search</button>
-  </form>
-</div>
+<form method="GET" class="grid grid_search mb">
+  <input type="text"
+    name="q"
+    placeholder="+tag1 -tag2 task"
+    value="{{ app.request.get('q', '') }}" />
+  <button type="submit">Search</button>
+</form>

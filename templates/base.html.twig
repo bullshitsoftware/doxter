@@ -25,10 +25,20 @@
   <body>
     {% block body %}
       {% include '_nav.html.twig' with {} only %}
-      {% include '_flash.html.twig' with {} only %}
-      {% block content %}
+      {% block subnav %}
 
       {% endblock %}
+
+      {% include '_flash.html.twig' with {} only %}
+
+      <main class="container container_lg">
+        <h1 class="mb sm-only">
+          {{ block('title') }}
+        </h1>
+        {% block content %}
+          Not implemented yet
+        {% endblock %}
+      </main>
     {% endblock %}
   </body>
 </html>
