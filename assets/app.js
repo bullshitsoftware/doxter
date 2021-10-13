@@ -11,8 +11,13 @@ import './styles/app.scss';
 // start the Stimulus application
 // import './bootstrap';
 
-document.querySelector('nav .toggle').addEventListener('click', event => {
-  event.currentTarget.closest('nav').classList.toggle('show');
+document.addEventListener('click', event => {
+  const btn = event.target.closest('nav .toggle');
+  if (!btn) {
+    return;
+  }
+
+  event.target.closest('nav').classList.toggle('show');
 });
 
 document.addEventListener('click', event => {

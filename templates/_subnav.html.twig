@@ -1,0 +1,10 @@
+{% set current_route = app.request.attributes.get('_route') %}
+<nav class="sub">
+  <a href="#" class="toggle">{{ label }}</a>
+  {% for item in nav %}
+    <a href="{{ path(item.route) }}"
+      {{ current_route == item.route ? 'class="active"' }}>
+      {{ item.label }}
+    </a>
+  {% endfor %}
+</nav>
