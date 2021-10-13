@@ -11,7 +11,7 @@ use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
-class UserControllerTest extends WebTestCase
+class SettingsControllerTest extends WebTestCase
 {
     private KernelBrowser $client;
     private UserRepository $userRepository;

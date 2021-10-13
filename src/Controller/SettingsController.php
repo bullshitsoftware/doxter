@@ -12,7 +12,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
-class UserController extends Controller
+class SettingsController extends Controller
 {
     #[Route('/settings', name: 'settings')]
     public function settings(
@@ -57,7 +57,7 @@ class UserController extends Controller
             return $this->redirectToRoute('settings');
         }
 
-        return $this->render('user/settings.html.twig', [
+        return $this->render('settings/settings.html.twig', [
             'settings_form' => $settingsForm->createView(),
             'password_form' => $passwordForm->createView(),
             'import_form' => $importForm->createView(),
