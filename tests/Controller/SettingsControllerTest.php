@@ -43,7 +43,7 @@ class SettingsControllerTest extends WebTestCase
     public function testPasswordChange(): void
     {
         $this->client->loginUser($this->userRepository->findOneByEmail('john.doe@example.com'));
-        $this->client->request('GET', '/settings');
+        $this->client->request('GET', '/settings/password');
         $crawler = $this->client->submitForm('Update password', [
             'password_change' => [
                 'oldPassword' => 'qwerty',
@@ -63,7 +63,7 @@ class SettingsControllerTest extends WebTestCase
                 'passwordConfirm' => 'qwerty',
             ],
         ]);
-        self::assertResponseRedirects('/settings');
+        self::assertResponseRedirects('/settings/password');
         $user = $this->userRepository->findOneByEmail('john.doe@example.com');
         $hasher = self::getContainer()->get(UserPasswordHasherInterface::class);
         self::assertTrue($hasher->isPasswordValid($user, 'qwerty'));
@@ -74,7 +74,7 @@ class SettingsControllerTest extends WebTestCase
     public function testImport(): void
     {
         $this->client->loginUser($this->userRepository->findOneByEmail('john.doe@example.com'));
-        $this->client->request('GET', '/settings');
+        $this->client->request('GET', '/settings/import');
         $taskData = [
             'id' => 0,
             'uuid' => '19ce47f7-a453-42f3-a60c-845818f4a9b1',
@@ -94,7 +94,7 @@ class SettingsControllerTest extends WebTestCase
             $taskData,
             ['status' => 'deleted'],
         ])]]);
-        self::assertResponseRedirects('/settings');
+        self::assertResponseRedirects('/settings/import');
         $task = self::getContainer()->get('doctrine')->getManager()->getRepository(Task::class)->findOneByTitle('Imported');
         self::assertNotNull($task);
         self::assertSame("line1\n\nline2\n\n", $task->getDescription());
@@ -109,11 +109,11 @@ class SettingsControllerTest extends WebTestCase
         $this->client->followRedirect();
         self::assertSelectorTextSame('.flash', 'Import succeed');
 
-        $this->client->request('GET', '/settings');
+        $this->client->request('GET', '/settings/import');
         $taskData['description'] = 'Imported2';
         $taskData['tags'] = ['tag3'];
         $this->client->submitForm('Import', ['import' => ['content' => json_encode([$taskData])]]);
-        self::assertResponseRedirects('/settings');
+        self::assertResponseRedirects('/settings/import');
         self::assertNull($this->taskRepository->findOneByTitle('Imported'));
         $task = self::getContainer()->get('doctrine')->getManager()->getRepository(Task::class)->findOneByTitle('Imported2');
         self::assertNotNull($task);

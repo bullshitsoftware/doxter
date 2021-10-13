@@ -1,0 +1,27 @@
+{% extends 'base.html.twig' %}
+
+{% block content %}
+  {% include '_subnav.html.twig' with {
+    label: 'Settings',
+    nav: [
+      {
+        route: 'settings',
+        label: 'App'
+      },
+      {
+        route: 'settings_password',
+        label: 'Change password'
+      },
+      {
+        route: 'settings_import',
+        label: 'Import'
+      }
+    ]
+  } only %}
+
+  <main class="container container_lg">
+    {% block main %}
+      Not implemened yet
+    {% endblock %}
+  </main>
+{% endblock %}

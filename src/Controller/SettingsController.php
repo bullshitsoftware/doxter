@@ -15,18 +15,14 @@ use Symfony\Component\Routing\Annotation\Route;
 class SettingsController extends Controller
 {
     #[Route('/settings', name: 'settings')]
-    public function settings(
-        EntityManagerInterface $entityManager,
-        UserPasswordHasherInterface $passwordHasher,
-        ImportService $import,
-        Request $request
-    ): Response {
+    public function settings(EntityManagerInterface $entityManager, Request $request): Response
+    {
         $this->denyAccessUnlessGranted('ROLE_USER');
 
         $user = $this->getUser();
-        $settingsForm = $this->createForm(UserSettingsType::class, $user->getSettings());
-        $settingsForm->handleRequest($request);
-        if ($settingsForm->isSubmitted() && $settingsForm->isValid()) {
+        $form = $this->createForm(UserSettingsType::class, $user->getSettings());
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->persist($user);
             $entityManager->flush();
 
@@ -35,32 +31,48 @@ class SettingsController extends Controller
             return $this->redirectToRoute('settings');
         }
 
-        $passwordForm = $this->createForm(PasswordChangeType::class);
-        $passwordForm->handleRequest($request);
-        if ($passwordForm->isSubmitted() && $passwordForm->isValid()) {
-            $user->setPassword($passwordHasher->hashPassword($user, $passwordForm->get('password')->getData()));
+        return $this->render('settings/app.html.twig', ['form' => $form->createView()]);
+    }
+
+    #[Route('/settings/password', name: 'settings_password')]
+    public function password(
+        EntityManagerInterface $entityManager,
+        UserPasswordHasherInterface $passwordHasher,
+        Request $request
+    ): Response {
+        $this->denyAccessUnlessGranted('ROLE_USER');
+
+        $user = $this->getUser();
+        $form = $this->createForm(PasswordChangeType::class);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $user->setPassword($passwordHasher->hashPassword($user, $form->get('password')->getData()));
             $entityManager->persist($user);
             $entityManager->flush();
 
             $this->addFlash(self::FLASH_SUCCESS, 'User password updated');
 
-            return $this->redirectToRoute('settings');
+            return $this->redirectToRoute('settings_password');
         }
 
-        $importForm = $this->createForm(ImportType::class);
-        $importForm->handleRequest($request);
-        if ($importForm->isSubmitted() && $importForm->isValid()) {
-            $import->import($this->getUser(), $importForm->get('content')->getData());
+        return $this->render('settings/password.html.twig', ['form' => $form->createView()]);
+    }
+
+    #[Route('/settings/import', name: 'settings_import')]
+    public function import(ImportService $import, Request $request): Response
+    {
+        $this->denyAccessUnlessGranted('ROLE_USER');
+
+        $form = $this->createForm(ImportType::class);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $import->import($this->getUser(), $form->get('content')->getData());
 
             $this->addFlash(self::FLASH_SUCCESS, 'Import succeed');
 
-            return $this->redirectToRoute('settings');
+            return $this->redirectToRoute('settings_import');
         }
 
-        return $this->render('settings/settings.html.twig', [
-            'settings_form' => $settingsForm->createView(),
-            'password_form' => $passwordForm->createView(),
-            'import_form' => $importForm->createView(),
-        ]);
+        return $this->render('settings/import.html.twig', ['form' => $form->createView()]);
     }
 }

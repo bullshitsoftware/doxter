@@ -1,0 +1,15 @@
+{% extends 'settings/layout.html.twig' %}
+
+{% block title %}
+  Settings
+{% endblock %}
+
+{% block main %}
+  <h1>
+    App Settings
+  </h1>
+  {{ form_start(form) }}
+  {{ form_widget(form) }}
+  <button type="submit">Save</button>
+  {{ form_end(form) }}
+{% endblock %}

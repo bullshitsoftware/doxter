@@ -1,0 +1,15 @@
+{% extends 'settings/layout.html.twig' %}
+
+{% block title %}
+  Import from TaskWarrior
+{% endblock %}
+
+{% block main %}
+  <h1>
+    Import from TaskWarrior
+  </h1>
+  {{ form_start(form) }}
+  {{ form_widget(form) }}
+  <button type="submit">Import</button>
+  {{ form_end(form) }}
+{% endblock %}

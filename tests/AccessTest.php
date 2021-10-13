@@ -78,6 +78,8 @@ class AccessTest extends WebTestCase
                 ],
             ],
             ['settings'],
+            ['settings_password'],
+            ['settings_import'],
         ];
     }
 }
