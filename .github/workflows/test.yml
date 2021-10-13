@@ -115,7 +115,7 @@ jobs:
       IMAGE: ghcr.io/bullshitsoftware/doxter-devcontainer:latest
     steps:
       - uses: actions/checkout@v2
-      - name: fix php code style
+      - name: test php code style
         run: |
           docker run -v $GITHUB_WORKSPACE:/app -w /app -e APP_ENV=test -u $(id -u $USER):$(id -g $USER) \
           $IMAGE php-cs-fixer fix --dry-run --diff
