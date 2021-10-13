@@ -5,6 +5,10 @@ nav {
   border-bottom: 1px solid $orange;
 }
 
+nav.sub {
+  border-bottom: none;
+}
+
 nav a {
   display: inline-block;
   text-decoration: none;
@@ -12,9 +16,17 @@ nav a {
   padding: 0.5rem;
 }
 
+nav.sub a {
+  color: $purple;
+}
+
 nav a.active {
   color: $black;
   background-color: $orange;
+}
+
+nav.sub a.active {
+  background-color: $purple;
 }
 
 nav .toggle {
