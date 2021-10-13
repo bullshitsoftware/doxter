@@ -12,7 +12,7 @@ prepare-tests:
 tests: prepare-tests
 	bin/phpunit
 
-cover: prepare-tests
+cover:
 	XDEBUG_MODE=coverage bin/phpunit --coverage-clover cover.xml
 
 .PHONY: build-php

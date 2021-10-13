@@ -5,17 +5,31 @@ on:
     branches:
 
 jobs:
-  test:
+  prepare:
     runs-on: ubuntu-latest
     env:
       IMAGE: ghcr.io/bullshitsoftware/doxter-devcontainer:latest
     steps:
-      - name: checkout
-        uses: actions/checkout@v2
+      - uses: actions/checkout@v2
 
-      - name: pull dev image
-        run: docker pull $IMAGE
+      - name: cache all
+        uses: actions/cache@v2
+        with:
+          key: all-${{ github.head_ref }}
+          path: |
+            node_modules
+            public
+            vendor
+            var
+
+      - name: cache node_modules
+        id: cache_node_modules
+        uses: actions/cache@v2
+        with:
+          key: node_modules-${{ hashFiles('package-lock.json') }}
+          path: node_modules
       - name: install front deps
+        if: steps.cache_node_modules.outputs.cache-hit != 'true'
         run: |
           docker run -v $GITHUB_WORKSPACE:/app -w /app --rm --entrypoint npm -e HOME=/app \
           -u $(id -u $USER):$(id -g $USER) $IMAGE install
@@ -23,17 +37,39 @@ jobs:
         run: |
           docker run -v $GITHUB_WORKSPACE:/app -w /app --rm --entrypoint npm -e HOME=/app \
           -u $(id -u $USER):$(id -g $USER) $IMAGE run build
-      - name: install php dev deps
-        run: |
-          docker run -v $GITHUB_WORKSPACE:/app -w /app --rm --entrypoint composer -e APP_ENV=test \
-          -u $(id -u $USER):$(id -g $USER) $IMAGE install
 
-      - name: lint container & twig
+      - name: cache vendor
+        id: cache_vendor
+        uses: actions/cache@v2
+        with:
+          key: vendor-${{ hashFiles('composer.lock') }}
+          path: vendor
+      - name: install php deps
+        if: steps.cache_vendor.outputs.cache-hit != 'true'
         run: |
-          docker run -v $GITHUB_WORKSPACE:/app -w /app -e APP_ENV=test -u $(id -u $USER):$(id -g $USER) \
-          $IMAGE bin/console lint:container
-          docker run -v $GITHUB_WORKSPACE:/app -w /app -e APP_ENV=test -u $(id -u $USER):$(id -g $USER) \
-          $IMAGE bin/console lint:twig
+          docker run -v $GITHUB_WORKSPACE:/app -w /app --rm --entrypoint composer \
+          -u $(id -u $USER):$(id -g $USER) $IMAGE install
+      - name: prepare test env
+        run: |
+          docker run -v $GITHUB_WORKSPACE:/app -w /app --rm -u $(id -u $USER):$(id -g $USER) $IMAGE make prepare-tests
+
+  test:
+    runs-on: ubuntu-latest
+    needs: prepare
+    env:
+      IMAGE: ghcr.io/bullshitsoftware/doxter-devcontainer:latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: restore all
+        uses: actions/cache@v2
+        with:
+          key: all-${{ github.head_ref }}
+          path: |
+            node_modules
+            public
+            vendor
+            var
 
       - name: run tests with coverage
         run: |
@@ -44,6 +80,30 @@ jobs:
         with:
           files: cover.xml
 
+  validate:
+    runs-on: ubuntu-latest
+    needs: prepare
+    env:
+      IMAGE: ghcr.io/bullshitsoftware/doxter-devcontainer:latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: restore all
+        uses: actions/cache@v2
+        with:
+          key: all-${{ github.head_ref }}
+          path: |
+            node_modules
+            public
+            vendor
+            var
+
+      - name: lint container & twig
+        run: |
+          docker run -v $GITHUB_WORKSPACE:/app -w /app -e APP_ENV=test -u $(id -u $USER):$(id -g $USER) \
+          $IMAGE bin/console lint:container
+          docker run -v $GITHUB_WORKSPACE:/app -w /app -e APP_ENV=test -u $(id -u $USER):$(id -g $USER) \
+          $IMAGE bin/console lint:twig
       - name: validate db schema
         run: |
           docker run -v $GITHUB_WORKSPACE:/app -w /app -e APP_ENV=test -u $(id -u $USER):$(id -g $USER) \
@@ -54,8 +114,7 @@ jobs:
     env:
       IMAGE: ghcr.io/bullshitsoftware/doxter-devcontainer:latest
     steps:
-      - name: checkout
-        uses: actions/checkout@v2
+      - uses: actions/checkout@v2
       - name: fix php code style
         run: |
           docker run -v $GITHUB_WORKSPACE:/app -w /app -e APP_ENV=test -u $(id -u $USER):$(id -g $USER) \
