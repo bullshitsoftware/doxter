@@ -1,0 +1,20 @@
+$black: #2e2e2e;
+$grey: #797979;
+$darkgrey: darken($grey, 20%);
+$white: #d6d6d6;
+$yellow: #e5b567;
+$green: #b4d273;
+$orange: #e87d3e;
+$purple: #9e86c8;
+$pink: #b05279;
+$blue: #6c99bb;
+
+$colors: 'black' $black, 'grey' $grey, 'white' $white, 'yellow' $yellow, 'green' $green, 'orange' $orange, 'pink' $pink,
+  'blue' $blue;
+
+$sm: 420px;
+$md: 640px;
+$lg: 960px;
+
+$margin: 0.5em;
+$padding: 0.5em;
