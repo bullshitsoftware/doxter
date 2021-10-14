@@ -25,7 +25,9 @@
     class: ['right']
   }
 ] %}
-{% set current_route = app.request.attributes.get('_route') %}
+{% set current_route =
+  app.request.attributes.get('nav_route', app.request.attributes.get('_route'))
+%}
 <nav class="mb">
   <a href="#" class="toggle">Menu</a>
   {% for item in nav %}

@@ -75,7 +75,7 @@ class TaskController extends Controller
 
             $this->addFlash(self::FLASH_SUCCESS, sprintf('Task "%s" created', $task->getTitle()));
 
-            return $this->redirectToList($task);
+            return $this->redirectToRoute($this->taskListRoute($task));
         }
 
         return $this->render('task/add.html.twig', [
@@ -84,11 +84,15 @@ class TaskController extends Controller
     }
 
     #[Route('/view/{id}', name: 'task_view')]
-    public function view(Task $task): Response
+    public function view(Request $request, Task $task): Response
     {
         $this->denyAccessUnlessGranted(TaskVoter::VIEW, $task);
 
-        return $this->render('task/view.html.twig', ['task' => $task]);
+        $request->attributes->set('nav_route', $this->taskListRoute($task));
+
+        return $this->render('task/view.html.twig', [
+            'task' => $task,
+        ]);
     }
 
     #[Route('/edit/{id}', name: 'task_edit')]
@@ -107,10 +111,13 @@ class TaskController extends Controller
 
             return $request->request->has('apply')
                 ? $this->redirectToRoute('task_view', ['id' => $task->getId()])
-                : $this->redirectToList($task);
+                : $this->redirectToRoute($this->taskListRoute($task));
         }
 
+        $request->attributes->set('nav_route', $this->taskListRoute($task));
+
         return $this->render('task/edit.html.twig', [
+            'nav_route_override' => $this->taskListRoute($task),
             'form' => $form->createView(),
             'task' => $task,
         ]);
@@ -134,19 +141,19 @@ class TaskController extends Controller
 
         $this->addFlash(self::FLASH_SUCCESS, sprintf('Task "%s" deleted', $task->getTitle()));
 
-        return $this->redirectToList($task);
+        return $this->redirectToRoute($this->taskListRoute($task));
     }
 
-    private function redirectToList(Task $task): Response
+    private function taskListRoute(Task $task): string
     {
         if (null !== $task->getEnded()) {
-            return $this->redirectToRoute('task_completed');
+            return 'task_completed';
         }
 
         if (null === $task->getWait() || $task->getWait() < $this->now()) {
-            return $this->redirectToRoute('home');
+            return 'home';
         }
 
-        return $this->redirectToRoute('task_waiting');
+        return 'task_waiting';
     }
 }
