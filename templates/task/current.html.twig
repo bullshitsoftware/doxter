@@ -9,23 +9,23 @@
 
   <div class="grid grid_current mb">
     <div class="grid__label md-only">
-      <strong>ID</strong>
+      ID
     </div>
     <div class="grid__label md-only">
-      <strong>Active</strong>
+      Active
     </div>
     <div class="grid__label md-only">
-      <strong>Age</strong>
+      Age
     </div>
     <div class="grid__label md-only">
-      <strong>Tag</strong>
+      Tag
     </div>
     <div class="grid__label md-only">
-      <strong>Title</strong>
+      Title
     </div>
     {% for task in tasks %}
       <div class="grid__label sm-only">
-        <strong>ID</strong>
+        ID
       </div>
       <div class="grid__cell-id">
         <a href="{{
@@ -42,7 +42,7 @@
       </div>
 
       <div class="grid__label sm-only">
-        <strong>Active</strong>
+        Active
       </div>
       <div class="grid__cell-active">
         {% if task.started %}
@@ -51,14 +51,14 @@
       </div>
 
       <div class="grid__label sm-only">
-        <strong>Age</strong>
+        Age
       </div>
       <div class="grid__cell-age">
         {{ task.created|date_diff(now) }}
       </div>
 
       <div class="grid__label sm-only">
-        <strong>Tag</strong>
+        Tag
       </div>
       <div class="grid__cell-tag">
         {% for tag in task.tags %}
@@ -67,7 +67,7 @@
       </div>
 
       <div class="grid__label sm-only">
-        <strong>Title</strong>
+        Title
       </div>
       <div class="grid__cell-title">
         {{ task.title }}
