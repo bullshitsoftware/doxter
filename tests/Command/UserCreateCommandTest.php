@@ -32,10 +32,10 @@ class UserCreateCommandTest extends KernelTestCase
         $this->tester->execute([]);
         self::assertTrue(str_contains($this->tester->getDisplay(), 'User already exist'));
 
-        $this->tester->setInputs(['jane.doe@example.com', 'qwerty']);
+        $this->tester->setInputs(['brand.new@example.com', 'qwerty']);
         $this->tester->execute([]);
         self::assertTrue(str_contains($this->tester->getDisplay(), 'User created'));
-        $user = $this->userRepository->findOneByEmail('jane.doe@example.com');
+        $user = $this->userRepository->findOneByEmail('brand.new@example.com');
         self::assertNotNull($user);
         self::assertTrue($this->passwordHasher->isPasswordValid($user, 'qwerty'));
     }
