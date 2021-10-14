@@ -4,18 +4,20 @@ on:
   push:
     branches:
 
+env:
+  IMAGE: ghcr.io/bullshitsoftware/doxter-devcontainer:latest
+  CACHE_VERSION: v1
+
 jobs:
   prepare:
     runs-on: ubuntu-latest
-    env:
-      IMAGE: ghcr.io/bullshitsoftware/doxter-devcontainer:latest
     steps:
       - uses: actions/checkout@v2
 
       - name: cache all
         uses: actions/cache@v2
         with:
-          key: all-${{ github.head_ref }}
+          key: ${{ env.CACHE_VERSION }}-all-${{ github.sha }}
           path: |
             node_modules
             public
@@ -26,7 +28,7 @@ jobs:
         id: cache_node_modules
         uses: actions/cache@v2
         with:
-          key: node_modules-${{ hashFiles('package-lock.json') }}
+          key: ${{ env.CACHE_VERSION }}-node_modules-${{ hashFiles('package-lock.json') }}
           path: node_modules
       - name: install front deps
         if: steps.cache_node_modules.outputs.cache-hit != 'true'
@@ -42,7 +44,7 @@ jobs:
         id: cache_vendor
         uses: actions/cache@v2
         with:
-          key: vendor-${{ hashFiles('composer.lock') }}
+          key: ${{ env.CACHE_VERSION }}-vendor-${{ hashFiles('composer.lock') }}
           path: vendor
       - name: install php deps
         if: steps.cache_vendor.outputs.cache-hit != 'true'
@@ -56,15 +58,13 @@ jobs:
   test:
     runs-on: ubuntu-latest
     needs: prepare
-    env:
-      IMAGE: ghcr.io/bullshitsoftware/doxter-devcontainer:latest
     steps:
       - uses: actions/checkout@v2
 
       - name: restore all
         uses: actions/cache@v2
         with:
-          key: all-${{ github.head_ref }}
+          key: ${{ env.CACHE_VERSION }}-all-${{ github.head_ref }}
           path: |
             node_modules
             public
@@ -83,15 +83,13 @@ jobs:
   validate:
     runs-on: ubuntu-latest
     needs: prepare
-    env:
-      IMAGE: ghcr.io/bullshitsoftware/doxter-devcontainer:latest
     steps:
       - uses: actions/checkout@v2
 
       - name: restore all
         uses: actions/cache@v2
         with:
-          key: all-${{ github.head_ref }}
+          key: ${{ env.CACHE_VERSION }}-all-${{ github.head_ref }}
           path: |
             node_modules
             public
@@ -111,8 +109,6 @@ jobs:
 
   cs:
     runs-on: ubuntu-latest
-    env:
-      IMAGE: ghcr.io/bullshitsoftware/doxter-devcontainer:latest
     steps:
       - uses: actions/checkout@v2
       - name: test php code style
