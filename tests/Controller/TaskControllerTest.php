@@ -62,6 +62,13 @@ class TaskControllerTest extends WebTestCase
         self::assertSame($expectedAge, $age);
     }
 
+    public function testCurrentNoData(): void
+    {
+        $this->client->loginUser($this->userRepository->findOneByEmail('jane.doe@example.com'));
+        $this->client->request('GET', '/');
+        self::assertSelectorTextContains('div.alert', 'Yay! No tasks found');
+    }
+
     public function testCurrentFilter(): void
     {
         $this->client->loginUser($this->userRepository->findOneByEmail('john.doe@example.com'));
@@ -168,6 +175,13 @@ class TaskControllerTest extends WebTestCase
             ['23h', '1d', '2d', '3d', '4d', '5d', '6d', '7d'],
             $crawler->filter('.grid__cell-remaining')->each(fn (Crawler $c) => $c->text()),
         );
+    }
+
+    public function testWaitingNoData(): void
+    {
+        $this->client->loginUser($this->userRepository->findOneByEmail('jane.doe@example.com'));
+        $this->client->request('GET', '/waiting');
+        self::assertSelectorTextContains('div.alert', 'Yay! No tasks found');
     }
 
     public function testWaitingFilter(): void
@@ -289,6 +303,13 @@ class TaskControllerTest extends WebTestCase
             ['1d', '2d', '3d', '4d', '5d', '6d', '7d', '8d', '9d', '10d'],
             $crawler->filter('.grid__cell-age')->each(fn (Crawler $c) => $c->text()),
         );
+    }
+
+    public function testCompletedNoData(): void
+    {
+        $this->client->loginUser($this->userRepository->findOneByEmail('jane.doe@example.com'));
+        $this->client->request('GET', '/completed');
+        self::assertSelectorTextContains('div.alert', 'No tasks done :-(');
     }
 
     public function testCompletedFilter(): void

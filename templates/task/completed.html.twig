@@ -5,114 +5,120 @@
 {% endblock %}
 
 {% block content %}
-  {% include 'task/_search.html.twig' with {} only %}
+  {% if (tasks|length) > 0 %}
+    {% include 'task/_search.html.twig' with {} only %}
 
-  <div class="grid grid_completed mb">
-    <div class="grid__label md-only">
-      ID
-    </div>
-    <div class="grid__label md-only">
-      Created
-    </div>
-    <div class="grid__label md-only">
-      Completed
-    </div>
-    <div class="grid__label md-only">
-      Age
-    </div>
-    <div class="grid__label md-only">
-      Tag
-    </div>
-    <div class="grid__label md-only">
-      Title
-    </div>
-    {% for task in tasks %}
-      <div class="grid__label sm-only">
+    <div class="grid grid_completed mb">
+      <div class="grid__label md-only">
         ID
       </div>
-      <div class="grid__cell-id">
-        <a href="{{
-          path(
-            'task_view',
-            {
-              id: task.id
-            }
-          )
-          }}"
-          class="mono">
-          {{ task.id|slice(0, 8) }}
-        </a>
-      </div>
-
-      <div class="grid__label sm-only">
+      <div class="grid__label md-only">
         Created
       </div>
-      <div class="grid__cell-created">
-        {{ task.created|user_date }}
-      </div>
-
-      <div class="grid__label sm-only">
+      <div class="grid__label md-only">
         Completed
       </div>
-      <div class="grid__cell-completed">
-        {{ task.ended|user_date }}
-      </div>
-
-      <div class="grid__label sm-only">
+      <div class="grid__label md-only">
         Age
       </div>
-      <div class="grid__cell-age">
-        {{ task.created|date_diff(now) }}
-      </div>
-
-      <div class="grid__label sm-only">
+      <div class="grid__label md-only">
         Tag
       </div>
-      <div class="grid__cell-tag">
-        {% for tag in task.tags %}
-          {{ tag.name }}
-        {% endfor %}
-      </div>
-
-      <div class="grid__label sm-only">
+      <div class="grid__label md-only">
         Title
       </div>
-      <div class="grid__cell-title">
-        {{ task.title }}
-      </div>
+      {% for task in tasks %}
+        <div class="grid__label sm-only">
+          ID
+        </div>
+        <div class="grid__cell-id">
+          <a href="{{
+            path(
+              'task_view',
+              {
+                id: task.id
+              }
+            )
+            }}"
+            class="mono">
+            {{ task.id|slice(0, 8) }}
+          </a>
+        </div>
 
-      <div class="row sm-only"></div>
-      <div class="row sm-only"></div>
-    {% endfor %}
-  </div>
+        <div class="grid__label sm-only">
+          Created
+        </div>
+        <div class="grid__cell-created">
+          {{ task.created|user_date }}
+        </div>
 
-  <div class="row mb">
-    {% set query = app.request.query.all() %}
-    {% if page > 1 %}
-      <a href="{{
-        path(
-          'task_completed',
-          query|merge({
-            page: page - 1
-          })
-        )
-        }}"
-        class="btn btn_orange">
-        Prev
-      </a>
-    {% endif %}
-    {% if more %}
-      <a href="{{
-        path(
-          'task_completed',
-          query|merge({
-            page: page + 1
-          })
-        )
-        }}"
-        class="btn btn_orange">
-        Next
-      </a>
-    {% endif %}
-  </div>
+        <div class="grid__label sm-only">
+          Completed
+        </div>
+        <div class="grid__cell-completed">
+          {{ task.ended|user_date }}
+        </div>
+
+        <div class="grid__label sm-only">
+          Age
+        </div>
+        <div class="grid__cell-age">
+          {{ task.created|date_diff(now) }}
+        </div>
+
+        <div class="grid__label sm-only">
+          Tag
+        </div>
+        <div class="grid__cell-tag">
+          {% for tag in task.tags %}
+            {{ tag.name }}
+          {% endfor %}
+        </div>
+
+        <div class="grid__label sm-only">
+          Title
+        </div>
+        <div class="grid__cell-title">
+          {{ task.title }}
+        </div>
+
+        <div class="row sm-only"></div>
+        <div class="row sm-only"></div>
+      {% endfor %}
+    </div>
+
+    <div class="row mb">
+      {% set query = app.request.query.all() %}
+      {% if page > 1 %}
+        <a href="{{
+          path(
+            'task_completed',
+            query|merge({
+              page: page - 1
+            })
+          )
+          }}"
+          class="btn btn_orange">
+          Prev
+        </a>
+      {% endif %}
+      {% if more %}
+        <a href="{{
+          path(
+            'task_completed',
+            query|merge({
+              page: page + 1
+            })
+          )
+          }}"
+          class="btn btn_orange">
+          Next
+        </a>
+      {% endif %}
+    </div>
+  {% else %}
+    <div class="alert bg-pink black">
+      No tasks done :-(
+    </div>
+  {% endif %}
 {% endblock %}
