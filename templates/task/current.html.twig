@@ -24,10 +24,18 @@
       Title
     </div>
     {% for task in tasks %}
+      {% set task_active = task.started is not null %}
       <div class="grid__label sm-only">
         ID
       </div>
-      <div class="grid__cell-id">
+      <div class="{{
+        html_classes(
+          'grid__cell-id',
+          {
+            grid__row_active: task_active
+          }
+        )
+        }}">
         <a href="{{
           path(
             'task_view',
@@ -44,7 +52,14 @@
       <div class="grid__label sm-only">
         Active
       </div>
-      <div class="grid__cell-active">
+      <div class="{{
+        html_classes(
+          'grid__cell-active',
+          {
+            grid__row_active: task_active
+          }
+        )
+        }}">
         {% if task.started %}
           {{ task.started|date_diff(now) }}
         {% endif %}
@@ -53,14 +68,28 @@
       <div class="grid__label sm-only">
         Age
       </div>
-      <div class="grid__cell-age">
+      <div class="{{
+        html_classes(
+          'grid__cell-age',
+          {
+            grid__row_active: task_active
+          }
+        )
+        }}">
         {{ task.created|date_diff(now) }}
       </div>
 
       <div class="grid__label sm-only">
         Tag
       </div>
-      <div class="grid__cell-tag">
+      <div class="{{
+        html_classes(
+          'grid__cell-tag',
+          {
+            grid__row_active: task_active
+          }
+        )
+        }}">
         {% for tag in task.tags %}
           {{ tag.name }}
         {% endfor %}
@@ -69,7 +98,14 @@
       <div class="grid__label sm-only">
         Title
       </div>
-      <div class="grid__cell-title">
+      <div class="{{
+        html_classes(
+          'grid__cell-title',
+          {
+            grid__row_active: task_active
+          }
+        )
+        }}">
         {{ task.title }}
       </div>
 

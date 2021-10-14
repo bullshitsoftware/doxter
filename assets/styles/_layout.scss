@@ -66,6 +66,10 @@ body {
   padding: 0.25rem;
 }
 
+.grid__row_active {
+  background-color: $darkgrey;
+}
+
 @media screen and (max-width: $md) {
   .grid {
     grid-template-columns: min-content auto;
