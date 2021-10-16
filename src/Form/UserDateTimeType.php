@@ -17,11 +17,8 @@ use Symfony\Component\Security\Core\Security;
 
 class UserDateTimeType extends AbstractType
 {
-    private Security $security;
-
-    public function __construct(Security $security)
+    public function __construct(private Security $security)
     {
-        $this->security = $security;
     }
 
     public function getParent(): string

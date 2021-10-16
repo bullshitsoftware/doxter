@@ -14,11 +14,8 @@ use Twig\TwigFilter;
 
 class DateExtension extends AbstractExtension
 {
-    private Security $security;
-
-    public function __construct(Security $security)
+    public function __construct(private Security $security)
     {
-        $this->security = $security;
     }
 
     public function getFilters(): array

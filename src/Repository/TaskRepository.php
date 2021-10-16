@@ -26,9 +26,7 @@ class TaskRepository extends ServiceEntityRepository
 {
     private const TASK_PER_PAGE = 30;
 
-    private TaskSearchFilter $searchFilter;
-
-    public function __construct(ManagerRegistry $registry, TaskSearchFilter $searchFilter)
+    public function __construct(ManagerRegistry $registry, private TaskSearchFilter $searchFilter)
     {
         $this->searchFilter = $searchFilter;
 

@@ -16,13 +16,8 @@ use Symfony\Component\Security\Core\Security;
 
 class TagsType extends AbstractType
 {
-    private Security $security;
-    private TagRepository $repository;
-
-    public function __construct(Security $security, TagRepository $repository)
+    public function __construct(private Security $security, private TagRepository $repository)
     {
-        $this->security = $security;
-        $this->repository = $repository;
     }
 
     public function getParent(): string

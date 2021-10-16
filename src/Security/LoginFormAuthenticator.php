@@ -27,11 +27,8 @@ class LoginFormAuthenticator extends AbstractLoginFormAuthenticator
 
     private const LAST_REMEMBER_ME = '_security.remember_me';
 
-    private UrlGeneratorInterface $urlGenerator;
-
-    public function __construct(UrlGeneratorInterface $urlGenerator)
+    public function __construct(private UrlGeneratorInterface $urlGenerator)
     {
-        $this->urlGenerator = $urlGenerator;
     }
 
     public function authenticate(Request $request): PassportInterface

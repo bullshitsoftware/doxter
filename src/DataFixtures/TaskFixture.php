@@ -10,11 +10,8 @@ use Doctrine\Persistence\ObjectManager;
 
 class TaskFixture extends Fixture implements DependentFixtureInterface
 {
-    private DateTimeFactory $dateTimeFactory;
-
-    public function __construct(DateTimeFactory $dateTimeFactory)
+    public function __construct(private DateTimeFactory $dateTimeFactory)
     {
-        $this->dateTimeFactory = $dateTimeFactory;
     }
 
     public function getDependencies(): array

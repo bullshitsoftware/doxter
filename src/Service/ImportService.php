@@ -13,12 +13,10 @@ use Throwable;
 
 class ImportService
 {
-    private Connection $connection;
     private DateTimeZone $sourceTimezone;
 
-    public function __construct(Connection $connection)
+    public function __construct(private Connection $connection)
     {
-        $this->connection = $connection;
         $this->sourceTimezone = new DateTimeZone('UTC');
     }
 
