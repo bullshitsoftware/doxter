@@ -35,14 +35,21 @@
     <div class="grid__label">
       Id
     </div>
-    <div>
+    <div class="grid__cell-id">
       {{ task.id }}
+    </div>
+
+    <div class="grid__label">
+      Title
+    </div>
+    <div class="grid_cell-title">
+      {{ task.title }}
     </div>
 
     <div class="grid__label">
       Tag
     </div>
-    <div>
+    <div class="grid__cell-tag">
       {% for tag in task.tags %}
         {{ tag.name }}
       {% endfor %}
@@ -51,28 +58,28 @@
     <div class="grid__label">
       Description
     </div>
-    <div class="markdown">
+    <div class="grid__cell-description markdown">
       {{ task.description|markdown_to_html }}
     </div>
 
     <div class="grid__label">
       Created
     </div>
-    <div>
+    <div class="grid__cell-created">
       {{ task.created|user_datetime }}
     </div>
 
     <div class="grid__label">
       Updated
     </div>
-    <div>
+    <div class="grid__cell-updated">
       {{ task.updated|user_datetime }}
     </div>
 
     <div class="grid__label">
       Wait
     </div>
-    <div>
+    <div class="grid__cell-wait">
       {% if task.wait %}
         {{ task.wait|user_datetime }}
       {% else %}
@@ -83,7 +90,7 @@
     <div class="grid__label">
       Started
     </div>
-    <div>
+    <div class="grid__cell-started">
       {% if task.started %}
         {{ task.started|user_datetime }}
       {% else %}
@@ -94,7 +101,7 @@
     <div class="grid__label">
       Ended
     </div>
-    <div>
+    <div class="grid__cell-ended">
       {% if task.ended %}
         {{ task.ended|user_datetime }}
       {% else %}
