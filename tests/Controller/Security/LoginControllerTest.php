@@ -1,15 +1,11 @@
 <?php
 
-namespace App\Tests\Controller;
+namespace App\Tests\Controller\Security;
 
-use App\Repository\UserRepository;
-use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
-class SecurityControllerTest extends WebTestCase
+class LoginControllerTest extends WebTestCase
 {
-    private KernelBrowser $client;
-
     protected function setUp(): void
     {
         parent::setUp();
@@ -17,7 +13,7 @@ class SecurityControllerTest extends WebTestCase
         $this->client = static::createClient();
     }
 
-    public function testLogin(): void
+    public function testNoRememberMe(): void
     {
         $this->client->request('GET', '/login');
         self::assertResponseIsSuccessful();
@@ -41,7 +37,7 @@ class SecurityControllerTest extends WebTestCase
         self::assertResponseRedirects('/');
     }
 
-    public function testLoginRememberMe(): void
+    public function testRememberMe(): void
     {
         $crawler = $this->client->request('GET', '/login');
         self::assertResponseIsSuccessful();
@@ -71,17 +67,5 @@ class SecurityControllerTest extends WebTestCase
         ]);
         self::assertResponseRedirects('/');
         self::assertNotNull($this->client->getCookieJar()->get('REMEMBERME'));
-    }
-
-    public function testLogout(): void
-    {
-        $userRepository = static::getContainer()->get(UserRepository::class);
-
-        $user = $userRepository->findOneByEmail('john.doe@example.com');
-        $this->client->loginUser($user);
-        $this->client->request('GET', '/logout');
-        self::assertResponseRedirects('http://localhost/login');
-        $this->client->followRedirect();
-        self::assertResponseIsSuccessful();
     }
 }
