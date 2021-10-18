@@ -36,6 +36,9 @@ class TaskFixture extends Fixture implements DependentFixtureInterface
             if (1 === $i % 2) {
                 $task->setStarted($task->getCreated());
             }
+            if (8 <= $i) {
+                $task->setDue($task->getCreated()->modify("+${i}months"));
+            }
             $manager->persist($task);
             $this->addReference(self::referenceName('current', $i), $task);
         }

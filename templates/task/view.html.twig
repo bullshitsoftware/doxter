@@ -42,7 +42,7 @@
     <div class="grid__label">
       Title
     </div>
-    <div class="grid_cell-title">
+    <div class="grid__cell-title">
       {{ task.title }}
     </div>
 
@@ -104,6 +104,17 @@
     <div class="grid__cell-ended">
       {% if task.ended %}
         {{ task.ended|user_datetime }}
+      {% else %}
+        &mdash;
+      {% endif %}
+    </div>
+
+    <div class="grid__label">
+      Due
+    </div>
+    <div class="grid__cell-due">
+      {% if task.due %}
+        {{ task.due|user_datetime }}
       {% else %}
         &mdash;
       {% endif %}

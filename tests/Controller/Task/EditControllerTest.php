@@ -25,7 +25,38 @@ class EditControllerTest extends WebTestCase
         $this->taskRepository = static::getContainer()->get(TaskRepository::class);
     }
 
-    public function testSuccess(): void
+    public function testMinimalFields(): void
+    {
+        $task = $this->taskRepository->findOneByTitle('Current task 1');
+        $this->client->loginUser($this->userRepository->findOneByEmail('john.doe@example.com'));
+        $this->client->request('GET', '/edit/'.$task->getId());
+        self::assertResponseIsSuccessful();
+
+        $this->client->submitForm('Save', [
+            'task' => [
+                'title' => 'test',
+                'tags' => '',
+                'description' => '',
+                'created' => '2006-12-01 01:02:03',
+                'wait' => '',
+                'started' => '',
+                'ended' => '',
+                'due' => '',
+            ],
+        ]);
+        self::assertResponseRedirects('/');
+        self::assertNull($this->taskRepository->findOneByTitle('Current task 1'));
+        /** @var Task $task */
+        $task = $this->taskRepository->findOneByTitle('test');
+        self::assertNotNull($task);
+        $tags = $task->getTags()->map(fn (Tag $tag) => $tag->getName())->toArray();
+        self::assertCount(0, $tags);
+        self::assertSame('2006-12-01 01:02:03', $task->getCreated()->format('Y-m-d H:i:s'));
+        $this->client->followRedirect();
+        self::assertSelectorTextSame('.flash', 'Task "test" updated');
+    }
+
+    public function testAllFields(): void
     {
         $task = $this->taskRepository->findOneByTitle('Current task 1');
         $this->client->loginUser($this->userRepository->findOneByEmail('john.doe@example.com'));
@@ -41,6 +72,7 @@ class EditControllerTest extends WebTestCase
                 'wait' => '2006-12-10 03:04:05',
                 'started' => '2006-12-11 05:06:07',
                 'ended' => '2006-12-12 07:08:09',
+                'due' => '2006-12-12 09:10:11',
             ],
         ]);
         self::assertResponseRedirects('/completed');
@@ -57,6 +89,7 @@ class EditControllerTest extends WebTestCase
         self::assertSame('2006-12-10 03:04:05', $task->getWait()->format('Y-m-d H:i:s'));
         self::assertSame('2006-12-11 05:06:07', $task->getStarted()->format('Y-m-d H:i:s'));
         self::assertSame('2006-12-12 07:08:09', $task->getEnded()->format('Y-m-d H:i:s'));
+        self::assertSame('2006-12-12 09:10:11', $task->getDue()->format('Y-m-d H:i:s'));
         $this->client->followRedirect();
         self::assertSelectorTextSame('.flash', 'Task "test" updated');
     }

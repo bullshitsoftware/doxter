@@ -46,8 +46,10 @@ class TaskRepository extends ServiceEntityRepository
             ->andWhere('task.wait IS NULL OR task.wait < :now')
             ->setParameter('now', $now)
             ->andWhere('task.ended IS NULL')
+            ->addOrderBy('task.due', 'ASC')
             ->addOrderBy('task.started', 'ASC')
-            ->addOrderBy('task.created', 'ASC');
+            ->addOrderBy('task.created', 'ASC')
+        ;
 
         if (null !== $search) {
             $this->searchFilter->apply($queryBuilder, 'task', $search);
@@ -55,7 +57,10 @@ class TaskRepository extends ServiceEntityRepository
 
         return $queryBuilder->getQuery()
             ->setHint(Query::HINT_CUSTOM_OUTPUT_WALKER, OrderByNullSqlWalker::class)
-            ->setHint(OrderByNullSqlWalker::HINT, ['started' => OrderByNullSqlWalker::LAST])
+            ->setHint(OrderByNullSqlWalker::HINT, [
+                'due' => OrderByNullSqlWalker::LAST,
+                'started' => OrderByNullSqlWalker::LAST,
+            ])
             ->getResult();
     }
 

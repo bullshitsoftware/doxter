@@ -63,8 +63,8 @@ class ImportService
 
         // it is possible to move a task from one user to another, but nobody cares
         $this->connection->executeStatement(
-            'INSERT OR REPLACE INTO task (id, user_id, title, description, created, updated, wait, started, ended)
-             VALUES (:id, :user_id, :title, :description, :created, :updated, :wait, :started, :ended)
+            'INSERT OR REPLACE INTO task (id, user_id, title, description, created, updated, wait, started, ended, due)
+             VALUES (:id, :user_id, :title, :description, :created, :updated, :wait, :started, :ended, :due)
             ',
             [
                 'id' => $item['uuid'],
@@ -76,6 +76,7 @@ class ImportService
                 'wait' => $this->prepareDate($item['wait'] ?? null),
                 'started' => $this->prepareDate($item['start'] ?? null),
                 'ended' => $this->prepareDate($item['end'] ?? null),
+                'due' => $this->prepareDate($item['due'] ?? null),
             ],
             [
                 'created' => Types::DATETIME_IMMUTABLE,
@@ -83,6 +84,7 @@ class ImportService
                 'wait' => Types::DATETIME_IMMUTABLE,
                 'started' => Types::DATETIME_IMMUTABLE,
                 'ended' => Types::DATETIME_IMMUTABLE,
+                'due' => Types::DATETIME_IMMUTABLE,
             ],
         );
     }

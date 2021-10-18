@@ -42,7 +42,7 @@ body {
 }
 
 .grid_current {
-  grid-template-columns: min-content min-content min-content max-content auto;
+  grid-template-columns: min-content min-content min-content max-content min-content auto;
 }
 
 .grid_waiting {
@@ -68,6 +68,11 @@ body {
 
 .grid__row_active {
   background-color: $darkgrey;
+}
+
+.grid__row_active .grid__row_important,
+.grid__row_important {
+  background-color: $pink;
 }
 
 @media screen and (max-width: $md) {

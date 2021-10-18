@@ -22,7 +22,9 @@ class TaskType extends AbstractType
             ->add('created', UserDateTimeType::class)
             ->add('wait', UserDateTimeType::class, ['required' => false])
             ->add('started', UserDateTimeType::class, ['required' => false])
-            ->add('ended', UserDateTimeType::class, ['required' => false]);
+            ->add('ended', UserDateTimeType::class, ['required' => false])
+            ->add('due', UserDateTimeType::class, ['required' => false])
+        ;
     }
 
     public function configureOptions(OptionsResolver $resolver): void

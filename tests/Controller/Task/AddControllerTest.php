@@ -25,7 +25,29 @@ class AddControllerTest extends WebTestCase
         $this->taskRepository = static::getContainer()->get(TaskRepository::class);
     }
 
-    public function testSuccess(): void
+    public function testMinimalFields(): void
+    {
+        $this->client->loginUser($this->userRepository->findOneByEmail('john.doe@example.com'));
+        $this->client->request('GET', '/add');
+        self::assertResponseIsSuccessful();
+        $this->client->submitForm('Create', [
+            'task' => [
+                'title' => 'test',
+                'created' => '2006-12-01 01:02:03',
+            ],
+        ]);
+        self::assertResponseRedirects('/');
+        /** @var Task $task */
+        $task = $this->taskRepository->findOneByTitle('test');
+        self::assertNotNull($task);
+        $tags = $task->getTags()->map(fn (Tag $tag) => $tag->getName())->toArray();
+        self::assertCount(0, $tags);
+        self::assertSame('2007-01-02 03:04:05', $task->getUpdated()->format('Y-m-d H:i:s'));
+        $this->client->followRedirect();
+        self::assertSelectorTextSame('.flash', 'Task "test" created');
+    }
+
+    public function testAllFields(): void
     {
         $this->client->loginUser($this->userRepository->findOneByEmail('john.doe@example.com'));
         $this->client->request('GET', '/add');
@@ -39,6 +61,7 @@ class AddControllerTest extends WebTestCase
                 'wait' => '2006-12-10 03:04:05',
                 'started' => '2006-12-11 05:06:07',
                 'ended' => '2006-12-12 07:08:09',
+                'due' => '2006-12-13 09:10:11',
             ],
         ]);
         self::assertResponseRedirects('/completed');
@@ -54,6 +77,7 @@ class AddControllerTest extends WebTestCase
         self::assertSame('2006-12-10 03:04:05', $task->getWait()->format('Y-m-d H:i:s'));
         self::assertSame('2006-12-11 05:06:07', $task->getStarted()->format('Y-m-d H:i:s'));
         self::assertSame('2006-12-12 07:08:09', $task->getEnded()->format('Y-m-d H:i:s'));
+        self::assertSame('2006-12-13 09:10:11', $task->getDue()->format('Y-m-d H:i:s'));
         $this->client->followRedirect();
         self::assertSelectorTextSame('.flash', 'Task "test" created');
     }

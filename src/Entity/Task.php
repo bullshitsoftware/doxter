@@ -54,6 +54,9 @@ class Task
     #[Column(type: 'datetime_immutable', nullable: true)]
     private ?DateTimeImmutable $ended = null;
 
+    #[Column(type: 'datetime_immutable', nullable: true)]
+    private ?DateTimeImmutable $due = null;
+
     public function __construct()
     {
         $this->id = Uuid::v4();
@@ -175,6 +178,18 @@ class Task
     public function setEnded(?DateTimeImmutable $ended): self
     {
         $this->ended = $ended;
+
+        return $this;
+    }
+
+    public function getDue(): ?DateTimeImmutable
+    {
+        return $this->due;
+    }
+
+    public function setDue(?DateTimeImmutable $due): self
+    {
+        $this->due = $due;
 
         return $this;
     }

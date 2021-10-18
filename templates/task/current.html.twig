@@ -22,21 +22,20 @@
         Tag
       </div>
       <div class="grid__label md-only">
+        Due
+      </div>
+      <div class="grid__label md-only">
         Title
       </div>
       {% for task in tasks %}
-        {% set task_active = task.started is not null %}
+        {% set row_classes = {
+          grid__row_active: task.started is not null,
+          grid__row_important: task.due is not null and task.due < now
+        } %}
         <div class="grid__label sm-only">
           ID
         </div>
-        <div class="{{
-          html_classes(
-            'grid__cell-id',
-            {
-              grid__row_active: task_active
-            }
-          )
-          }}">
+        <div class="{{ html_classes('grid__cell-id', row_classes) }}">
           <a href="{{
             path(
               'task_view',
@@ -53,14 +52,7 @@
         <div class="grid__label sm-only">
           Active
         </div>
-        <div class="{{
-          html_classes(
-            'grid__cell-active',
-            {
-              grid__row_active: task_active
-            }
-          )
-          }}">
+        <div class="{{ html_classes('grid__cell-active', row_classes) }}">
           {% if task.started %}
             {{ task.started|date_diff(now) }}
           {% endif %}
@@ -69,44 +61,32 @@
         <div class="grid__label sm-only">
           Age
         </div>
-        <div class="{{
-          html_classes(
-            'grid__cell-age',
-            {
-              grid__row_active: task_active
-            }
-          )
-          }}">
+        <div class="{{ html_classes('grid__cell-age', row_classes) }}">
           {{ task.created|date_diff(now) }}
         </div>
 
         <div class="grid__label sm-only">
           Tag
         </div>
-        <div class="{{
-          html_classes(
-            'grid__cell-tag',
-            {
-              grid__row_active: task_active
-            }
-          )
-          }}">
+        <div class="{{ html_classes('grid__cell-tag', row_classes) }}">
           {% for tag in task.tags %}
             {{ tag.name }}
           {% endfor %}
         </div>
 
         <div class="grid__label sm-only">
+          Active
+        </div>
+        <div class="{{ html_classes('grid__cell-due', row_classes) }}">
+          {% if task.due %}
+            {{ task.due|date_diff(now) }}
+          {% endif %}
+        </div>
+
+        <div class="grid__label sm-only">
           Title
         </div>
-        <div class="{{
-          html_classes(
-            'grid__cell-title',
-            {
-              grid__row_active: task_active
-            }
-          )
-          }}">
+        <div class="{{ html_classes('grid__cell-title', row_classes) }}">
           {{ task.title }}
         </div>
 
