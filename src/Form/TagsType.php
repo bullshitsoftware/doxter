@@ -44,9 +44,12 @@ class TagsType extends AbstractType
                     throw new LogicException('The type should only be used for authorized users');
                 }
 
-                $tags = array_map(
-                    fn (string $tag) => mb_strtolower($tag),
-                    explode(' ', $tags),
+                $tags = array_filter(
+                    array_map(
+                        fn (string $tag) => mb_strtolower($tag),
+                        explode(' ', $tags),
+                    ),
+                    fn (string $tag) => !empty($tag),
                 );
                 $knownTags = $this->repository->findBy(['user' => $user, 'name' => $tags]);
                 $collection = new ArrayCollection($knownTags);

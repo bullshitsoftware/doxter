@@ -27,23 +27,26 @@ class CurrentControllerTest extends WebTestCase
         self::assertResponseIsSuccessful();
         $titles = $crawler->filter('.grid__cell-title')->each(fn (Crawler $c) => $c->text());
         $expectTitles = [
+            'Current task 8',
+            'Current task 9',
             'Current task 1',
             'Current task 3',
             'Current task 5',
             'Current task 7',
-            'Current task 9',
             'Current task 2',
             'Current task 4',
             'Current task 6',
-            'Current task 8',
         ];
         self::assertSame($expectTitles, $titles);
         $active = $crawler->filter('.grid__cell-active')->each(fn (Crawler $c) => $c->text());
-        $expectedActive = ['9m', '7m', '5m', '3m', '1m', '', '', '', ''];
+        $expectedActive = ['', '1m',  '9m', '7m', '5m', '3m', '', '', ''];
         self::assertSame($expectedActive, $active);
         $age = $crawler->filter('.grid__cell-age')->each(fn (Crawler $c) => $c->text());
-        $expectedAge = ['9m', '7m', '5m', '3m', '1m', '8m', '6m', '4m', '2m'];
+        $expectedAge = ['2m', '1m', '9m', '7m', '5m', '3m', '8m', '6m', '4m'];
         self::assertSame($expectedAge, $age);
+        $due = $crawler->filter('.grid__cell-due')->each(fn (Crawler $c) => $c->text());
+        $expectedDue = ['7mon', '8mon', '', '', '', '', '', '', ''];
+        self::assertSame($expectedDue, $due);
 
         $crawler = $this->client->request('GET', '/current');
         self::assertResponseIsSuccessful();
@@ -53,6 +56,8 @@ class CurrentControllerTest extends WebTestCase
         self::assertSame($expectedActive, $active);
         $age = $crawler->filter('.grid__cell-age')->each(fn (Crawler $c) => $c->text());
         self::assertSame($expectedAge, $age);
+        $due = $crawler->filter('.grid__cell-due')->each(fn (Crawler $c) => $c->text());
+        self::assertSame($expectedDue, $due);
     }
 
     public function testNoData(): void
@@ -96,17 +101,17 @@ class CurrentControllerTest extends WebTestCase
         $crawler = $this->client->request('GET', '/', ['q' => '-foo']);
         self::assertResponseIsSuccessful();
         $tags = $crawler->filter('.grid__cell-tag')->each(fn (Crawler $c) => $c->text());
-        self::assertSame(['baz', '', '', '', '', '', ''], $tags);
+        self::assertSame(['', '', 'baz', '', '', '', ''], $tags);
         $titles = $crawler->filter('.grid__cell-title')->each(fn (Crawler $c) => $c->text());
         self::assertSame(
             [
+                'Current task 8',
+                'Current task 9',
                 'Current task 3',
                 'Current task 5',
                 'Current task 7',
-                'Current task 9',
                 'Current task 4',
                 'Current task 6',
-                'Current task 8',
             ],
             $titles,
         );
@@ -118,12 +123,12 @@ class CurrentControllerTest extends WebTestCase
         $titles = $crawler->filter('.grid__cell-title')->each(fn (Crawler $c) => $c->text());
         self::assertSame(
             [
+                'Current task 8',
+                'Current task 9',
                 'Current task 5',
                 'Current task 7',
-                'Current task 9',
                 'Current task 4',
                 'Current task 6',
-                'Current task 8',
             ],
             $titles,
         );

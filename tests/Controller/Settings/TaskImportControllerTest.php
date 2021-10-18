@@ -41,6 +41,7 @@ class TaskImportControllerTest extends WebTestCase
             'start' => '20210909T220902Z',
             'modified' => '20210914T193310Z',
             'end' => '20210914T193310Z',
+            'due' => '20211231T210000Z',
             'status' => 'completed',
             'tags' => ['tag1', 'tag2'],
         ];
@@ -56,6 +57,7 @@ class TaskImportControllerTest extends WebTestCase
         self::assertSame('2021-09-09 22:09:02', $task->getStarted()->format('Y-m-d H:i:s'));
         self::assertSame('2021-09-14 19:33:10', $task->getUpdated()->format('Y-m-d H:i:s'));
         self::assertSame('2021-09-14 19:33:10', $task->getEnded()->format('Y-m-d H:i:s'));
+        self::assertSame('2021-12-31 21:00:00', $task->getDue()->format('Y-m-d H:i:s'));
         $tags = $task->getTags()->map(fn (Tag $tag) => $tag->getName())->toArray();
         self::assertCount(2, $tags);
         self::assertTrue(in_array('tag1', $tags));
