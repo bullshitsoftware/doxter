@@ -54,7 +54,7 @@
         </div>
         <div class="{{ html_classes('grid__cell-active', row_classes) }}">
           {% if task.started %}
-            {{ task.started|date_diff(now) }}
+            {{ now|date_diff(task.started) }}
           {% endif %}
         </div>
 
@@ -62,7 +62,7 @@
           Age
         </div>
         <div class="{{ html_classes('grid__cell-age', row_classes) }}">
-          {{ task.created|date_diff(now) }}
+          {{ now|date_diff(task.created) }}
         </div>
 
         <div class="grid__label sm-only">

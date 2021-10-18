@@ -29,28 +29,17 @@ class DateExtension extends AbstractExtension
 
     public function dateDiff(DateTimeInterface $dateA, DateTimeInterface $dateB): string
     {
-        $diff = $dateA->diff($dateB);
-        if ($diff->y > 0) {
-            return $diff->y.'y';
-        }
+        $diff = $dateB->diff($dateA);
+        $sign = $diff->invert ? '-' : '';
 
-        if ($diff->m > 0) {
-            return $diff->m.'mon';
-        }
-
-        if ($diff->d > 0) {
-            return $diff->d.'d';
-        }
-
-        if ($diff->h > 0) {
-            return $diff->h.'h';
-        }
-
-        if ($diff->i > 0) {
-            return $diff->i.'m';
-        }
-
-        return $diff->s.'s';
+        return match (true) {
+            $diff->y > 0 => $sign.$diff->y.'y',
+            $diff->m > 0 => $sign.$diff->m.'mon',
+            $diff->d > 0 => $sign.$diff->d.'d',
+            $diff->h > 0 => $sign.$diff->h.'h',
+            $diff->i > 0 => $sign.$diff->i.'m',
+            default => $sign.$diff->s.'s',
+        };
     }
 
     public function userDate(DateTimeInterface $date): string
