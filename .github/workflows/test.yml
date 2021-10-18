@@ -6,7 +6,7 @@ on:
 
 env:
   IMAGE: ghcr.io/bullshitsoftware/doxter-devcontainer:latest
-  CACHE_VERSION: v1
+  CACHE_VERSION: v2
 
 jobs:
   prepare:
