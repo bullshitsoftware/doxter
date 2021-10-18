@@ -28,12 +28,12 @@ class DateExtensionTest extends TestCase
 
     public function testDateDiff(): void
     {
-        self::assertSame('1y', $this->extension->dateDiff(new DateTime('now'), new DateTime('+367 days')));
-        self::assertSame('1mon', $this->extension->dateDiff(new DateTime('+32 days'), new DateTime('now')));
-        self::assertSame('1d', $this->extension->dateDiff(new DateTime('now'), new DateTime('+1 day')));
-        self::assertSame('1h', $this->extension->dateDiff(new DateTime('now'), new DateTime('+1 hour')));
-        self::assertSame('1m', $this->extension->dateDiff(new DateTime('now'), new DateTime('+1 minute')));
-        self::assertSame('1s', $this->extension->dateDiff(new DateTime('now'), new DateTime('+1 second')));
+        self::assertSame('1y', $this->extension->dateDiff(new DateTime('+366 days'), new DateTime('-1 second')));
+        self::assertSame('1d', $this->extension->dateDiff(new DateTime('+1 day'), new DateTime('-1 second')));
+        self::assertSame('1h', $this->extension->dateDiff(new DateTime('+1 hour'), new DateTime('-1 second')));
+        self::assertSame('1s', $this->extension->dateDiff(new DateTime('+1 second'), new DateTime('-1 second')));
+        self::assertSame('1m', $this->extension->dateDiff(new DateTime('+1 minute'), new DateTime('-1 second')));
+        self::assertSame('-1d', $this->extension->dateDiff(new DateTime('-1 day'), new DateTime('+1 second')));
     }
 
     public function testUserDate(): void

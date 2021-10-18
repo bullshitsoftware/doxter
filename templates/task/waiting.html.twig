@@ -49,7 +49,7 @@
           Age
         </div>
         <div class="grid__cell-age">
-          {{ task.created|date_diff(now) }}
+          {{ now|date_diff(task.created) }}
         </div>
 
         <div class="grid__label sm-only">
