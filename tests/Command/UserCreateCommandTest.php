@@ -18,7 +18,7 @@ class UserCreateCommandTest extends KernelTestCase
     {
         parent::setUp();
 
-        $application = new Application(static::createKernel());
+        $application = new Application(self::createKernel());
         $command = $application->find('user:create');
 
         $this->tester = new CommandTester($command);

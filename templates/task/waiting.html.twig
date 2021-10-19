@@ -8,86 +8,84 @@
   {% if (tasks|length) > 0 %}
     {% include 'task/_search.html.twig' with {} only %}
 
-    <div class="grid grid_waiting mb">
-      <div class="grid__label md-only">
+    <div class="grid grid_waiting">
+      <div class="grid__label grid__label_md">
         ID
       </div>
-      <div class="grid__label md-only">
+      <div class="grid__label grid__label_md">
         Age
       </div>
-      <div class="grid__label md-only">
+      <div class="grid__label grid__label_md">
         Tag
       </div>
-      <div class="grid__label md-only">
+      <div class="grid__label grid__label_md">
         Wait
       </div>
-      <div class="grid__label md-only">
+      <div class="grid__label grid__label_md">
         Remaining
       </div>
-      <div class="grid__label md-only">
+      <div class="grid__label grid__label_md grid__label_left">
         Title
       </div>
       {% for task in tasks %}
-        <div class="grid__label sm-only">
+        <div class="grid__label grid__label_sm">
           ID
         </div>
-        <div class="grid__cell-id">
-          <a href="{{
-            path(
-              'task_view',
-              {
-                id: task.id
-              }
-            )
-            }}"
-            class="mono">
-            {{ task.id|slice(0, 8) }}
-          </a>
-        </div>
+        <a class="grid__cell grid__cell_mono"
+          href="{{
+          path(
+            'task_view',
+            {
+              id: task.id
+            }
+          )
+          }}">
+          {{ task.id|slice(0, 8) }}
+        </a>
 
-        <div class="grid__label sm-only">
+        <div class="grid__label grid__label_sm">
           Age
         </div>
-        <div class="grid__cell-age">
+        <div class="grid__cell grid__cell_right">
           {{ now|date_diff(task.created) }}
         </div>
 
-        <div class="grid__label sm-only">
+        <div class="grid__label grid__label_sm">
           Tag
         </div>
-        <div class="grid__cell-tag">
+        <div class="grid__cell">
           {% for tag in task.tags %}
             {{ tag.name }}
           {% endfor %}
         </div>
 
-        <div class="grid__label sm-only">
+        <div class="grid__label grid__label_sm">
           Wait
         </div>
-        <div class="grid__cell-wait">
+        <div class="grid__cell">
           {{ task.wait|user_date }}
         </div>
 
-        <div class="grid__label sm-only">
+        <div class="grid__label grid__label_sm">
           Remaining
         </div>
-        <div class="grid__cell-remaining">
+        <div class="grid__cell grid__cell_right">
           {{ task.wait|date_diff(now) }}
         </div>
 
-        <div class="grid__label sm-only">
+        <div class="grid__label grid__label_sm">
           Title
         </div>
-        <div class="grid__cell-title">
+        <div class="grid__cell">
           {{ task.title }}
         </div>
 
-        <div class="row sm-only"></div>
-        <div class="row sm-only"></div>
+        <div class="grid__cell grid__cell_space"></div>
+        <div class="grid__cell grid__cell_space"></div>
       {% endfor %}
     </div>
   {% else %}
-    <div class="alert bg-green black">
+    <div class="message message_green">
       Yay! No tasks found
     </div>
   {% endif %}

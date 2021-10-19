@@ -1,0 +1,11 @@
+.buttons-group {
+  margin-bottom: $margin;
+  width: 100%;
+
+  display: flex;
+  align-items: center;
+  column-gap: $marginSm;
+
+  @include button('buttons-group');
+  @include button-accents('buttons-group');
+}

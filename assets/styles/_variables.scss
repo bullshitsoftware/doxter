@@ -7,14 +7,17 @@ $green: #b4d273;
 $orange: #e87d3e;
 $purple: #9e86c8;
 $pink: #b05279;
+$darkpink: darken($pink, 20%);
 $blue: #6c99bb;
 
-$colors: 'black' $black, 'grey' $grey, 'white' $white, 'yellow' $yellow, 'green' $green, 'orange' $orange, 'pink' $pink,
-  'blue' $blue;
+$colors: 'black' $black, 'grey' $grey, 'darkgrey' $darkgrey, 'white' $white, 'yellow' $yellow, 'green' $green,
+  'orange' $orange, 'pink' $pink, 'darkpink' $darkpink, 'blue' $blue;
 
 $sm: 420px;
 $md: 640px;
 $lg: 960px;
 
 $margin: 0.5em;
+$marginSm: 0.25em;
 $padding: 0.5em;
+$paddingSm: 0.25em;

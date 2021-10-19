@@ -1,44 +1,48 @@
-label {
-  display: block;
-  font-weight: bold;
-  color: $yellow;
-}
+.form {
+  .form__label {
+    display: block;
+    margin-bottom: $margin;
+    font-weight: bold;
+    color: $yellow;
+  }
 
-input,
-textarea {
-  width: 100%;
-  padding: $padding;
-  border: 1px solid $grey;
-  background-color: $black;
-  color: $white;
-  border-radius: 0;
-}
+  .form__input {
+    margin-bottom: $margin;
+    padding: $padding;
+    width: 100%;
+    border: 1px solid $grey;
+    background-color: $black;
+    color: $white;
+    border-radius: 0;
+    font-size: 1em;
 
-textarea {
-  height: 300px;
-  font-family: monospace;
-}
+    &:focus {
+      border: 1px solid $yellow;
+    }
 
-input[type='checkbox'] {
-  width: auto;
-}
+    &.form__input_textarea {
+      height: 300px;
+      font-family: monospace;
+    }
+  }
 
-input:focus,
-textarea:focus {
-  border: 1px solid $yellow;
-}
+  .form__checkbox {
+    appearance: none;
+    margin-right: $margin;
+    width: 2em;
+    height: 2em;
 
-button,
-.btn {
-  padding: $padding;
-  border: none;
-  background-color: $darkgrey;
-  color: $yellow;
-  text-decoration: none;
-  font-size: 1rem;
-  font-weight: bold;
-}
+    background-color: $darkgrey;
+    border: 1px solid $grey;
+    &:checked {
+      background-color: $yellow;
+    }
 
-.btn_orange {
-  color: $orange;
+    &:focus {
+      border: 1px solid $orange;
+    }
+  }
+
+  @include button('form');
+  @include button-accents('form');
 }

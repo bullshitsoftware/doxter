@@ -5,29 +5,26 @@ namespace App\Tests\Controller\Settings;
 use App\Entity\Tag;
 use App\Entity\Task;
 use App\Repository\TaskRepository;
-use App\Repository\UserRepository;
+use App\Tests\Controller\WebTestCase;
 use function in_array;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class TaskImportControllerTest extends WebTestCase
 {
     private KernelBrowser $client;
-    private UserRepository $userRepository;
     private TaskRepository $taskRepository;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->client = static::createClient();
-        $this->userRepository = static::getContainer()->get(UserRepository::class);
-        $this->taskRepository = static::getContainer()->get('doctrine')->getManager()->getRepository(Task::class);
+        $this->client = self::createClient();
+        $this->taskRepository = self::getContainer()->get('doctrine')->getManager()->getRepository(Task::class);
     }
 
     public function testImport(): void
     {
-        $this->client->loginUser($this->userRepository->findOneByEmail('john.doe@example.com'));
+        self::loginUserByEmail();
         $this->client->request('GET', '/settings/import');
         $taskData = [
             'id' => 0,
@@ -63,7 +60,7 @@ class TaskImportControllerTest extends WebTestCase
         self::assertTrue(in_array('tag1', $tags));
         self::assertTrue(in_array('tag2', $tags));
         $this->client->followRedirect();
-        self::assertSelectorTextSame('.flash', 'Import succeed');
+        self::assertSelectorTextSame('.message_flash', 'Import succeed');
 
         $this->client->request('GET', '/settings/import');
         $taskData['description'] = 'Imported2';
@@ -77,6 +74,6 @@ class TaskImportControllerTest extends WebTestCase
         self::assertCount(1, $tags);
         self::assertTrue(in_array('tag3', $tags));
         $this->client->followRedirect();
-        self::assertSelectorTextSame('.flash', 'Import succeed');
+        self::assertSelectorTextSame('.message_flash', 'Import succeed');
     }
 }

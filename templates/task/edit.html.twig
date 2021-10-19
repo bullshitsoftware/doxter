@@ -5,7 +5,7 @@
 {% endblock %}
 
 {% block content %}
-  <div class="row mb">
+  <div class="buttons-group">
     <a href="{{
       path(
         'task_view',
@@ -14,7 +14,7 @@
         }
       )
       }}"
-      class="btn">
+      class="buttons-group__button">
       View
     </a>
     <form method="POST"
@@ -27,19 +27,26 @@
       )
       }}">
       <input type="hidden" name="_token" value="{{ csrf_token('task') }}" />
-      <button type="submit" class="pink">Delete</button>
+      <button type="submit"
+        class="buttons-group__button buttons-group__button_pink">
+        Delete
+      </button>
     </form>
   </div>
 
   {{ form_start(form) }}
   {{ form_widget(form) }}
-  <div class="mb">
-    <button type="submit" name="apply" title="Redirects to task view page">
-      Apply
-    </button>
-    <button type="submit" name="save" title="Redirects to task list">
-      Save
-    </button>
-  </div>
+  <button type="submit"
+    name="apply"
+    title="Redirects to task view page"
+    class="form__button">
+    Apply
+  </button>
+  <button type="submit"
+    name="save"
+    title="Redirects to task list"
+    class="form__button">
+    Save
+  </button>
   {{ form_end(form) }}
 {% endblock %}

@@ -2,25 +2,22 @@
 
 namespace App\Test;
 
-use App\Repository\TaskRepository;
+use App\Tests\Controller\WebTestCase;
 use function array_key_exists;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\Routing\RouterInterface;
 
 class AccessTest extends WebTestCase
 {
     private KernelBrowser $client;
     private RouterInterface $router;
-    private TaskRepository $taskRepository;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->client = static::createClient();
-        $this->router = static::getContainer()->get(RouterInterface::class);
-        $this->taskRepository = static::getContainer()->get(TaskRepository::class);
+        $this->client = self::createClient();
+        $this->router = self::getContainer()->get(RouterInterface::class);
     }
 
     /**
@@ -68,13 +65,13 @@ class AccessTest extends WebTestCase
             ['task_waiting'],
             ['task_completed'],
             ['task_add'],
-            ['task_view', fn (self $s) => ['id' => $s->taskRepository->findOneByTitle('Current task 1')->getId()]],
-            ['task_edit', fn (self $s) => ['id' => $s->taskRepository->findOneByTitle('Current task 1')->getId()]],
+            ['task_view', fn () => ['id' => '2c2bbc1d-e729-4fde-935f-2f5faca6d905']],
+            ['task_edit', fn () => ['id' => '2c2bbc1d-e729-4fde-935f-2f5faca6d905']],
             [
                 'task_delete',
-                fn (self $s) => [
+                fn () => [
                     'route_overrides' => ['method' => 'POST'],
-                    'id' => $s->taskRepository->findOneByTitle('Current task 1')->getId(),
+                    'id' => '2c2bbc1d-e729-4fde-935f-2f5faca6d905',
                 ],
             ],
             ['settings'],

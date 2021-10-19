@@ -4,30 +4,27 @@ namespace App\Tests\Controller\Task;
 
 use App\Entity\Tag;
 use App\Repository\TaskRepository;
-use App\Repository\UserRepository;
 use App\Service\DateTime\DateTimeFactory;
+use App\Tests\Controller\WebTestCase;
 use function in_array;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class AddControllerTest extends WebTestCase
 {
     private KernelBrowser $client;
-    private UserRepository $userRepository;
     private TaskRepository $taskRepository;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->client = static::createClient();
-        $this->userRepository = static::getContainer()->get(UserRepository::class);
-        $this->taskRepository = static::getContainer()->get(TaskRepository::class);
+        $this->client = self::createClient();
+        $this->taskRepository = self::getContainer()->get(TaskRepository::class);
     }
 
     public function testMinimalFields(): void
     {
-        $this->client->loginUser($this->userRepository->findOneByEmail('john.doe@example.com'));
+        self::loginUserByEmail('john.doe@example.com');
         $this->client->request('GET', '/add');
         self::assertResponseIsSuccessful();
         $this->client->submitForm('Create', [
@@ -40,16 +37,17 @@ class AddControllerTest extends WebTestCase
         /** @var Task $task */
         $task = $this->taskRepository->findOneByTitle('test');
         self::assertNotNull($task);
+        self::assertSame('john.doe@example.com', $task->getUser()->getEmail());
         $tags = $task->getTags()->map(fn (Tag $tag) => $tag->getName())->toArray();
         self::assertCount(0, $tags);
         self::assertSame('2007-01-02 03:04:05', $task->getUpdated()->format('Y-m-d H:i:s'));
         $this->client->followRedirect();
-        self::assertSelectorTextSame('.flash', 'Task "test" created');
+        self::assertSelectorTextSame('.message_flash', 'Task "test" created');
     }
 
     public function testAllFields(): void
     {
-        $this->client->loginUser($this->userRepository->findOneByEmail('john.doe@example.com'));
+        self::loginUserByEmail('john.doe@example.com');
         $this->client->request('GET', '/add');
         self::assertResponseIsSuccessful();
         $this->client->submitForm('Create', [
@@ -68,6 +66,7 @@ class AddControllerTest extends WebTestCase
         /** @var Task $task */
         $task = $this->taskRepository->findOneByTitle('test');
         self::assertNotNull($task);
+        self::assertSame('john.doe@example.com', $task->getUser()->getEmail());
         $tags = $task->getTags()->map(fn (Tag $tag) => $tag->getName())->toArray();
         self::assertCount(2, $tags);
         self::assertTrue(in_array('tag1', $tags));
@@ -79,12 +78,12 @@ class AddControllerTest extends WebTestCase
         self::assertSame('2006-12-12 07:08:09', $task->getEnded()->format('Y-m-d H:i:s'));
         self::assertSame('2006-12-13 09:10:11', $task->getDue()->format('Y-m-d H:i:s'));
         $this->client->followRedirect();
-        self::assertSelectorTextSame('.flash', 'Task "test" created');
+        self::assertSelectorTextSame('.message_flash', 'Task "test" created');
     }
 
     public function testInvalidDate(): void
     {
-        $this->client->loginUser($this->userRepository->findOneByEmail('john.doe@example.com'));
+        self::loginUserByEmail();
         $this->client->request('GET', '/add');
         self::assertResponseIsSuccessful();
         $this->client->submitForm('Create', [
@@ -93,12 +92,12 @@ class AddControllerTest extends WebTestCase
                 'created' => 'invalid',
             ],
         ]);
-        self::assertSelectorTextSame('.alert', 'This value is not valid.');
+        self::assertSelectorTextSame('.message', 'This value is not valid.');
     }
 
     public function testRedirectWaiting(): void
     {
-        $this->client->loginUser($this->userRepository->findOneByEmail('john.doe@example.com'));
+        self::loginUserByEmail();
         $this->client->request('GET', '/add');
         self::assertResponseIsSuccessful();
         $this->client->submitForm('Create', [
@@ -109,7 +108,7 @@ class AddControllerTest extends WebTestCase
 
     public function testRedirectCompleted(): void
     {
-        $this->client->loginUser($this->userRepository->findOneByEmail('john.doe@example.com'));
+        self::loginUserByEmail();
         $this->client->request('GET', '/add');
         self::assertResponseIsSuccessful();
         $this->client->submitForm('Create', [

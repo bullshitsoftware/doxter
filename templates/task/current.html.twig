@@ -8,94 +8,108 @@
   {% if (tasks|length) > 0 %}
     {% include 'task/_search.html.twig' with {} only %}
 
-    <div class="grid grid_current mb">
-      <div class="grid__label md-only">
+    <div class="grid grid_current">
+      <div class="grid__label grid__label_md">
         ID
       </div>
-      <div class="grid__label md-only">
+      <div class="grid__label grid__label_md">
         Active
       </div>
-      <div class="grid__label md-only">
+      <div class="grid__label grid__label_md">
         Age
       </div>
-      <div class="grid__label md-only">
+      <div class="grid__label grid__label_md">
         Tag
       </div>
-      <div class="grid__label md-only">
+      <div class="grid__label grid__label_md">
         Due
       </div>
-      <div class="grid__label md-only">
+      <div class="grid__label grid__label_md grid__label_left">
         Title
       </div>
       {% for task in tasks %}
         {% set row_classes = {
-          grid__row_active: task.started is not null,
-          grid__row_important: task.due is not null and task.due < now
+          grid__cell_highlight: task.started is not null,
+          grid__cell_important: task.due is not null and task.due < now
         } %}
-        <div class="grid__label sm-only">
+        <div class="grid__label grid__label_sm">
           ID
         </div>
-        <div class="{{ html_classes('grid__cell-id', row_classes) }}">
-          <a href="{{
-            path(
-              'task_view',
-              {
-                id: task.id
-              }
-            )
-            }}"
-            class="mono">
-            {{ task.id|slice(0, 8) }}
-          </a>
-        </div>
+        <a class="{{ html_classes('grid__cell grid__cell_mono', row_classes) }}"
+          href="{{
+          path(
+            'task_view',
+            {
+              id: task.id
+            }
+          )
+          }}"
+          class="mono">
+          {{ task.id|slice(0, 8) }}
+        </a>
 
-        <div class="grid__label sm-only">
+        <div class="grid__label grid__label_sm">
           Active
         </div>
-        <div class="{{ html_classes('grid__cell-active', row_classes) }}">
+        <div class="{{
+          html_classes(
+            'grid__cell grid__cell_right',
+            row_classes
+          )
+          }}">
           {% if task.started %}
             {{ now|date_diff(task.started) }}
           {% endif %}
         </div>
 
-        <div class="grid__label sm-only">
+        <div class="grid__label grid__label_sm">
           Age
         </div>
-        <div class="{{ html_classes('grid__cell-age', row_classes) }}">
+        <div class="{{
+          html_classes(
+            'grid__cell grid__cell_right',
+            row_classes
+          )
+          }}">
           {{ now|date_diff(task.created) }}
         </div>
 
-        <div class="grid__label sm-only">
+        <div class="grid__label grid__label_sm">
           Tag
         </div>
-        <div class="{{ html_classes('grid__cell-tag', row_classes) }}">
+        <div class="{{ html_classes('grid__cell', row_classes) }}">
           {% for tag in task.tags %}
             {{ tag.name }}
           {% endfor %}
         </div>
 
-        <div class="grid__label sm-only">
-          Active
+        <div class="grid__label grid__label_sm">
+          Due
         </div>
-        <div class="{{ html_classes('grid__cell-due', row_classes) }}">
+        <div class="{{
+          html_classes(
+            'grid__cell grid__cell_right',
+            row_classes
+          )
+          }}">
           {% if task.due %}
             {{ task.due|date_diff(now) }}
           {% endif %}
         </div>
 
-        <div class="grid__label sm-only">
+        <div class="grid__label grid__label_sm">
           Title
         </div>
-        <div class="{{ html_classes('grid__cell-title', row_classes) }}">
+        <div class="{{ html_classes('grid__cell', row_classes) }}">
           {{ task.title }}
         </div>
 
-        <div class="row sm-only"></div>
-        <div class="row sm-only"></div>
+        <div class="grid__cell grid__cell_space"></div>
+        <div class="grid__cell grid__cell_space"></div>
       {% endfor %}
     </div>
   {% else %}
-    <div class="alert bg-green black">
+    <div class="message message_green">
       Yay! No tasks found
     </div>
   {% endif %}

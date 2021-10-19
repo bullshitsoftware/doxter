@@ -1,0 +1,104 @@
+.grid {
+  display: grid;
+  @media screen and (max-width: $md) {
+    grid-template-columns: min-content auto !important;
+  }
+  margin-bottom: $margin;
+
+  .grid__label {
+    padding: $padding;
+    color: $yellow;
+    font-weight: bold;
+    text-align: center;
+    border-bottom: 1px solid $yellow;
+    @media screen and (max-width: $md) {
+      text-align: right;
+      padding: $paddingSm;
+      border-bottom: none;
+    }
+
+    &.grid__label_sm {
+      display: none;
+      @media screen and (max-width: $md) {
+        display: block;
+      }
+    }
+
+    &.grid__label_md {
+      display: block;
+      @media screen and (max-width: $md) {
+        display: none;
+      }
+    }
+
+    &.grid__label_left {
+      text-align: left;
+    }
+  }
+
+  .grid__cell {
+    padding: $padding;
+    @media screen and (max-width: $md) {
+      padding: $paddingSm;
+    }
+
+    &.grid__cell_space {
+      display: none;
+      @media screen and (max-width: $md) {
+        &.grid__cell_space {
+          display: block;
+        }
+      }
+    }
+
+    &.grid__cell_mono {
+      font-family: monospace;
+      font-weight: bold;
+      font-size: 1rem;
+      color: $orange;
+    }
+
+    &.grid__cell_highlight {
+      background-color: $darkgrey;
+    }
+
+    &.grid__cell_highlight.grid__cell_important,
+    &.grid__cell_important {
+      background-color: $darkpink;
+    }
+
+    &.grid__cell_right {
+      text-align: right;
+      @media screen and (max-width: $md) {
+        text-align: left;
+      }
+    }
+  }
+
+  &.grid_task {
+    grid-template-columns: min-content auto;
+    @media screen and (max-width: $md) {
+      display: block;
+    }
+
+    .grid__label {
+      text-align: right;
+      @media screen and (max-width: $md) {
+        text-align: left;
+      }
+      border-bottom: none;
+    }
+  }
+
+  &.grid_current {
+    grid-template-columns: min-content min-content min-content max-content min-content auto;
+  }
+
+  &.grid_waiting {
+    grid-template-columns: min-content min-content max-content min-content min-content auto;
+  }
+
+  &.grid_completed {
+    grid-template-columns: min-content min-content min-content min-content max-content auto;
+  }
+}

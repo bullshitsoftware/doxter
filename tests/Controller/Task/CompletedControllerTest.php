@@ -2,153 +2,139 @@
 
 namespace App\Tests\Controller\Task;
 
-use App\Repository\UserRepository;
+use App\Tests\Controller\WebTestCase;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
-use Symfony\Component\DomCrawler\Crawler;
 
 class CompletedControllerTest extends WebTestCase
 {
     private KernelBrowser $client;
-    private UserRepository $userRepository;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->client = static::createClient();
-        $this->userRepository = static::getContainer()->get(UserRepository::class);
+        $this->client = self::createClient();
     }
 
     public function testNoFilter(): void
     {
-        $this->client->loginUser($this->userRepository->findOneByEmail('john.doe@example.com'));
-        $crawler = $this->client->request('GET', '/completed');
+        self::loginUserByEmail();
+        $this->client->request('GET', '/completed');
         self::assertResponseIsSuccessful();
-        self::assertSame(
+        self::assertGridContent(
+            '.grid_completed',
             [
-                'Done task 10',
-                'Done task 9',
-                'Done task 8',
-                'Done task 7',
-                'Done task 6',
-                'Done task 5',
-                'Done task 4',
-                'Done task 3',
-                'Done task 2',
-                'Done task 1',
+                'columns' => ['ID', 'Created', 'Completed', 'Age', 'Tag', 'Title'],
+                'data' => [
+                    ['da6dad30', '2007-01-01', '2007-01-01', '1d', '', 'Done task 10'],
+                    ['876b7262', '2006-12-31', '2007-01-01', '2d', '', 'Done task 9'],
+                    ['7ae9db23', '2006-12-30', '2006-12-30', '3d', '', 'Done task 8'],
+                    ['dcc2a5e5', '2006-12-29', '2006-12-30', '4d', '', 'Done task 7'],
+                    ['2a15b215', '2006-12-28', '2006-12-28', '5d', '', 'Done task 6'],
+                    ['bed3c6d8', '2006-12-27', '2006-12-28', '6d', '', 'Done task 5'],
+                    ['85114a9d', '2006-12-26', '2006-12-26', '7d', '', 'Done task 4'],
+                    ['14936392', '2006-12-25', '2006-12-26', '8d', 'baz', 'Done task 3'],
+                    ['997a2edd', '2006-12-24', '2006-12-24', '9d', 'foo', 'Done task 2'],
+                    ['d74c0d03', '2006-12-23', '2006-12-24', '10d', 'bar foo', 'Done task 1'],
+                ],
             ],
-            $crawler->filter('.grid__cell-title')->each(fn (Crawler $c) => $c->text()),
-        );
-        self::assertSame(
-            [
-                '2007-01-01',
-                '2006-12-31',
-                '2006-12-30',
-                '2006-12-29',
-                '2006-12-28',
-                '2006-12-27',
-                '2006-12-26',
-                '2006-12-25',
-                '2006-12-24',
-                '2006-12-23',
-            ],
-            $crawler->filter('.grid__cell-created')->each(fn (Crawler $c) => $c->text()),
-        );
-        self::assertSame(
-            [
-                '2007-01-01',
-                '2007-01-01',
-                '2006-12-30',
-                '2006-12-30',
-                '2006-12-28',
-                '2006-12-28',
-                '2006-12-26',
-                '2006-12-26',
-                '2006-12-24',
-                '2006-12-24',
-            ],
-            $crawler->filter('.grid__cell-completed')->each(fn (Crawler $c) => $c->text()),
-        );
-        self::assertSame(
-            ['1d', '2d', '3d', '4d', '5d', '6d', '7d', '8d', '9d', '10d'],
-            $crawler->filter('.grid__cell-age')->each(fn (Crawler $c) => $c->text()),
         );
     }
 
-    public function testdNoData(): void
+    public function testNoData(): void
     {
-        $this->client->loginUser($this->userRepository->findOneByEmail('jane.doe@example.com'));
+        self::loginUserByEmail('jane.doe@example.com');
         $this->client->request('GET', '/completed');
-        self::assertSelectorTextContains('div.alert', 'No tasks done :-(');
+        self::assertSelectorTextContains('.message', 'No tasks done :-(');
     }
 
     public function testFilter(): void
     {
-        $this->client->loginUser($this->userRepository->findOneByEmail('john.doe@example.com'));
-        $crawler = $this->client->request('GET', '/completed', ['q' => '+foo']);
+        self::loginUserByEmail();
+        $this->client->request('GET', '/completed', ['q' => '+foo']);
         self::assertResponseIsSuccessful();
-        $tags = $crawler->filter('.grid__cell-tag')->each(fn (Crawler $c) => $c->text());
-        self::assertSame(['foo', 'bar foo'], $tags);
-        $titles = $crawler->filter('.grid__cell-title')->each(fn (Crawler $c) => $c->text());
-        self::assertSame(['Done task 2', 'Done task 1'], $titles);
-
-        $crawler = $this->client->request('GET', '/completed', ['q' => '+foo +bar']);
-        self::assertResponseIsSuccessful();
-        $tags = $crawler->filter('.grid__cell-tag')->each(fn (Crawler $c) => $c->text());
-        self::assertSame(['bar foo'], $tags);
-        $titles = $crawler->filter('.grid__cell-title')->each(fn (Crawler $c) => $c->text());
-        self::assertSame(['Done task 1'], $titles);
-
-        $crawler = $this->client->request('GET', '/completed', ['q' => '+foo 1']);
-        self::assertResponseIsSuccessful();
-        $tags = $crawler->filter('.grid__cell-tag')->each(fn (Crawler $c) => $c->text());
-        self::assertSame(['bar foo'], $tags);
-        $titles = $crawler->filter('.grid__cell-title')->each(fn (Crawler $c) => $c->text());
-        self::assertSame(['Done task 1'], $titles);
-
-        $crawler = $this->client->request('GET', '/completed', ['q' => '+foo -bar']);
-        self::assertResponseIsSuccessful();
-        $tags = $crawler->filter('.grid__cell-tag')->each(fn (Crawler $c) => $c->text());
-        self::assertSame(['foo'], $tags);
-        $titles = $crawler->filter('.grid__cell-title')->each(fn (Crawler $c) => $c->text());
-        self::assertSame(['Done task 2'], $titles);
-
-        $crawler = $this->client->request('GET', '/completed', ['q' => '-foo']);
-        self::assertResponseIsSuccessful();
-        $tags = $crawler->filter('.grid__cell-tag')->each(fn (Crawler $c) => $c->text());
-        self::assertSame(['', '', '', '', '', '', '', 'baz'], $tags);
-        $titles = $crawler->filter('.grid__cell-title')->each(fn (Crawler $c) => $c->text());
-        self::assertSame(
+        self::assertGridContent(
+            '.grid_completed',
             [
-                'Done task 10',
-                'Done task 9',
-                'Done task 8',
-                'Done task 7',
-                'Done task 6',
-                'Done task 5',
-                'Done task 4',
-                'Done task 3',
+                'columns' => ['ID', 'Created', 'Completed', 'Age', 'Tag', 'Title'],
+                'data' => [
+                    ['997a2edd', '2006-12-24', '2006-12-24', '9d', 'foo', 'Done task 2'],
+                    ['d74c0d03', '2006-12-23', '2006-12-24', '10d', 'bar foo', 'Done task 1'],
+                ],
             ],
-            $titles,
         );
 
-        $crawler = $this->client->request('GET', '/completed', ['q' => '-foo -baz']);
+        $this->client->request('GET', '/completed', ['q' => '+foo +bar']);
         self::assertResponseIsSuccessful();
-        $tags = $crawler->filter('.grid__cell-tag')->each(fn (Crawler $c) => $c->text());
-        self::assertSame(['', '', '', '', '', '', ''], $tags);
-        $titles = $crawler->filter('.grid__cell-title')->each(fn (Crawler $c) => $c->text());
-        self::assertSame(
+        self::assertGridContent(
+            '.grid_completed',
             [
-                'Done task 10',
-                'Done task 9',
-                'Done task 8',
-                'Done task 7',
-                'Done task 6',
-                'Done task 5',
-                'Done task 4',
+                'columns' => ['ID', 'Created', 'Completed', 'Age', 'Tag', 'Title'],
+                'data' => [
+                    ['d74c0d03', '2006-12-23', '2006-12-24', '10d', 'bar foo', 'Done task 1'],
+                ],
             ],
-            $titles,
+        );
+
+        $this->client->request('GET', '/completed', ['q' => '+foo 1']);
+        self::assertResponseIsSuccessful();
+        self::assertGridContent(
+            '.grid_completed',
+            [
+                'columns' => ['ID', 'Created', 'Completed', 'Age', 'Tag', 'Title'],
+                'data' => [
+                    ['d74c0d03', '2006-12-23', '2006-12-24', '10d', 'bar foo', 'Done task 1'],
+                ],
+            ],
+        );
+
+        $this->client->request('GET', '/completed', ['q' => '+foo -bar']);
+        self::assertResponseIsSuccessful();
+        self::assertGridContent(
+            '.grid_completed',
+            [
+                'columns' => ['ID', 'Created', 'Completed', 'Age', 'Tag', 'Title'],
+                'data' => [
+                    ['997a2edd', '2006-12-24', '2006-12-24', '9d', 'foo', 'Done task 2'],
+                ],
+            ],
+        );
+
+        $this->client->request('GET', '/completed', ['q' => '-foo']);
+        self::assertResponseIsSuccessful();
+        self::assertGridContent(
+            '.grid_completed',
+            [
+                'columns' => ['ID', 'Created', 'Completed', 'Age', 'Tag', 'Title'],
+                'data' => [
+                    ['da6dad30', '2007-01-01', '2007-01-01', '1d', '', 'Done task 10'],
+                    ['876b7262', '2006-12-31', '2007-01-01', '2d', '', 'Done task 9'],
+                    ['7ae9db23', '2006-12-30', '2006-12-30', '3d', '', 'Done task 8'],
+                    ['dcc2a5e5', '2006-12-29', '2006-12-30', '4d', '', 'Done task 7'],
+                    ['2a15b215', '2006-12-28', '2006-12-28', '5d', '', 'Done task 6'],
+                    ['bed3c6d8', '2006-12-27', '2006-12-28', '6d', '', 'Done task 5'],
+                    ['85114a9d', '2006-12-26', '2006-12-26', '7d', '', 'Done task 4'],
+                    ['14936392', '2006-12-25', '2006-12-26', '8d', 'baz', 'Done task 3'],
+                ],
+            ],
+        );
+
+        $this->client->request('GET', '/completed', ['q' => '-foo -baz']);
+        self::assertResponseIsSuccessful();
+        self::assertGridContent(
+            '.grid_completed',
+            [
+                'columns' => ['ID', 'Created', 'Completed', 'Age', 'Tag', 'Title'],
+                'data' => [
+                    ['da6dad30', '2007-01-01', '2007-01-01', '1d', '', 'Done task 10'],
+                    ['876b7262', '2006-12-31', '2007-01-01', '2d', '', 'Done task 9'],
+                    ['7ae9db23', '2006-12-30', '2006-12-30', '3d', '', 'Done task 8'],
+                    ['dcc2a5e5', '2006-12-29', '2006-12-30', '4d', '', 'Done task 7'],
+                    ['2a15b215', '2006-12-28', '2006-12-28', '5d', '', 'Done task 6'],
+                    ['bed3c6d8', '2006-12-27', '2006-12-28', '6d', '', 'Done task 5'],
+                    ['85114a9d', '2006-12-26', '2006-12-26', '7d', '', 'Done task 4'],
+                ],
+            ],
         );
     }
 }

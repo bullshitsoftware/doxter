@@ -2,7 +2,7 @@
 
 namespace App\Tests\Controller\Security;
 
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use App\Tests\Controller\WebTestCase;
 
 class LoginControllerTest extends WebTestCase
 {
@@ -10,21 +10,24 @@ class LoginControllerTest extends WebTestCase
     {
         parent::setUp();
 
-        $this->client = static::createClient();
+        $this->client = self::createClient();
     }
 
     public function testNoRememberMe(): void
     {
         $this->client->request('GET', '/login');
         self::assertResponseIsSuccessful();
+        self::assertCheckboxChecked('_remember_me');
 
         $this->client->submitForm('Sign in', [
             'email' => 'john.doe@example.com',
             'password' => 'qwerty',
+            '_remember_me' => false,
         ]);
         self::assertResponseRedirects('/login');
         $this->client->followRedirect();
-        self::assertSelectorTextContains('.alert', 'Invalid credentials.');
+        self::assertSelectorTextContains('.message', 'Invalid credentials.');
+        self::assertCheckboxNotChecked('_remember_me');
 
         $this->client->submitForm('Sign in', [
             'email' => 'john.doe@example.com',
@@ -39,17 +42,17 @@ class LoginControllerTest extends WebTestCase
 
     public function testRememberMe(): void
     {
-        $crawler = $this->client->request('GET', '/login');
+        $this->client->request('GET', '/login');
         self::assertResponseIsSuccessful();
-        self::assertSame('checked', $crawler->filter('input[name="_remember_me"]')->first()->attr('checked'));
+        self::assertCheckboxChecked('_remember_me');
 
         $this->client->submitForm('Sign in', [
             'email' => 'invalid@example.com',
             'password' => 'invalid',
         ]);
         self::assertResponseRedirects('/login');
-        $crawler = $this->client->followRedirect();
-        self::assertSame('checked', $crawler->filter('input[name="_remember_me"]')->first()->attr('checked'));
+        $this->client->followRedirect();
+        self::assertCheckboxChecked('_remember_me');
 
         $this->client->submitForm('Sign in', [
             'email' => 'invalid@example.com',
@@ -57,8 +60,8 @@ class LoginControllerTest extends WebTestCase
             '_remember_me' => false,
         ]);
         self::assertResponseRedirects('/login');
-        $crawler = $this->client->followRedirect();
-        self::assertNull($crawler->filter('input[name="_remember_me"]')->first()->attr('checked'));
+        $this->client->followRedirect();
+        self::assertCheckboxNotChecked('_remember_me');
 
         $this->client->submitForm('Sign in', [
             'email' => 'john.doe@example.com',

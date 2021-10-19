@@ -22,7 +22,7 @@
       {{ encore_entry_script_tags('app') }}
     {% endblock %}
   </head>
-  <body>
+  <body class="body">
     {% block body %}
       {% include '_nav.html.twig' with {} only %}
       {% block subnav %}
@@ -32,7 +32,7 @@
       {% include '_flash.html.twig' with {} only %}
 
       <main class="container container_lg">
-        <h1 class="mb sm-only">
+        <h1 class="header header_mobile">
           {{ block('title') }}
         </h1>
         {% block content %}

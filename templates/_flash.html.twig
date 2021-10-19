@@ -1,12 +1,12 @@
 {% set flashes = app.flashes %}
-{% if (flashes|length) > 0 %}
-  <div class="container container_lg">
+<div class="container container_lg">
+  {% if (flashes|length) > 0 %}
     {% for type, messages in flashes %}
       {% for message in messages %}
-        <div class="flash {{ type }} mb">
+        <div class="message message_flash {{ type }}">
           {{ message }}
         </div>
       {% endfor %}
     {% endfor %}
-  </div>
-{% endif %}
+  {% endif %}
+</div>

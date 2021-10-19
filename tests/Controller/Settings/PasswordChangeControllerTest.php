@@ -2,10 +2,9 @@
 
 namespace App\Tests\Controller\Settings;
 
-use App\Entity\Task;
 use App\Repository\UserRepository;
+use App\Tests\Controller\WebTestCase;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class PasswordChangeControllerTest extends WebTestCase
@@ -17,14 +16,13 @@ class PasswordChangeControllerTest extends WebTestCase
     {
         parent::setUp();
 
-        $this->client = static::createClient();
-        $this->userRepository = static::getContainer()->get(UserRepository::class);
-        $this->taskRepository = static::getContainer()->get('doctrine')->getManager()->getRepository(Task::class);
+        $this->client = self::createClient();
+        $this->userRepository = self::getContainer()->get(UserRepository::class);
     }
 
     public function testPasswordChange(): void
     {
-        $this->client->loginUser($this->userRepository->findOneByEmail('john.doe@example.com'));
+        self::loginUserByEmail('john.doe@example.com');
         $this->client->request('GET', '/settings/password');
         $crawler = $this->client->submitForm('Update password', [
             'password_change' => [
@@ -34,7 +32,7 @@ class PasswordChangeControllerTest extends WebTestCase
             ],
         ]);
         self::assertResponseIsSuccessful();
-        $errors = $crawler->filter('form .alert');
+        $errors = $crawler->filter('form .message');
         self::assertSame("This value should be the user's current password.", $errors->first()->text());
         self::assertSame("Passwords don't match", $errors->last()->text());
 
@@ -50,6 +48,6 @@ class PasswordChangeControllerTest extends WebTestCase
         $hasher = self::getContainer()->get(UserPasswordHasherInterface::class);
         self::assertTrue($hasher->isPasswordValid($user, 'qwerty'));
         $this->client->followRedirect();
-        self::assertSelectorTextSame('.flash', 'User password updated');
+        self::assertSelectorTextSame('.message_flash', 'User password updated');
     }
 }

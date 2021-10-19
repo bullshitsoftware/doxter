@@ -5,7 +5,7 @@
 {% endblock %}
 
 {% block content %}
-  <div class="row mb">
+  <div class="buttons-group">
     <a href="{{
       path(
         'task_edit',
@@ -14,7 +14,7 @@
         }
       )
       }}"
-      class="btn">
+      class="buttons-group__button">
       Edit
     </a>
     <form method="POST"
@@ -27,29 +27,32 @@
       )
       }}">
       <input type="hidden" name="_token" value="{{ csrf_token('task') }}" />
-      <button type="submit" class="pink">Delete</button>
+      <button type="submit"
+        class="buttons-group__button buttons-group__button_pink">
+        Delete
+      </button>
     </form>
   </div>
 
   <div class="grid grid_task">
     <div class="grid__label">
-      Id
+      ID
     </div>
-    <div class="grid__cell-id">
+    <div class="grid__cell grid__cell_mono">
       {{ task.id }}
     </div>
 
     <div class="grid__label">
       Title
     </div>
-    <div class="grid__cell-title">
+    <div class="grid__cell">
       {{ task.title }}
     </div>
 
     <div class="grid__label">
       Tag
     </div>
-    <div class="grid__cell-tag">
+    <div class="grid__cell">
       {% for tag in task.tags %}
         {{ tag.name }}
       {% endfor %}
@@ -58,28 +61,28 @@
     <div class="grid__label">
       Description
     </div>
-    <div class="grid__cell-description markdown">
+    <div class="grid__cell markdown">
       {{ task.description|markdown_to_html }}
     </div>
 
     <div class="grid__label">
       Created
     </div>
-    <div class="grid__cell-created">
+    <div class="grid__cell">
       {{ task.created|user_datetime }}
     </div>
 
     <div class="grid__label">
       Updated
     </div>
-    <div class="grid__cell-updated">
+    <div class="grid__cell">
       {{ task.updated|user_datetime }}
     </div>
 
     <div class="grid__label">
       Wait
     </div>
-    <div class="grid__cell-wait">
+    <div class="grid__cell">
       {% if task.wait %}
         {{ task.wait|user_datetime }}
       {% else %}
@@ -90,7 +93,7 @@
     <div class="grid__label">
       Started
     </div>
-    <div class="grid__cell-started">
+    <div class="grid__cell">
       {% if task.started %}
         {{ task.started|user_datetime }}
       {% else %}
@@ -101,7 +104,7 @@
     <div class="grid__label">
       Ended
     </div>
-    <div class="grid__cell-ended">
+    <div class="grid__cell">
       {% if task.ended %}
         {{ task.ended|user_datetime }}
       {% else %}
@@ -112,7 +115,7 @@
     <div class="grid__label">
       Due
     </div>
-    <div class="grid__cell-due">
+    <div class="grid__cell">
       {% if task.due %}
         {{ task.due|user_datetime }}
       {% else %}

@@ -12,16 +12,18 @@ import './styles/app.scss';
 // import './bootstrap';
 
 document.addEventListener('click', event => {
-  const btn = event.target.closest('nav .toggle');
+  const btn = event.target.closest('.nav__item_toggle');
   if (!btn) {
     return;
   }
+  event.preventDefault();
 
-  event.target.closest('nav').classList.toggle('show');
+  document.body.classList.toggle('body_hidden');
+  event.target.closest('nav').classList.toggle('nav_show');
 });
 
 document.addEventListener('click', event => {
-  const flash = event.target.closest('.flash');
+  const flash = event.target.closest('.message_flash');
   if (!flash) {
     return;
   }
