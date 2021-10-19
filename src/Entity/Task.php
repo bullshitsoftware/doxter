@@ -68,6 +68,13 @@ class Task
         return $this->id;
     }
 
+    public function setId(Uuid $id): self
+    {
+        $this->id = $id;
+
+        return $this;
+    }
+
     public function getUser(): User
     {
         return $this->user;

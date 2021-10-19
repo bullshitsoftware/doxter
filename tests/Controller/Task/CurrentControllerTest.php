@@ -2,135 +2,137 @@
 
 namespace App\Tests\Controller\Task;
 
-use App\Repository\UserRepository;
+use App\Tests\Controller\WebTestCase;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
-use Symfony\Component\DomCrawler\Crawler;
 
 class CurrentControllerTest extends WebTestCase
 {
     private KernelBrowser $client;
-    private UserRepository $userRepository;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->client = static::createClient();
-        $this->userRepository = static::getContainer()->get(UserRepository::class);
+        $this->client = self::createClient();
     }
 
     public function testNoFilter(): void
     {
-        $this->client->loginUser($this->userRepository->findOneByEmail('john.doe@example.com'));
-        $crawler = $this->client->request('GET', '/');
+        self::loginUserByEmail();
+        $this->client->request('GET', '/');
         self::assertResponseIsSuccessful();
-        $titles = $crawler->filter('.grid__cell-title')->each(fn (Crawler $c) => $c->text());
-        $expectTitles = [
-            'Current task 8',
-            'Current task 9',
-            'Current task 1',
-            'Current task 3',
-            'Current task 5',
-            'Current task 7',
-            'Current task 2',
-            'Current task 4',
-            'Current task 6',
+        $grid = [
+            'columns' => ['ID', 'Active', 'Age', 'Tag', 'Due', 'Title'],
+            'data' => [
+                ['1daf6745', '', '2m', '', '7mon', 'Current task 8'],
+                ['8670b12e', '1m', '1m', '', '8mon', 'Current task 9'],
+                ['2c2bbc1d', '9m', '9m', 'bar foo', '', 'Current task 1'],
+                ['b3bb6502', '7m', '7m', 'baz', '', 'Current task 3'],
+                ['8570760c', '5m', '5m', '', '', 'Current task 5'],
+                ['a0e84ad1', '3m', '3m', '', '', 'Current task 7'],
+                ['5aa61370', '', '8m', 'foo', '', 'Current task 2'],
+                ['288d7410', '', '6m', '', '', 'Current task 4'],
+                ['738c8de9', '', '4m', '', '', 'Current task 6'],
+            ],
         ];
-        self::assertSame($expectTitles, $titles);
-        $active = $crawler->filter('.grid__cell-active')->each(fn (Crawler $c) => $c->text());
-        $expectedActive = ['', '1m',  '9m', '7m', '5m', '3m', '', '', ''];
-        self::assertSame($expectedActive, $active);
-        $age = $crawler->filter('.grid__cell-age')->each(fn (Crawler $c) => $c->text());
-        $expectedAge = ['2m', '1m', '9m', '7m', '5m', '3m', '8m', '6m', '4m'];
-        self::assertSame($expectedAge, $age);
-        $due = $crawler->filter('.grid__cell-due')->each(fn (Crawler $c) => $c->text());
-        $expectedDue = ['7mon', '8mon', '', '', '', '', '', '', ''];
-        self::assertSame($expectedDue, $due);
+        self::assertGridContent('.grid_current', $grid);
 
-        $crawler = $this->client->request('GET', '/current');
+        $this->client->request('GET', '/current');
         self::assertResponseIsSuccessful();
-        $titles = $crawler->filter('.grid__cell-title')->each(fn (Crawler $node) => $node->text());
-        self::assertSame($expectTitles, $titles);
-        $active = $crawler->filter('.grid__cell-active')->each(fn (Crawler $c) => $c->text());
-        self::assertSame($expectedActive, $active);
-        $age = $crawler->filter('.grid__cell-age')->each(fn (Crawler $c) => $c->text());
-        self::assertSame($expectedAge, $age);
-        $due = $crawler->filter('.grid__cell-due')->each(fn (Crawler $c) => $c->text());
-        self::assertSame($expectedDue, $due);
+        self::assertGridContent('.grid_current', $grid);
     }
 
     public function testNoData(): void
     {
-        $this->client->loginUser($this->userRepository->findOneByEmail('jane.doe@example.com'));
+        self::loginUserByEmail('jane.doe@example.com');
         $this->client->request('GET', '/');
-        self::assertSelectorTextContains('div.alert', 'Yay! No tasks found');
+        self::assertSelectorTextContains('.message', 'Yay! No tasks found');
     }
 
     public function testFilter(): void
     {
-        $this->client->loginUser($this->userRepository->findOneByEmail('john.doe@example.com'));
-        $crawler = $this->client->request('GET', '/', ['q' => '+foo']);
+        self::loginUserByEmail();
+        $this->client->request('GET', '/', ['q' => '+foo']);
         self::assertResponseIsSuccessful();
-        $tags = $crawler->filter('.grid__cell-tag')->each(fn (Crawler $c) => $c->text());
-        self::assertSame(['bar foo', 'foo'], $tags);
-        $titles = $crawler->filter('.grid__cell-title')->each(fn (Crawler $c) => $c->text());
-        self::assertSame(['Current task 1', 'Current task 2'], $titles);
-
-        $crawler = $this->client->request('GET', '/', ['q' => '+foo +bar']);
-        self::assertResponseIsSuccessful();
-        $tags = $crawler->filter('.grid__cell-tag')->each(fn (Crawler $c) => $c->text());
-        self::assertSame(['bar foo'], $tags);
-        $titles = $crawler->filter('.grid__cell-title')->each(fn (Crawler $c) => $c->text());
-        self::assertSame(['Current task 1'], $titles);
-
-        $crawler = $this->client->request('GET', '/', ['q' => '+foo 1']);
-        self::assertResponseIsSuccessful();
-        $tags = $crawler->filter('.grid__cell-tag')->each(fn (Crawler $c) => $c->text());
-        self::assertSame(['bar foo'], $tags);
-        $titles = $crawler->filter('.grid__cell-title')->each(fn (Crawler $c) => $c->text());
-        self::assertSame(['Current task 1'], $titles);
-
-        $crawler = $this->client->request('GET', '/', ['q' => '+foo -bar']);
-        self::assertResponseIsSuccessful();
-        $tags = $crawler->filter('.grid__cell-tag')->each(fn (Crawler $c) => $c->text());
-        self::assertSame(['foo'], $tags);
-        $titles = $crawler->filter('.grid__cell-title')->each(fn (Crawler $c) => $c->text());
-        self::assertSame(['Current task 2'], $titles);
-
-        $crawler = $this->client->request('GET', '/', ['q' => '-foo']);
-        self::assertResponseIsSuccessful();
-        $tags = $crawler->filter('.grid__cell-tag')->each(fn (Crawler $c) => $c->text());
-        self::assertSame(['', '', 'baz', '', '', '', ''], $tags);
-        $titles = $crawler->filter('.grid__cell-title')->each(fn (Crawler $c) => $c->text());
-        self::assertSame(
+        self::assertGridContent(
+            '.grid_current',
             [
-                'Current task 8',
-                'Current task 9',
-                'Current task 3',
-                'Current task 5',
-                'Current task 7',
-                'Current task 4',
-                'Current task 6',
+                'columns' => ['ID', 'Active', 'Age', 'Tag', 'Due', 'Title'],
+                'data' => [
+                    ['2c2bbc1d', '9m', '9m', 'bar foo', '', 'Current task 1'],
+                    ['5aa61370', '', '8m', 'foo', '', 'Current task 2'],
+                ],
             ],
-            $titles,
         );
 
-        $crawler = $this->client->request('GET', '/', ['q' => '-foo -baz']);
+        $this->client->request('GET', '/', ['q' => '+foo +bar']);
         self::assertResponseIsSuccessful();
-        $tags = $crawler->filter('.grid__cell-tag')->each(fn (Crawler $c) => $c->text());
-        self::assertSame(['', '', '', '', '', ''], $tags);
-        $titles = $crawler->filter('.grid__cell-title')->each(fn (Crawler $c) => $c->text());
-        self::assertSame(
+        self::assertGridContent(
+            '.grid_current',
             [
-                'Current task 8',
-                'Current task 9',
-                'Current task 5',
-                'Current task 7',
-                'Current task 4',
-                'Current task 6',
+                'columns' => ['ID', 'Active', 'Age', 'Tag', 'Due', 'Title'],
+                'data' => [
+                    ['2c2bbc1d', '9m', '9m', 'bar foo', '', 'Current task 1'],
+                ],
             ],
-            $titles,
+        );
+
+        $this->client->request('GET', '/', ['q' => '+foo 1']);
+        self::assertGridContent(
+            '.grid_current',
+            [
+                'columns' => ['ID', 'Active', 'Age', 'Tag', 'Due', 'Title'],
+                'data' => [
+                    ['2c2bbc1d', '9m', '9m', 'bar foo', '', 'Current task 1'],
+                ],
+            ],
+        );
+
+        $this->client->request('GET', '/', ['q' => '+foo -bar']);
+        self::assertResponseIsSuccessful();
+        self::assertGridContent(
+            '.grid_current',
+            [
+                'columns' => ['ID', 'Active', 'Age', 'Tag', 'Due', 'Title'],
+                'data' => [
+                    ['5aa61370', '', '8m', 'foo', '', 'Current task 2'],
+                ],
+            ],
+        );
+
+        $this->client->request('GET', '/', ['q' => '-foo']);
+        self::assertResponseIsSuccessful();
+        self::assertGridContent(
+            '.grid_current',
+            [
+                'columns' => ['ID', 'Active', 'Age', 'Tag', 'Due', 'Title'],
+                'data' => [
+                    ['1daf6745', '', '2m', '', '7mon', 'Current task 8'],
+                    ['8670b12e', '1m', '1m', '', '8mon', 'Current task 9'],
+                    ['b3bb6502', '7m', '7m', 'baz', '', 'Current task 3'],
+                    ['8570760c', '5m', '5m', '', '', 'Current task 5'],
+                    ['a0e84ad1', '3m', '3m', '', '', 'Current task 7'],
+                    ['288d7410', '', '6m', '', '', 'Current task 4'],
+                    ['738c8de9', '', '4m', '', '', 'Current task 6'],
+                ],
+            ],
+        );
+
+        $this->client->request('GET', '/', ['q' => '-foo -baz']);
+        self::assertResponseIsSuccessful();
+        self::assertGridContent(
+            '.grid_current',
+            [
+                'columns' => ['ID', 'Active', 'Age', 'Tag', 'Due', 'Title'],
+                'data' => [
+                    ['1daf6745', '', '2m', '', '7mon', 'Current task 8'],
+                    ['8670b12e', '1m', '1m', '', '8mon', 'Current task 9'],
+                    ['8570760c', '5m', '5m', '', '', 'Current task 5'],
+                    ['a0e84ad1', '3m', '3m', '', '', 'Current task 7'],
+                    ['288d7410', '', '6m', '', '', 'Current task 4'],
+                    ['738c8de9', '', '4m', '', '', 'Current task 6'],
+                ],
+            ],
         );
     }
 }

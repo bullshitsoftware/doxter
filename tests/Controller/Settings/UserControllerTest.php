@@ -2,36 +2,36 @@
 
 namespace App\Tests\Controller\Settings;
 
-use App\Entity\Task;
-use App\Repository\UserRepository;
+use App\Tests\Controller\WebTestCase;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class UserControllerTest extends WebTestCase
 {
     private KernelBrowser $client;
-    private UserRepository $userRepository;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->client = static::createClient();
-        $this->userRepository = static::getContainer()->get(UserRepository::class);
-        $this->taskRepository = static::getContainer()->get('doctrine')->getManager()->getRepository(Task::class);
+        $this->client = self::createClient();
     }
 
     public function testSettings(): void
     {
-        $this->client->loginUser($this->userRepository->findOneByEmail('john.doe@example.com'));
+        self::loginUserByEmail();
         $this->client->request('GET', '/settings');
         $this->client->submitForm('Save', [
-            'user_settings' => ['timezone' => 'Europe/Moscow'],
+            'user_settings' => [
+                'timezone' => 'Europe/Moscow',
+                'dateFormat' => 'm.d.Y',
+                'dateTimeFormat' => 'm.d.Y H:i',
+            ],
         ]);
         self::assertResponseRedirects('/settings');
-        $user = $this->userRepository->findOneByEmail('john.doe@example.com');
-        self::assertSame('Europe/Moscow', $user->getSettings()->getTimezone());
         $this->client->followRedirect();
-        self::assertSelectorTextSame('.flash', 'User settings updated');
+        self::assertSelectorTextSame('.message_flash', 'User settings updated');
+        self::assertFormValue('.form', 'user_settings[timezone]', 'Europe/Moscow');
+        self::assertFormValue('.form', 'user_settings[dateFormat]', 'm.d.Y');
+        self::assertFormValue('.form', 'user_settings[dateTimeFormat]', 'm.d.Y H:i');
     }
 }

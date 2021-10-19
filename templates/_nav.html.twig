@@ -22,20 +22,28 @@
   {
     route: 'logout',
     label: 'Logout',
-    class: ['right']
+    right: true
   }
 ] %}
 {% set current_route =
   app.request.attributes.get('nav_route', app.request.attributes.get('_route'))
 %}
-<nav class="mb">
-  <a href="#" class="toggle">Menu</a>
-  {% for item in nav %}
-    {% set class =
-      (item.class is defined ? item.class : [])
-        |merge(current_route starts with item.route ? ['active'] : [])
-        |join(' ')
-    %}
-    <a href="{{ path(item.route) }}" class="{{ class }}">{{ item.label }}</a>
-  {% endfor %}
+<nav class="nav">
+  <div class="nav__container">
+    <a href="#" class="nav__item nav__item_toggle">Menu</a>
+    {% for item in nav %}
+      <a href="{{ path(item.route) }}"
+        class="{{
+        html_classes(
+          'nav__item',
+          {
+            nav__item_active: current_route starts with item.route,
+            nav__item_right: item.right is defined and item.right == true
+          }
+        )
+        }}">
+        {{ item.label }}
+      </a>
+    {% endfor %}
+  </div>
 </nav>

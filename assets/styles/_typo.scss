@@ -6,16 +6,26 @@
   outline: none;
 }
 
-body {
+.body {
   background-color: $black;
   color: $white;
 }
 
-a {
-  color: $orange;
+.header {
+  margin: $margin 0;
+  color: $purple;
+
+  @media screen and (min-width: $md) {
+    &.header_mobile {
+      display: none;
+    }
+  }
+
+  &.header_center {
+    text-align: center;
+  }
 }
 
-.mono {
-  font-family: monospace;
-  font-weight: bold;
+.image {
+  max-width: 100%;
 }

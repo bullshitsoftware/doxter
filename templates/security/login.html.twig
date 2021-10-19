@@ -6,52 +6,51 @@
 
 {% block body %}
   <main class="container container_sm">
-    <h1 class="mt mb">
+    <h1 class="header">
       {{ block('title') }}
     </h1>
 
-    <form method="post">
+    <form class="form" method="post">
       {% if error %}
-        <div class="alert bg-pink mb">
+        <div class="message message_pink">
           {{ error.messageKey|trans(error.messageData, 'security') }}
         </div>
       {% endif %}
 
-      <div>
-        <label for="inputEmail" class="mb">Email</label>
-        <input type="email"
-          value="{{ last_username }}"
-          name="email"
-          id="inputEmail"
-          class="mb"
-          autocomplete="email"
-          required
-          autofocus />
-      </div>
-      <div>
-        <label for="inputPassword">Password</label>
-        <input type="password"
-          name="password"
-          id="inputPassword"
-          class="mb"
-          autocomplete="current-password"
-          required />
-      </div>
+      <label for="inputEmail" class="form__label">Email</label>
+      <input type="email"
+        value="{{ last_username }}"
+        name="email"
+        id="inputEmail"
+        class="form__input"
+        autocomplete="email"
+        required
+        autofocus />
 
-      <div class="row mb">
-        <label for="rememberMe">Remember me</label>
+      <label for="inputPassword" class="form__label">Password</label>
+      <input type="password"
+        name="password"
+        id="inputPassword"
+        class="form__input"
+        autocomplete="current-password"
+        required />
+
+      <div class="row">
         <input id="rememberMe"
-          class="mb"
+          class="row__item form__checkbox"
           type="checkbox"
           name="_remember_me"
           {{ remember_me ? 'checked' }} />
+        <label for="rememberMe" class="row__item form__label">
+          Remember me
+        </label>
       </div>
 
       <input type="hidden"
         name="_csrf_token"
         value="{{ csrf_token('authenticate') }}" />
 
-      <button type="submit" class="mb">Sign in</button>
+      <button type="submit" class="form__button">Sign in</button>
     </form>
   </main>
 {% endblock %}

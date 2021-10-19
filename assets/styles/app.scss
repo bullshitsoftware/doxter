@@ -1,8 +1,10 @@
 @import 'variables';
-@import 'color';
+@import 'mixin';
 @import 'layout';
 @import 'typo';
+@import 'grid';
+@import 'button-group';
 @import 'form';
 @import 'nav';
-@import 'flash';
+@import 'message';
 @import 'markdown';

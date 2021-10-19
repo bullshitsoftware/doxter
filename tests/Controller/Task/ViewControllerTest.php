@@ -2,24 +2,19 @@
 
 namespace App\Tests\Controller\Task;
 
-use App\Repository\TaskRepository;
-use App\Repository\UserRepository;
+use App\Tests\Controller\WebTestCase;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Symfony\Component\DomCrawler\Crawler;
 
 class ViewControllerTest extends WebTestCase
 {
     private KernelBrowser $client;
-    private UserRepository $userRepository;
-    private TaskRepository $taskRepository;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->client = static::createClient();
-        $this->userRepository = static::getContainer()->get(UserRepository::class);
-        $this->taskRepository = static::getContainer()->get(TaskRepository::class);
+        $this->client = self::createClient();
     }
 
     /**
@@ -27,39 +22,39 @@ class ViewControllerTest extends WebTestCase
      */
     public function testTask(array $viewData): void
     {
-        $this->client->loginUser($this->userRepository->findOneByEmail('john.doe@example.com'));
+        self::loginUserByEmail();
 
-        $task = $this->taskRepository->findOneByTitle($viewData['title']);
-        $this->client->request('GET', '/view/'.$task->getId());
+        $crawler = $this->client->request('GET', '/view/'.$viewData['id']);
         self::assertResponseIsSuccessful();
         self::assertSelectorTextContains('h1', $viewData['title']);
-        self::assertSelectorTextContains('.grid__cell-id', $task->getId()->toRfc4122());
-        self::assertSelectorTextContains('.grid__cell-title', $viewData['title']);
-        self::assertSelectorTextContains('.grid__cell-tag', $viewData['tag']);
-        self::assertSelectorTextContains('.grid__cell-description', $viewData['description']);
-        self::assertSelectorTextContains('.grid__cell-created', $viewData['created']);
-        self::assertSelectorTextContains('.grid__cell-updated', $viewData['updated']);
-        self::assertSelectorTextContains('.grid__cell-wait', $viewData['wait']);
-        self::assertSelectorTextContains('.grid__cell-started', $viewData['started']);
-        self::assertSelectorTextContains('.grid__cell-ended', $viewData['ended']);
-        self::assertSelectorTextContains('.grid__cell-due', $viewData['due']);
+        $grid = $crawler->filter('.grid_task')->first();
+        self::assertSame(
+            ['ID', 'Title', 'Tag', 'Description', 'Created', 'Updated', 'Wait', 'Started', 'Ended', 'Due'],
+            $grid->filter('.grid__label')->each(fn (Crawler $c) => $c->text()),
+        );
+        self::assertSame(
+            array_values($viewData),
+            $grid->filter('.grid__cell')->each(fn (Crawler $c) => $c->text()),
+        );
     }
 
     public function tasksProvider(): array
     {
         return [
             [[
+                'id' => '2c2bbc1d-e729-4fde-935f-2f5faca6d905',
                 'title' => 'Current task 1',
                 'tag' => 'bar foo',
                 'description' => '',
                 'created' => '2007-01-02 02:55:05',
                 'updated' => '2007-01-02 02:55:05',
-                'wait' => '—',
+                'wait' => '2007-01-02 03:04:04',
                 'started' => '2007-01-02 02:55:05',
                 'ended' => '—',
                 'due' => '—',
             ]],
             [[
+                'id' => '8670b12e-0fa8-4fb9-ab16-e121cc3d9dd9',
                 'title' => 'Current task 9',
                 'tag' => '',
                 'description' => '',
@@ -71,6 +66,7 @@ class ViewControllerTest extends WebTestCase
                 'due' => '2007-10-02 03:03:05',
             ]],
             [[
+                'id' => '1d44a8c5-e126-4f42-ab51-b8d2215049e3',
                 'title' => 'Delayed task 1',
                 'tag' => 'bar foo',
                 'description' => '',
@@ -82,6 +78,7 @@ class ViewControllerTest extends WebTestCase
                 'due' => '—',
             ]],
             [[
+                'id' => 'd74c0d03-a5d7-4fec-accc-4573d8c55878',
                 'title' => 'Done task 1',
                 'tag' => 'bar foo',
                 'description' => '',

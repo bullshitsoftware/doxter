@@ -1,0 +1,12 @@
+.message {
+  padding: $padding;
+  margin-bottom: $margin;
+
+  @each $name, $color in $colors {
+    &.message_#{$name} {
+      color: $black;
+      font-weight: bold;
+      background-color: $color;
+    }
+  }
+}

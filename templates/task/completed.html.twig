@@ -8,86 +8,84 @@
   {% if (tasks|length) > 0 %}
     {% include 'task/_search.html.twig' with {} only %}
 
-    <div class="grid grid_completed mb">
-      <div class="grid__label md-only">
+    <div class="grid grid_completed">
+      <div class="grid__label grid__label_md">
         ID
       </div>
-      <div class="grid__label md-only">
+      <div class="grid__label grid__label_md">
         Created
       </div>
-      <div class="grid__label md-only">
+      <div class="grid__label grid__label_md">
         Completed
       </div>
-      <div class="grid__label md-only">
+      <div class="grid__label grid__label_md">
         Age
       </div>
-      <div class="grid__label md-only">
+      <div class="grid__label grid__label_md">
         Tag
       </div>
-      <div class="grid__label md-only">
+      <div class="grid__label grid__label_md grid__label_left">
         Title
       </div>
       {% for task in tasks %}
-        <div class="grid__label sm-only">
+        <div class="grid__label grid__label_sm">
           ID
         </div>
-        <div class="grid__cell-id">
-          <a href="{{
-            path(
-              'task_view',
-              {
-                id: task.id
-              }
-            )
-            }}"
-            class="mono">
-            {{ task.id|slice(0, 8) }}
-          </a>
-        </div>
+        <a href="{{
+          path(
+            'task_view',
+            {
+              id: task.id
+            }
+          )
+          }}"
+          class="grid__cell grid__cell_mono">
+          {{ task.id|slice(0, 8) }}
+        </a>
 
-        <div class="grid__label sm-only">
+        <div class="grid__label grid__label_sm">
           Created
         </div>
-        <div class="grid__cell-created">
+        <div class="grid__cell">
           {{ task.created|user_date }}
         </div>
 
-        <div class="grid__label sm-only">
+        <div class="grid__label grid__label_sm">
           Completed
         </div>
-        <div class="grid__cell-completed">
+        <div class="grid__cell">
           {{ task.ended|user_date }}
         </div>
 
-        <div class="grid__label sm-only">
+        <div class="grid__label grid__label_sm">
           Age
         </div>
-        <div class="grid__cell-age">
+        <div class="grid__cell grid__cell_right">
           {{ now|date_diff(task.created) }}
         </div>
 
-        <div class="grid__label sm-only">
+        <div class="grid__label grid__label_sm">
           Tag
         </div>
-        <div class="grid__cell-tag">
+        <div class="grid__cell">
           {% for tag in task.tags %}
             {{ tag.name }}
           {% endfor %}
         </div>
 
-        <div class="grid__label sm-only">
+        <div class="grid__label grid__label_sm">
           Title
         </div>
-        <div class="grid__cell-title">
+        <div class="grid__cell">
           {{ task.title }}
         </div>
 
-        <div class="row sm-only"></div>
-        <div class="row sm-only"></div>
+        <div class="grid__cell grid__cell_space"></div>
+        <div class="grid__cell grid__cell_space"></div>
       {% endfor %}
     </div>
 
-    <div class="row mb">
+    <div class="buttons-group">
       {% set query = app.request.query.all() %}
       {% if page > 1 %}
         <a href="{{
@@ -98,7 +96,7 @@
             })
           )
           }}"
-          class="btn btn_orange">
+          class="buttons-group__button">
           Prev
         </a>
       {% endif %}
@@ -111,13 +109,13 @@
             })
           )
           }}"
-          class="btn btn_orange">
+          class="buttons-group__button">
           Next
         </a>
       {% endif %}
     </div>
   {% else %}
-    <div class="alert bg-pink black">
+    <div class="message message_green">
       No tasks done :-(
     </div>
   {% endif %}
