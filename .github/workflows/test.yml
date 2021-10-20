@@ -64,7 +64,7 @@ jobs:
       - name: restore all
         uses: actions/cache@v2
         with:
-          key: ${{ env.CACHE_VERSION }}-all-${{ github.head_ref }}
+          key: ${{ env.CACHE_VERSION }}-all-${{ github.sha }}
           path: |
             node_modules
             public
@@ -89,7 +89,7 @@ jobs:
       - name: restore all
         uses: actions/cache@v2
         with:
-          key: ${{ env.CACHE_VERSION }}-all-${{ github.head_ref }}
+          key: ${{ env.CACHE_VERSION }}-all-${{ github.sha }}
           path: |
             node_modules
             public
