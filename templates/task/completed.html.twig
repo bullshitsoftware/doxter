@@ -5,9 +5,9 @@
 {% endblock %}
 
 {% block content %}
-  {% if (tasks|length) > 0 %}
-    {% include 'task/_search.html.twig' with {} only %}
+  {% include 'task/_search.html.twig' with {} only %}
 
+  {% if (tasks|length) > 0 %}
     <div class="grid grid_completed">
       <div class="grid__label grid__label_md">
         ID

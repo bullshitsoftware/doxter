@@ -45,6 +45,7 @@ class CompletedControllerTest extends WebTestCase
     {
         self::loginUserByEmail('jane.doe@example.com');
         $this->client->request('GET', '/completed');
+        self::assertSelectorExists('.search');
         self::assertSelectorTextContains('.message', 'No tasks done :-(');
     }
 

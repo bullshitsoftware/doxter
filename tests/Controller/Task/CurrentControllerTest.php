@@ -46,6 +46,7 @@ class CurrentControllerTest extends WebTestCase
     {
         self::loginUserByEmail('jane.doe@example.com');
         $this->client->request('GET', '/');
+        self::assertSelectorExists('.search');
         self::assertSelectorTextContains('.message', 'Yay! No tasks found');
     }
 

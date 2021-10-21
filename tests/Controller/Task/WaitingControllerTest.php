@@ -43,6 +43,7 @@ class WaitingControllerTest extends WebTestCase
     {
         self::loginUserByEmail('jane.doe@example.com');
         $this->client->request('GET', '/waiting');
+        self::assertSelectorExists('.search');
         self::assertSelectorTextContains('.message', 'Yay! No tasks found');
     }
 
