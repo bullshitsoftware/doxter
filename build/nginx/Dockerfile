@@ -1,22 +1,20 @@
-FROM alpine:3.14
+FROM nginx:1.21-alpine
 
-RUN apk add --no-cache nginx
+RUN rm -rf docker-entrypoint.sh docker-entrypoint.d
 
-COPY build/nginx/app.conf /etc/nginx/http.d/default.conf
-COPY build/nginx/nginx.conf /etc/nginx/
+COPY build/nginx/nginx.conf /nginx/nginx.conf
+COPY build/nginx/app.conf /nginx/app.conf.template
+RUN mkdir -p /nginx/cache/proxy_temp \
+    /nginx/cache/fastcgi_temp \
+    /nginx/cache/uwsgi_temp \
+    /nginx/cache/scgi_temp \
+    && chmod -R 777 /nginx
 
 COPY public /app
 
-ARG USERNAME=user
-ARG UID=1000
-ARG GID=1000
-RUN addgroup -g $GID $USERNAME
-RUN adduser -u $UID -G $USERNAME -s /bin/sh -D $USERNAME
-
-RUN chown -R $USERNAME:$USERNAME /var/lib/nginx /var/log/nginx
-
-USER $USERNAME
-
-CMD ["nginx"]
+COPY build/nginx/entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+ENTRYPOINT [ "/entrypoint.sh" ]
+CMD [ "nginx", "-c", "/nginx/nginx.conf" ]
 
 EXPOSE 8080
