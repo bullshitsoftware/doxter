@@ -20,8 +20,6 @@ RUN touch /app/.env
 
 RUN mkdir /app/var /db && chmod 777 /app/var /db
 
-USER $USERNAME
-
 WORKDIR /app
 
 ENV APP_ENV=prod
