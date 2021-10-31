@@ -4,15 +4,11 @@ namespace App\Entity;
 
 use App\Repository\TaskRepository;
 use DateTimeImmutable;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Entity;
 use Doctrine\ORM\Mapping\Id;
 use Doctrine\ORM\Mapping\JoinColumn;
-use Doctrine\ORM\Mapping\ManyToMany;
 use Doctrine\ORM\Mapping\ManyToOne;
-use Doctrine\ORM\Mapping\OrderBy;
 use Symfony\Component\Uid\Uuid;
 
 #[Entity(repositoryClass: TaskRepository::class)]
@@ -27,11 +23,8 @@ class Task
     ]
     private User $user;
 
-    #[
-        ManyToMany(targetEntity: Tag::class, cascade: ['persist']),
-        OrderBy(['name' => 'ASC']),
-    ]
-    private Collection $tags;
+    #[Column(type: 'json')]
+    private array $tags = [];
 
     #[Column(type: 'string', length: 144)]
     private string $title = '';
@@ -60,7 +53,6 @@ class Task
     public function __construct()
     {
         $this->id = Uuid::v4();
-        $this->tags = new ArrayCollection();
     }
 
     public function getId(): Uuid
@@ -87,18 +79,12 @@ class Task
         return $this;
     }
 
-    /**
-     * @return Tag[]|Collection
-     */
-    public function getTags(): Collection
+    public function getTags(): array
     {
         return $this->tags;
     }
 
-    /**
-     * @param Tag[]|Collection
-     */
-    public function setTags(Collection $tags): self
+    public function setTags(array $tags): self
     {
         $this->tags = $tags;
 

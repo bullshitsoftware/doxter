@@ -39,8 +39,7 @@ class TaskRepository extends ServiceEntityRepository
     public function findCurrentByUser(User $user, ?string $search = null, DateTimeInterface $now): array
     {
         $queryBuilder = $this->createQueryBuilder('task')
-            ->select('task', 'tags')
-            ->leftJoin('task.tags', 'tags')
+            ->select('task')
             ->andWhere('task.user = :user')
             ->setParameter('user', $user->getId()->toBinary())
             ->andWhere('task.wait IS NULL OR task.wait < :now')
@@ -70,8 +69,7 @@ class TaskRepository extends ServiceEntityRepository
     public function findWaitingByUser(User $user, ?string $search = null, DateTimeInterface $now): array
     {
         $queryBuilder = $this->createQueryBuilder('task')
-            ->select('task', 'tags')
-            ->leftJoin('task.tags', 'tags')
+            ->select('task')
             ->andWhere('task.user = :user')
             ->setParameter('user', $user->getId()->toBinary())
             ->andWhere('task.wait IS NOT NULL AND task.wait > :now')
@@ -93,8 +91,7 @@ class TaskRepository extends ServiceEntityRepository
     public function findCompletedByUser(User $user, int $page, ?string $search = null): Pagination
     {
         $queryBuilder = $this->createQueryBuilder('task')
-            ->select('task', 'tags')
-            ->leftJoin('task.tags', 'tags')
+            ->select('task')
             ->andWhere('task.user = :user')
             ->setParameter('user', $user->getId()->toBinary())
             ->andWhere('task.ended IS NOT NULL')

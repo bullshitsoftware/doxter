@@ -41,28 +41,20 @@ class TaskSearchFilter
 
     private function applyIncludeTags(QueryBuilder $queryBuilder, string $taskAlias, array $tags): void
     {
-        $queryBuilder->andWhere(
-            $queryBuilder->expr()->exists("
-                SELECT gi FROM App\Entity\Task ti JOIN ti.tags gi
-                WHERE ti = $taskAlias AND gi.name IN (:includeTags)
-                GROUP BY ti
-                HAVING COUNT(ti) = :includeTagsCount
-            ")
-        )
-            ->setParameter('includeTags', $tags)
-            ->setParameter('includeTagsCount', count($tags));
+        foreach ($tags as $i => $tag) {
+            $queryBuilder->andWhere("in_array($taskAlias.tags, :includeTag$i) IS NOT NULL")
+                ->setParameter("includeTag$i", $tag)
+            ;
+        }
     }
 
     private function applyExcludeTags(QueryBuilder $queryBuilder, string $taskAlias, array $tags): void
     {
-        $queryBuilder->andWhere(
-            $queryBuilder->expr()->not(
-                $queryBuilder->expr()->exists("
-                    SELECT te FROM App\Entity\Task te JOIN te.tags ge
-                    WHERE te = $taskAlias AND ge.name IN (:excludeTags)
-                ")
-            )
-        )->setParameter('excludeTags', $tags);
+        foreach ($tags as $i => $tag) {
+            $queryBuilder->andWhere("in_array($taskAlias.tags, :excludeTag$i) IS NULL")
+                ->setParameter("excludeTag$i", $tag)
+            ;
+        }
     }
 
     private function applyTerms(QueryBuilder $queryBuilder, string $taskAlias, array $terms): void

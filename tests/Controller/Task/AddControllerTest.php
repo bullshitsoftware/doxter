@@ -2,7 +2,6 @@
 
 namespace App\Tests\Controller\Task;
 
-use App\Entity\Tag;
 use App\Repository\TaskRepository;
 use App\Service\DateTime\DateTimeFactory;
 use App\Tests\Controller\WebTestCase;
@@ -38,8 +37,7 @@ class AddControllerTest extends WebTestCase
         $task = $this->taskRepository->findOneByTitle('test');
         self::assertNotNull($task);
         self::assertSame('john.doe@example.com', $task->getUser()->getEmail());
-        $tags = $task->getTags()->map(fn (Tag $tag) => $tag->getName())->toArray();
-        self::assertCount(0, $tags);
+        self::assertCount(0, $task->getTags());
         self::assertSame('2007-01-02 03:04:05', $task->getUpdated()->format('Y-m-d H:i:s'));
         $this->client->followRedirect();
         self::assertSelectorTextSame('.message_flash', 'Task "test" created');
@@ -67,7 +65,7 @@ class AddControllerTest extends WebTestCase
         $task = $this->taskRepository->findOneByTitle('test');
         self::assertNotNull($task);
         self::assertSame('john.doe@example.com', $task->getUser()->getEmail());
-        $tags = $task->getTags()->map(fn (Tag $tag) => $tag->getName())->toArray();
+        $tags = $task->getTags();
         self::assertCount(2, $tags);
         self::assertTrue(in_array('tag1', $tags));
         self::assertTrue(in_array('tag2', $tags));

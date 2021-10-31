@@ -21,3 +21,4 @@ doctrine:
     dql:
       string_functions:
         mb_strtolower: App\Doctrine\MbStrtolower
+        in_array: App\Doctrine\InArray

@@ -15,6 +15,7 @@ class TaskFixture extends Fixture implements DependentFixtureInterface
     private const data = [
         'task_current_1' => [
             'id' => '2c2bbc1d-e729-4fde-935f-2f5faca6d905',
+            'tags' => ['bar', 'foo'],
             'title' => 'Current task 1',
             'created' => '-9 minutes',
             'started' => '-9 minutes',
@@ -22,11 +23,13 @@ class TaskFixture extends Fixture implements DependentFixtureInterface
         ],
         'task_current_2' => [
             'id' => '5aa61370-a209-4f00-9c6e-145b57ce138b',
+            'tags' => ['foo'],
             'title' => 'Current task 2',
             'created' => '-8 minutes',
         ],
         'task_current_3' => [
             'id' => 'b3bb6502-00a5-4fb6-b34b-3df5867a006b',
+            'tags' => ['baz'],
             'title' => 'Current task 3',
             'created' => '-7 minutes',
             'started' => '-7 minutes',
@@ -69,18 +72,21 @@ class TaskFixture extends Fixture implements DependentFixtureInterface
 
         'task_waiting_1' => [
             'id' => '1d44a8c5-e126-4f42-ab51-b8d2215049e3',
+            'tags' => ['bar', 'foo'],
             'title' => 'Delayed task 1',
             'created' => '-8 minutes',
             'wait' => '-8 minutes +1 day',
         ],
         'task_waiting_2' => [
             'id' => '32a50e63-58fc-4f65-8683-7b08fb7c9df1',
+            'tags' => ['foo'],
             'title' => 'Delayed task 2',
             'created' => '-7 minutes',
             'wait' => '-7 minutes +2 days',
         ],
         'task_waiting_3' => [
             'id' => 'babaad5b-3db2-4f4f-9ba7-f98466309c9b',
+            'tags' => ['baz'],
             'title' => 'Delayed task 3',
             'created' => '-6 minutes',
             'wait' => '-6 minutes +3 days',
@@ -118,18 +124,21 @@ class TaskFixture extends Fixture implements DependentFixtureInterface
 
         'task_completed_1' => [
             'id' => 'd74c0d03-a5d7-4fec-accc-4573d8c55878',
+            'tags' => ['bar', 'foo'],
             'title' => 'Done task 1',
             'created' => '-10 days',
             'ended' => '-9 days +12 hours',
         ],
         'task_completed_2' => [
             'id' => '997a2edd-b8fe-4fe8-be92-34957b4ccb3f',
+            'tags' => ['foo'],
             'title' => 'Done task 2',
             'created' => '-9 days',
             'ended' => '-9 days +12 hours',
         ],
         'task_completed_3' => [
             'id' => '14936392-2c17-4fb5-9618-aafc6346ea3e',
+            'tags' => ['baz'],
             'title' => 'Done task 3',
             'created' => '-8 days',
             'ended' => '-7 days +12 hours',
@@ -195,6 +204,7 @@ class TaskFixture extends Fixture implements DependentFixtureInterface
         foreach (self::data as $reference => $data) {
             $task = new Task();
             $task->setId(Uuid::fromString($data['id']));
+            $task->setTags($data['tags'] ?? []);
             $task->setUser($user);
             $task->setTitle($data['title']);
             $task->setCreated(
