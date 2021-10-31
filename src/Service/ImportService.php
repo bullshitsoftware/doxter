@@ -31,16 +31,13 @@ class ImportService
                     continue;
                 }
                 $item['uuid'] = Uuid::fromString($item['uuid'])->toBinary();
-                $taskTagsMap[$item['uuid']] = array_map(
+                $item['tags'] = array_map(
                     fn (string $tag) => mb_strtolower($tag),
                     $item['tags'] ?? [],
                 );
+                usort($item['tags'], fn (string $s1, string $s2) => strcmp($s1, $s2));
 
                 $this->importTask($user, $item);
-            }
-            $knownTags = $this->loadTags($user);
-            foreach ($taskTagsMap as $taskId => $taskTags) {
-                $knownTags = $this->importTags($user, $knownTags, $taskId, $taskTags);
             }
             $this->connection->commit();
         } catch (Throwable $e) {
@@ -63,12 +60,13 @@ class ImportService
 
         // it is possible to move a task from one user to another, but nobody cares
         $this->connection->executeStatement(
-            'INSERT OR REPLACE INTO task (id, user_id, title, description, created, updated, wait, started, ended, due)
-             VALUES (:id, :user_id, :title, :description, :created, :updated, :wait, :started, :ended, :due)
+            'INSERT OR REPLACE INTO task (id, user_id, tags, title, description, created, updated, wait, started, ended, due)
+             VALUES (:id, :user_id, :tags, :title, :description, :created, :updated, :wait, :started, :ended, :due)
             ',
             [
                 'id' => $item['uuid'],
                 'user_id' => $user->getId()->toBinary(),
+                'tags' => json_encode($item['tags']),
                 'title' => $item['description'],
                 'description' => $description,
                 'created' => $this->prepareDate($item['entry']),
@@ -87,51 +85,6 @@ class ImportService
                 'due' => Types::DATETIME_IMMUTABLE,
             ],
         );
-    }
-
-    private function loadTags(User $user): array
-    {
-        $result = $this->connection->executeQuery(
-            'SELECT id, name FROM tag WHERE user_id = :user_id',
-            ['user_id' => $user->getId()->toBinary()],
-        );
-        $tags = [];
-        foreach ($result as $item) {
-            $tags[$item['name']] = $item['id'];
-        }
-
-        return $tags;
-    }
-
-    private function importTags(User $user, array $knownTags, string $taskId, array $tags): array
-    {
-        $this->connection->executeStatement(
-            'DELETE FROM task_tag WHERE task_id = :task_id',
-            ['task_id' => $taskId],
-        );
-        foreach ($tags as $tag) {
-            if (!array_key_exists($tag, $knownTags)) {
-                $tagId = Uuid::v4();
-                $this->connection->executeStatement(
-                    'INSERT INTO tag (id, user_id, name) VALUES (:id, :user_id, :name)',
-                    [
-                        'id' => $tagId->toBinary(),
-                        'user_id' => $user->getId()->toBinary(),
-                        'name' => $tag,
-                    ],
-                );
-                $knownTags[$tag] = $tagId->toBinary();
-            }
-            $this->connection->executeStatement(
-                'INSERT INTO task_tag (task_id, tag_id) VALUES (:task_id, :tag_id)',
-                [
-                    'task_id' => $taskId,
-                    'tag_id' => $knownTags[$tag],
-                ],
-            );
-        }
-
-        return $knownTags;
     }
 
     private function prepareDate(?string $date): ?DateTimeImmutable

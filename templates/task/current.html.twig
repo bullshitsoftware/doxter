@@ -43,8 +43,7 @@
               id: task.id
             }
           )
-          }}"
-          class="mono">
+          }}">
           {{ task.id|slice(0, 8) }}
         </a>
 
@@ -79,7 +78,7 @@
         </div>
         <div class="{{ html_classes('grid__cell', row_classes) }}">
           {% for tag in task.tags %}
-            {{ tag.name }}
+            {{ tag }}
           {% endfor %}
         </div>
 

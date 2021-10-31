@@ -2,7 +2,6 @@
 
 namespace App\Tests\Controller\Settings;
 
-use App\Entity\Tag;
 use App\Entity\Task;
 use App\Repository\TaskRepository;
 use App\Tests\Controller\WebTestCase;
@@ -55,7 +54,7 @@ class TaskImportControllerTest extends WebTestCase
         self::assertSame('2021-09-14 19:33:10', $task->getUpdated()->format('Y-m-d H:i:s'));
         self::assertSame('2021-09-14 19:33:10', $task->getEnded()->format('Y-m-d H:i:s'));
         self::assertSame('2021-12-31 21:00:00', $task->getDue()->format('Y-m-d H:i:s'));
-        $tags = $task->getTags()->map(fn (Tag $tag) => $tag->getName())->toArray();
+        $tags = $task->getTags();
         self::assertCount(2, $tags);
         self::assertTrue(in_array('tag1', $tags));
         self::assertTrue(in_array('tag2', $tags));
@@ -70,7 +69,7 @@ class TaskImportControllerTest extends WebTestCase
         self::assertNull($this->taskRepository->findOneByTitle('Imported'));
         $task = self::getContainer()->get('doctrine')->getManager()->getRepository(Task::class)->findOneByTitle('Imported2');
         self::assertNotNull($task);
-        $tags = $task->getTags()->map(fn (Tag $tag) => $tag->getName())->toArray();
+        $tags = $task->getTags();
         self::assertCount(1, $tags);
         self::assertTrue(in_array('tag3', $tags));
         $this->client->followRedirect();
