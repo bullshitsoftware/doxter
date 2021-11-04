@@ -91,7 +91,7 @@
   }
 
   &.grid_current {
-    grid-template-columns: min-content min-content min-content max-content min-content auto;
+    grid-template-columns: min-content min-content min-content max-content min-content auto min-content;
   }
 
   &.grid_waiting {

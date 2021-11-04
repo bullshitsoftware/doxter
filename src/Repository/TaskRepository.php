@@ -2,7 +2,6 @@
 
 namespace App\Repository;
 
-use App\Doctrine\OrderByNullSqlWalker;
 use App\Doctrine\Pagination;
 use App\Entity\Task;
 use App\Entity\User;
@@ -11,7 +10,6 @@ use function array_slice;
 use function count;
 use DateTimeInterface;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\ORM\Query;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -47,22 +45,13 @@ class TaskRepository extends ServiceEntityRepository
             ->andWhere('task.wait IS NULL OR task.wait < :now')
             ->setParameter('now', $now)
             ->andWhere('task.ended IS NULL')
-            ->addOrderBy('task.due', 'ASC')
-            ->addOrderBy('task.started', 'ASC')
-            ->addOrderBy('task.created', 'ASC')
         ;
 
         if (null !== $search) {
             $this->searchFilter->apply($queryBuilder, 'task', $search);
         }
 
-        return $queryBuilder->getQuery()
-            ->setHint(Query::HINT_CUSTOM_OUTPUT_WALKER, OrderByNullSqlWalker::class)
-            ->setHint(OrderByNullSqlWalker::HINT, [
-                'due' => OrderByNullSqlWalker::LAST,
-                'started' => OrderByNullSqlWalker::LAST,
-            ])
-            ->getResult();
+        return $queryBuilder->getQuery()->getResult();
     }
 
     /**

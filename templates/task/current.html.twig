@@ -27,6 +27,9 @@
       <div class="grid__label grid__label_md grid__label_left">
         Title
       </div>
+      <div class="grid__label grid__label_md">
+        Urg
+      </div>
       {% for task in tasks %}
         {% set row_classes = {
           grid__cell_highlight: task.started is not null,
@@ -101,6 +104,18 @@
         </div>
         <div class="{{ html_classes('grid__cell', row_classes) }}">
           {{ task.title }}
+        </div>
+
+        <div class="grid__label grid__label_sm">
+          Urg
+        </div>
+        <div class="{{
+          html_classes(
+            'grid__cell grid__cell_right',
+            row_classes
+          )
+          }}">
+          {{ urgs[task.id.toRfc4122]|number_format(2) }}
         </div>
 
         <div class="grid__cell grid__cell_space"></div>

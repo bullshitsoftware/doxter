@@ -22,17 +22,17 @@ class CurrentControllerTest extends WebTestCase
         $this->client->request('GET', '/');
         self::assertResponseIsSuccessful();
         $grid = [
-            'columns' => ['ID', 'Active', 'Age', 'Tag', 'Due', 'Title'],
+            'columns' => ['ID', 'Active', 'Age', 'Tag', 'Due', 'Title', 'Urg'],
             'data' => [
-                ['1daf6745', '', '2m', '', '7mon', 'Current task 8'],
-                ['8670b12e', '1m', '1m', '', '8mon', 'Current task 9'],
-                ['2c2bbc1d', '9m', '9m', 'bar foo', '', 'Current task 1'],
-                ['b3bb6502', '7m', '7m', 'baz', '', 'Current task 3'],
-                ['8570760c', '5m', '5m', '', '', 'Current task 5'],
-                ['a0e84ad1', '3m', '3m', '', '', 'Current task 7'],
-                ['5aa61370', '', '8m', 'foo', '', 'Current task 2'],
-                ['288d7410', '', '6m', '', '', 'Current task 4'],
-                ['738c8de9', '', '4m', '', '', 'Current task 6'],
+                ['2c2bbc1d', '9m', '9m', 'bar foo', '', 'Current task 1', '6.00'],
+                ['b3bb6502', '7m', '7m', 'baz', '', 'Current task 3', '4.00'],
+                ['8670b12e', '1m', '1m', '', '8mon', 'Current task 9', '3.26'],
+                ['8570760c', '5m', '5m', '', '', 'Current task 5', '3.00'],
+                ['a0e84ad1', '3m', '3m', '', '', 'Current task 7', '3.00'],
+                ['5aa61370', '', '8m', 'foo', '', 'Current task 2', '2.00'],
+                ['1daf6745', '', '2m', '', '7mon', 'Current task 8', '1.29'],
+                ['288d7410', '', '6m', '', '', 'Current task 4', '1.00'],
+                ['738c8de9', '', '4m', '', '', 'Current task 6', '1.00'],
             ],
         ];
         self::assertGridContent('.grid_current', $grid);
@@ -58,10 +58,10 @@ class CurrentControllerTest extends WebTestCase
         self::assertGridContent(
             '.grid_current',
             [
-                'columns' => ['ID', 'Active', 'Age', 'Tag', 'Due', 'Title'],
+                'columns' => ['ID', 'Active', 'Age', 'Tag', 'Due', 'Title', 'Urg'],
                 'data' => [
-                    ['2c2bbc1d', '9m', '9m', 'bar foo', '', 'Current task 1'],
-                    ['5aa61370', '', '8m', 'foo', '', 'Current task 2'],
+                    ['2c2bbc1d', '9m', '9m', 'bar foo', '', 'Current task 1', '6.00'],
+                    ['5aa61370', '', '8m', 'foo', '', 'Current task 2', '2.00'],
                 ],
             ],
         );
@@ -71,9 +71,9 @@ class CurrentControllerTest extends WebTestCase
         self::assertGridContent(
             '.grid_current',
             [
-                'columns' => ['ID', 'Active', 'Age', 'Tag', 'Due', 'Title'],
+                'columns' => ['ID', 'Active', 'Age', 'Tag', 'Due', 'Title', 'Urg'],
                 'data' => [
-                    ['2c2bbc1d', '9m', '9m', 'bar foo', '', 'Current task 1'],
+                    ['2c2bbc1d', '9m', '9m', 'bar foo', '', 'Current task 1', '6.00'],
                 ],
             ],
         );
@@ -82,9 +82,9 @@ class CurrentControllerTest extends WebTestCase
         self::assertGridContent(
             '.grid_current',
             [
-                'columns' => ['ID', 'Active', 'Age', 'Tag', 'Due', 'Title'],
+                'columns' => ['ID', 'Active', 'Age', 'Tag', 'Due', 'Title', 'Urg'],
                 'data' => [
-                    ['2c2bbc1d', '9m', '9m', 'bar foo', '', 'Current task 1'],
+                    ['2c2bbc1d', '9m', '9m', 'bar foo', '', 'Current task 1', '6.00'],
                 ],
             ],
         );
@@ -94,9 +94,9 @@ class CurrentControllerTest extends WebTestCase
         self::assertGridContent(
             '.grid_current',
             [
-                'columns' => ['ID', 'Active', 'Age', 'Tag', 'Due', 'Title'],
+                'columns' => ['ID', 'Active', 'Age', 'Tag', 'Due', 'Title', 'Urg'],
                 'data' => [
-                    ['5aa61370', '', '8m', 'foo', '', 'Current task 2'],
+                    ['5aa61370', '', '8m', 'foo', '', 'Current task 2', '2.00'],
                 ],
             ],
         );
@@ -106,15 +106,15 @@ class CurrentControllerTest extends WebTestCase
         self::assertGridContent(
             '.grid_current',
             [
-                'columns' => ['ID', 'Active', 'Age', 'Tag', 'Due', 'Title'],
+                'columns' => ['ID', 'Active', 'Age', 'Tag', 'Due', 'Title', 'Urg'],
                 'data' => [
-                    ['1daf6745', '', '2m', '', '7mon', 'Current task 8'],
-                    ['8670b12e', '1m', '1m', '', '8mon', 'Current task 9'],
-                    ['b3bb6502', '7m', '7m', 'baz', '', 'Current task 3'],
-                    ['8570760c', '5m', '5m', '', '', 'Current task 5'],
-                    ['a0e84ad1', '3m', '3m', '', '', 'Current task 7'],
-                    ['288d7410', '', '6m', '', '', 'Current task 4'],
-                    ['738c8de9', '', '4m', '', '', 'Current task 6'],
+                    ['b3bb6502', '7m', '7m', 'baz', '', 'Current task 3', '4.00'],
+                    ['8670b12e', '1m', '1m', '', '8mon', 'Current task 9', '3.26'],
+                    ['8570760c', '5m', '5m', '', '', 'Current task 5', '3.00'],
+                    ['a0e84ad1', '3m', '3m', '', '', 'Current task 7', '3.00'],
+                    ['1daf6745', '', '2m', '', '7mon', 'Current task 8', '1.29'],
+                    ['288d7410', '', '6m', '', '', 'Current task 4', '1.00'],
+                    ['738c8de9', '', '4m', '', '', 'Current task 6', '1.00'],
                 ],
             ],
         );
@@ -124,14 +124,14 @@ class CurrentControllerTest extends WebTestCase
         self::assertGridContent(
             '.grid_current',
             [
-                'columns' => ['ID', 'Active', 'Age', 'Tag', 'Due', 'Title'],
+                'columns' => ['ID', 'Active', 'Age', 'Tag', 'Due', 'Title', 'Urg'],
                 'data' => [
-                    ['1daf6745', '', '2m', '', '7mon', 'Current task 8'],
-                    ['8670b12e', '1m', '1m', '', '8mon', 'Current task 9'],
-                    ['8570760c', '5m', '5m', '', '', 'Current task 5'],
-                    ['a0e84ad1', '3m', '3m', '', '', 'Current task 7'],
-                    ['288d7410', '', '6m', '', '', 'Current task 4'],
-                    ['738c8de9', '', '4m', '', '', 'Current task 6'],
+                    ['8670b12e', '1m', '1m', '', '8mon', 'Current task 9', '3.26'],
+                    ['8570760c', '5m', '5m', '', '', 'Current task 5', '3.00'],
+                    ['a0e84ad1', '3m', '3m', '', '', 'Current task 7', '3.00'],
+                    ['1daf6745', '', '2m', '', '7mon', 'Current task 8', '1.29'],
+                    ['288d7410', '', '6m', '', '', 'Current task 4', '1.00'],
+                    ['738c8de9', '', '4m', '', '', 'Current task 6', '1.00'],
                 ],
             ],
         );
