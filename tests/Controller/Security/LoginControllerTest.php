@@ -3,9 +3,12 @@
 namespace App\Tests\Controller\Security;
 
 use App\Tests\Controller\WebTestCase;
+use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 
 class LoginControllerTest extends WebTestCase
 {
+    private KernelBrowser $client;
+
     protected function setUp(): void
     {
         parent::setUp();

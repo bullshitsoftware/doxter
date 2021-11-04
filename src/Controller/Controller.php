@@ -5,6 +5,8 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Service\DateTime\DateTimeFactory;
 use DateTimeImmutable;
+use function get_class;
+use LogicException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 abstract class Controller extends AbstractController
@@ -12,23 +14,22 @@ abstract class Controller extends AbstractController
     public const FLASH_SUCCESS = 'message_green';
     public const FLASH_ERROR = 'message_pink';
 
-    public static function getSubscribedServices()
+    public function __construct(private DateTimeFactory $dateTimeFactory)
     {
-        return array_merge(
-            parent::getSubscribedServices(),
-            [
-                'datetime.factory' => DateTimeFactory::class,
-            ],
-        );
     }
 
     protected function now(): DateTimeImmutable
     {
-        return $this->get('datetime.factory')->now();
+        return $this->dateTimeFactory->now();
     }
 
     protected function getUser(): ?User
     {
-        return parent::getUser();
+        $user = parent::getUser();
+        if (null !== $user && !$user instanceof User) {
+            throw new LogicException(sprintf('Invalid user instance: %s', get_class($user)));
+        }
+
+        return $user;
     }
 }

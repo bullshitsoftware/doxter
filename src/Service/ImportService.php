@@ -25,7 +25,6 @@ class ImportService
         $items = json_decode($json, true);
         $this->connection->beginTransaction();
         try {
-            $taskTagsMap = [];
             foreach ($items as $item) {
                 if ('deleted' === $item['status']) {
                     continue;
@@ -47,6 +46,9 @@ class ImportService
         }
     }
 
+    /**
+     * @param array<string,mixed> $item
+     */
     private function importTask(User $user, array $item): void
     {
         $description = '';
@@ -93,6 +95,6 @@ class ImportService
             return null;
         }
 
-        return DateTimeImmutable::createFromFormat('Ymd\THisZ', $date, $this->sourceTimezone);
+        return DateTimeImmutable::createFromFormat('Ymd\THisZ', $date, $this->sourceTimezone) ?: null;
     }
 }

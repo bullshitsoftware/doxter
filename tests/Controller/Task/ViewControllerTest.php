@@ -19,6 +19,8 @@ class ViewControllerTest extends WebTestCase
 
     /**
      * @dataProvider tasksProvider
+     *
+     * @param array<string,string> $viewData
      */
     public function testTask(array $viewData): void
     {
@@ -38,6 +40,9 @@ class ViewControllerTest extends WebTestCase
         );
     }
 
+    /**
+     * @return array<array<array<string,string>>>
+     */
     public function tasksProvider(): array
     {
         return [

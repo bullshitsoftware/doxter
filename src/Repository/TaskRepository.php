@@ -16,6 +16,8 @@ use Doctrine\ORM\Tools\Pagination\Paginator;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
+ * @template-extends ServiceEntityRepository<Task>
+ *
  * @method Task|null find($id, $lockMode = null, $lockVersion = null)
  * @method Task|null findOneBy(array $criteria, array $orderBy = null)
  * @method Task|null findOneByTitle(string $title)
@@ -86,7 +88,7 @@ class TaskRepository extends ServiceEntityRepository
     }
 
     /**
-     * @return Task[]
+     * @return Pagination<Task>
      */
     public function findCompletedByUser(User $user, int $page, ?string $search = null): Pagination
     {

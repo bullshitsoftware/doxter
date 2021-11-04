@@ -33,7 +33,6 @@ class AddControllerTest extends WebTestCase
             ],
         ]);
         self::assertResponseRedirects('/');
-        /** @var Task $task */
         $task = $this->taskRepository->findOneByTitle('test');
         self::assertNotNull($task);
         self::assertSame('john.doe@example.com', $task->getUser()->getEmail());
@@ -61,7 +60,6 @@ class AddControllerTest extends WebTestCase
             ],
         ]);
         self::assertResponseRedirects('/completed');
-        /** @var Task $task */
         $task = $this->taskRepository->findOneByTitle('test');
         self::assertNotNull($task);
         self::assertSame('john.doe@example.com', $task->getUser()->getEmail());

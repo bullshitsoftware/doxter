@@ -33,10 +33,10 @@ class LoginFormAuthenticator extends AbstractLoginFormAuthenticator
 
     public function authenticate(Request $request): PassportInterface
     {
-        $email = $request->request->get('email', '');
+        $email = (string) $request->request->get('email', '');
         $request->getSession()->set(Security::LAST_USERNAME, $email);
         $request->getSession()->set(self::LAST_REMEMBER_ME, $request->request->getBoolean('_remember_me'));
-        $password = $request->request->get('password', '');
+        $password = (string) $request->request->get('password', '');
 
         return new Passport(
             new UserBadge($email),

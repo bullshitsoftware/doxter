@@ -19,6 +19,10 @@ abstract class WebTestCase extends SymfonyTestCase
         parent::tearDown();
     }
 
+    /**
+     * @param array<string,mixed> $options
+     * @param array<string,mixed> $server
+     */
     protected static function createClient(array $options = [], array $server = []): KernelBrowser
     {
         self::$client = parent::createClient($options, $server);
@@ -32,6 +36,9 @@ abstract class WebTestCase extends SymfonyTestCase
         self::$client->loginUser($user);
     }
 
+    /**
+     * @param array{columns:array<string>,data:array<array<string>>} $grid
+     */
     public static function assertGridContent(string $selector, array $grid, string $message = ''): void
     {
         $crawler = self::$client->getCrawler()->filter($selector)->first();

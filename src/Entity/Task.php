@@ -23,6 +23,9 @@ class Task
     ]
     private User $user;
 
+    /**
+     * @var array<string>
+     */
     #[Column(type: 'json')]
     private array $tags = [];
 
@@ -79,11 +82,17 @@ class Task
         return $this;
     }
 
+    /**
+     * @return array<string>
+     */
     public function getTags(): array
     {
         return $this->tags;
     }
 
+    /**
+     * @param array<string> $tags
+     */
     public function setTags(array $tags): self
     {
         $this->tags = $tags;

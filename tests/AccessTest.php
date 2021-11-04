@@ -56,6 +56,9 @@ class AccessTest extends WebTestCase
         self::assertSame(['login'], array_diff($appRoutes, $testRoutes));
     }
 
+    /**
+     * @return array<array{0:string,1?:callable(self=):array<string,mixed>}>
+     */
     public function routesProvider(): array
     {
         return [

@@ -23,6 +23,9 @@ class TaskSearchFilter
         }
     }
 
+    /**
+     * @return array{includeTags:array<string>,excludeTags:array<string>,terms:array<string>}
+     */
     private function parseQuery(string $query): array
     {
         $components = ['includeTags' => [], 'excludeTags' => [], 'terms' => []];
@@ -39,6 +42,9 @@ class TaskSearchFilter
         return $components;
     }
 
+    /**
+     * @param array<string> $tags
+     */
     private function applyIncludeTags(QueryBuilder $queryBuilder, string $taskAlias, array $tags): void
     {
         foreach ($tags as $i => $tag) {
@@ -48,6 +54,9 @@ class TaskSearchFilter
         }
     }
 
+    /**
+     * @param array<string> $tags
+     */
     private function applyExcludeTags(QueryBuilder $queryBuilder, string $taskAlias, array $tags): void
     {
         foreach ($tags as $i => $tag) {
@@ -57,6 +66,9 @@ class TaskSearchFilter
         }
     }
 
+    /**
+     * @param array<string> $terms
+     */
     private function applyTerms(QueryBuilder $queryBuilder, string $taskAlias, array $terms): void
     {
         foreach ($terms as $i => $term) {

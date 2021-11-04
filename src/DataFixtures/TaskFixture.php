@@ -3,6 +3,7 @@
 namespace App\DataFixtures;
 
 use App\Entity\Task;
+use App\Entity\User;
 use App\Service\DateTime\DateTimeFactory;
 use function array_key_exists;
 use Doctrine\Bundle\FixturesBundle\Fixture;
@@ -199,6 +200,7 @@ class TaskFixture extends Fixture implements DependentFixtureInterface
     public function load(ObjectManager $manager): void
     {
         $now = $this->dateTimeFactory->now();
+        /** @var User $user */
         $user = $this->getReference(UserFixture::JOHN_DOE);
 
         foreach (self::data as $reference => $data) {
@@ -207,12 +209,8 @@ class TaskFixture extends Fixture implements DependentFixtureInterface
             $task->setTags($data['tags'] ?? []);
             $task->setUser($user);
             $task->setTitle($data['title']);
-            $task->setCreated(
-                array_key_exists('created', $data) ? $now->modify($data['created']) : $now,
-            );
-            $task->setUpdated(
-                array_key_exists('updated', $data) ? $now->modify($data['updated']) : $task->getCreated(),
-            );
+            $task->setCreated($now->modify($data['created']));
+            $task->setUpdated($task->getCreated());
             $task->setWait(
                 array_key_exists('wait', $data) ? $now->modify($data['wait']) : null,
             );

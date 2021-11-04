@@ -15,7 +15,7 @@ class DeleteController extends Controller
     public function __invoke(EntityManagerInterface $entityManager, Request $request, Task $task): Response
     {
         $this->denyAccessUnlessGranted(TaskVoter::DELETE, $task);
-        if (!$this->isCsrfTokenValid('task', $request->request->get('_token'))) {
+        if (!$this->isCsrfTokenValid('task', (string) $request->request->get('_token'))) {
             $this->addFlash(
                 self::FLASH_ERROR,
                 sprintf('Failed to delete "%s" task. Please try again', $task->getTitle()),

@@ -8,6 +8,9 @@ use Symfony\Component\Form\Test\TypeTestCase;
 
 class TagsTypeTest extends TypeTestCase
 {
+    /**
+     * @return array<PreloadedExtension>
+     */
     protected function getExtensions(): array
     {
         return [

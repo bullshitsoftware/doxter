@@ -3,22 +3,23 @@
 namespace App\Tests\Controller\Settings;
 
 use App\Entity\Task;
-use App\Repository\TaskRepository;
 use App\Tests\Controller\WebTestCase;
+use Doctrine\Persistence\ObjectManager;
 use function in_array;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
+use Symfony\Component\Uid\Uuid;
 
 class TaskImportControllerTest extends WebTestCase
 {
     private KernelBrowser $client;
-    private TaskRepository $taskRepository;
+    private ObjectManager $objectManager;
 
     protected function setUp(): void
     {
         parent::setUp();
 
         $this->client = self::createClient();
-        $this->taskRepository = self::getContainer()->get('doctrine')->getManager()->getRepository(Task::class);
+        $this->objectManager = self::getContainer()->get('doctrine')->getManager();
     }
 
     public function testImport(): void
@@ -46,8 +47,9 @@ class TaskImportControllerTest extends WebTestCase
             ['status' => 'deleted'],
         ])]]);
         self::assertResponseRedirects('/settings/import');
-        $task = self::getContainer()->get('doctrine')->getManager()->getRepository(Task::class)->findOneByTitle('Imported');
+        $task = $this->objectManager->find(Task::class, Uuid::fromString('19ce47f7-a453-42f3-a60c-845818f4a9b1'));
         self::assertNotNull($task);
+        self::assertSame('Imported', $task->getTitle());
         self::assertSame("line1\n\nline2\n\n", $task->getDescription());
         self::assertSame('2021-09-09 22:09:01', $task->getCreated()->format('Y-m-d H:i:s'));
         self::assertSame('2021-09-09 22:09:02', $task->getStarted()->format('Y-m-d H:i:s'));
@@ -66,8 +68,7 @@ class TaskImportControllerTest extends WebTestCase
         $taskData['tags'] = ['tag3'];
         $this->client->submitForm('Import', ['import' => ['content' => json_encode([$taskData])]]);
         self::assertResponseRedirects('/settings/import');
-        self::assertNull($this->taskRepository->findOneByTitle('Imported'));
-        $task = self::getContainer()->get('doctrine')->getManager()->getRepository(Task::class)->findOneByTitle('Imported2');
+        $this->objectManager->refresh($task);
         self::assertNotNull($task);
         $tags = $task->getTags();
         self::assertCount(1, $tags);

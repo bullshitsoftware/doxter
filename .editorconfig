@@ -10,5 +10,5 @@ charset = utf-8
 [Makefile]
 indent_style = tab
 
-[*.{twig,scss,js,json,yml,yaml}]
+[*.{twig,scss,js,json,yml,yaml,neon}]
 indent_size = 2

@@ -8,7 +8,8 @@
     "alexcvzz.vscode-sqlite",
     "felixfbecker.php-debug",
     "junstyle.php-cs-fixer",
-    "esbenp.prettier-vscode"
+    "esbenp.prettier-vscode",
+    "swordev.phpstan"
   ],
   "settings": {
     "editor.defaultFormatter": "esbenp.prettier-vscode",
