@@ -15,7 +15,9 @@ class UserSettingsType extends AbstractType
         $builder
             ->add('timezone', TextType::class, ['empty_data' => 'UTC'])
             ->add('dateFormat', TextType::class, ['empty_data' => 'Y-m-d'])
-            ->add('dateTimeFormat', TextType::class, ['empty_data' => 'Y-m-d H:i:s']);
+            ->add('dateTimeFormat', TextType::class, ['empty_data' => 'Y-m-d H:i:s'])
+            ->add('weights', JsonObjectType::class)
+        ;
     }
 
     public function configureOptions(OptionsResolver $resolver): void

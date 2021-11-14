@@ -8,7 +8,7 @@ use DateTimeImmutable;
 class TaskWeigher
 {
     /**
-     * @param array{tag:array<string,float>,date:array{age?:float,due?:float,started?:float}} $config
+     * @param array{tag:array<string,float>,date:array{age:float,due:float,started:float}} $config
      */
     public function __construct(private array $config, private DateTimeImmutable $now)
     {
@@ -21,7 +21,8 @@ class TaskWeigher
 
     private function weighTags(Task $task): float
     {
-        $config = $this->config['tag'];
+        $config = $this->config['tag'] ?? [];
+
         $weight = 0;
         foreach ($task->getTags() as $tag) {
             $weight += $config[$tag] ?? 1;
@@ -39,14 +40,14 @@ class TaskWeigher
         $config = $this->config['date'];
         $weight = 0;
 
-        $ageMod = $config['age'] ?? 1;
+        $ageMod = $config['age'];
         $weight += $ageMod * (1 + $weekDiff($this->now, $task->getCreated()));
         if (null !== $task->getStarted()) {
-            $startedMod = $config['started'] ?? 2;
+            $startedMod = $config['started'];
             $weight += $startedMod * (1 + $weekDiff($this->now, $task->getStarted()));
         }
         if (null !== $task->getDue()) {
-            $dueMode = $config['due'] ?? 10;
+            $dueMode = $config['due'];
             $weight += $dueMode / max(1, $weekDiff($task->getDue(), $this->now));
         }
 

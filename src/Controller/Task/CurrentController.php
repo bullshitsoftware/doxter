@@ -23,20 +23,8 @@ class CurrentController extends Controller
         $now = $this->now();
         $tasks = $repository->findCurrentByUser($this->getUser(), $request->get('q'), $now);
 
-        $weigher = new TaskWeigher(
-            [
-                'tag' => ['foo' => 1, 'bar' => 2],
-                'date' => [
-                    'age' => 1,
-                    'started' => 2,
-                    'due' => 10,
-                ],
-            ],
-            $now,
-        );
-
         $id = fn (Uuid $id) => $id->toRfc4122();
-
+        $weigher = new TaskWeigher($this->getUser()->getSettings()->getWeights(), $now);
         $weights = [];
         foreach ($tasks as $task) {
             $weights[$id($task->getId())] = $weigher->weigh($task);

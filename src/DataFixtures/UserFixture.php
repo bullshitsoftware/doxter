@@ -21,6 +21,9 @@ class UserFixture extends Fixture
         $user->setEmail('john.doe@example.com');
         $user->setPassword($this->passwordHasher->hashPassword($user, $user->getEmail()));
         $this->setReference(self::JOHN_DOE, $user);
+        $weights = $user->getSettings()->getWeights();
+        $weights['tag'] += ['foo' => 1, 'bar' => 2];
+        $user->getSettings()->setWeights($weights);
         $manager->persist($user);
 
         $user = new User();
