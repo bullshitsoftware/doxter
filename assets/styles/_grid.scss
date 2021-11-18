@@ -59,11 +59,13 @@
       font-family: monospace;
       font-weight: bold;
       font-size: 1rem;
-      color: $orange;
     }
 
     &.grid__cell_highlight {
       background-color: $darkgrey;
+      @media (prefers-color-scheme: light) {
+        color: $white;
+      }
     }
 
     &.grid__cell_highlight.grid__cell_important,
@@ -77,6 +79,11 @@
         text-align: left;
       }
     }
+  }
+
+  a.grid__cell,
+  a.grid__cell.grid__cell_highlight {
+    color: $orange;
   }
 
   &.grid_task {
