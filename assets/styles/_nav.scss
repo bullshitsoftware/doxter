@@ -37,6 +37,9 @@
 
     &.nav__item_active {
       color: $black;
+      @media (prefers-color-scheme: light) {
+        color: $white;
+      }
       background-color: $orange;
     }
   }
@@ -49,6 +52,9 @@
     }
     .nav__item_active {
       color: $black;
+      @media (prefers-color-scheme: light) {
+        color: $white;
+      }
       background-color: $blue;
     }
   }
@@ -59,6 +65,9 @@
     width: 100%;
     height: 100%;
     background-color: $black;
+    @media (prefers-color-scheme: light) {
+      background-color: $white;
+    }
     border-bottom: none;
     margin-bottom: 0;
 

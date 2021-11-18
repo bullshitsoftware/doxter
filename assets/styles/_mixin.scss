@@ -4,6 +4,10 @@
 
     background-color: $darkgrey;
     color: $yellow;
+    @media (prefers-color-scheme: light) {
+      color: $black;
+      background-color: $yellow;
+    }
 
     text-decoration: none;
     font-weight: bold;
@@ -20,6 +24,9 @@
   @each $name, $color in $colors {
     .#{$block}__button.#{$block}__button_#{$name} {
       background-color: $darkgrey;
+      @media (prefers-color-scheme: light) {
+        background-color: $yellow;
+      }
       color: $color;
     }
   }

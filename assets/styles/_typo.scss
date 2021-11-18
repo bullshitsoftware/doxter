@@ -9,6 +9,10 @@
 .body {
   background-color: $black;
   color: $white;
+  @media (prefers-color-scheme: light) {
+    background-color: $white;
+    color: $black;
+  }
 }
 
 .header {
