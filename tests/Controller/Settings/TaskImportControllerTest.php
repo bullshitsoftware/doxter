@@ -54,9 +54,12 @@ class TaskImportControllerTest extends WebTestCase
         self::assertSame('Imported', $task->getTitle());
         self::assertSame("line1\n\nline2\n\n", $task->getDescription());
         self::assertSame('2021-09-09 22:09:01', $task->getCreated()->format('Y-m-d H:i:s'));
+        self::assertNotNull($task->getStarted());
         self::assertSame('2021-09-09 22:09:02', $task->getStarted()->format('Y-m-d H:i:s'));
         self::assertSame('2021-09-14 19:33:10', $task->getUpdated()->format('Y-m-d H:i:s'));
+        self::assertNotNull($task->getEnded());
         self::assertSame('2021-09-14 19:33:10', $task->getEnded()->format('Y-m-d H:i:s'));
+        self::assertNotNull($task->getDue());
         self::assertSame('2021-12-31 21:00:00', $task->getDue()->format('Y-m-d H:i:s'));
         $tags = $task->getTags();
         self::assertCount(2, $tags);

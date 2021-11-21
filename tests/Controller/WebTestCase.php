@@ -6,6 +6,7 @@ namespace App\Tests\Controller;
 
 use App\Repository\UserRepository;
 use function count;
+use LogicException;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase as SymfonyTestCase;
 use Symfony\Component\DomCrawler\Crawler;
@@ -34,7 +35,13 @@ abstract class WebTestCase extends SymfonyTestCase
 
     public static function loginUserByEmail(string $email = 'john.doe@example.com'): void
     {
+        if (null === self::$client) {
+            throw new LogicException('static::$client is null, forget to call static::createClient()?');
+        }
         $user = self::getContainer()->get(UserRepository::class)->findOneByEmail($email);
+        if (null === $user) {
+            throw new LogicException(sprintf('No user found by %s email', $email));
+        }
         self::$client->loginUser($user);
     }
 
@@ -43,6 +50,9 @@ abstract class WebTestCase extends SymfonyTestCase
      */
     public static function assertGridContent(string $selector, array $grid, string $message = ''): void
     {
+        if (null === self::$client) {
+            throw new LogicException('static::$client, forget to call static::createClient()?');
+        }
         $crawler = self::$client->getCrawler()->filter($selector)->first();
         self::assertSame(
             $grid['columns'],

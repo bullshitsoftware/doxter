@@ -22,7 +22,7 @@ class PasswordChangeController extends Controller
     ): Response {
         $this->denyAccessUnlessGranted('ROLE_USER');
 
-        $user = $this->getUser();
+        $user = $this->getUserOrException();
         $form = $this->createForm(PasswordChangeType::class);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {

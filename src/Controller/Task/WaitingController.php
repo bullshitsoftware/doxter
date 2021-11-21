@@ -20,7 +20,7 @@ class WaitingController extends Controller
 
         return $this->render('task/waiting.html.twig', [
             'now' => $now,
-            'tasks' => $repository->findWaitingByUser($this->getUser(), $request->get('q'), $now),
+            'tasks' => $repository->findWaitingByUser($this->getUserOrException(), $request->get('q'), $now),
         ]);
     }
 }

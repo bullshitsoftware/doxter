@@ -9,6 +9,7 @@ use Doctrine\ORM\Query\AST\Node;
 use Doctrine\ORM\Query\Lexer;
 use Doctrine\ORM\Query\Parser;
 use Doctrine\ORM\Query\SqlWalker;
+use LogicException;
 
 class InArray extends FunctionNode
 {
@@ -29,6 +30,9 @@ class InArray extends FunctionNode
 
     public function getSql(SqlWalker $sqlWalker): string
     {
+        if (null === $this->column || null === $this->value) {
+            throw new LogicException('No column or value, parse() was not called?');
+        }
         $column = $this->column->dispatch($sqlWalker);
         $value = $this->value->dispatch($sqlWalker);
 

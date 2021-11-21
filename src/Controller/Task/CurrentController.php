@@ -23,10 +23,10 @@ class CurrentController extends Controller
         $this->denyAccessUnlessGranted('ROLE_USER');
 
         $now = $this->now();
-        $tasks = $repository->findCurrentByUser($this->getUser(), $request->get('q'), $now);
+        $tasks = $repository->findCurrentByUser($this->getUserOrException(), $request->get('q'), $now);
 
         $id = fn (Uuid $id) => $id->toRfc4122();
-        $weigher = new TaskWeigher($this->getUser()->getSettings()->getWeights(), $now);
+        $weigher = new TaskWeigher($this->getUserOrException()->getSettings()->getWeights(), $now);
         $weights = [];
         foreach ($tasks as $task) {
             $weights[$id($task->getId())] = $weigher->weigh($task);

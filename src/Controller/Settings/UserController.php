@@ -18,7 +18,7 @@ class UserController extends Controller
     {
         $this->denyAccessUnlessGranted('ROLE_USER');
 
-        $user = $this->getUser();
+        $user = $this->getUserOrException();
         $form = $this->createForm(UserSettingsType::class, $user->getSettings());
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {

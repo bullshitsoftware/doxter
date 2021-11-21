@@ -21,7 +21,7 @@ class TaskImportController extends Controller
         $form = $this->createForm(ImportType::class);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $import->import($this->getUser(), $form->get('content')->getData());
+            $import->import($this->getUserOrException(), $form->get('content')->getData());
 
             $this->addFlash(self::FLASH_SUCCESS, 'Import succeed');
 

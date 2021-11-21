@@ -34,4 +34,14 @@ abstract class Controller extends AbstractController
 
         return $user;
     }
+
+    protected function getUserOrException(): User
+    {
+        $user = $this->getUser();
+        if (null === $user) {
+            throw new LogicException('No user in storage');
+        }
+
+        return $user;
+    }
 }

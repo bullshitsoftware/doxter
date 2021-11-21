@@ -9,6 +9,7 @@ use Doctrine\ORM\Query\AST\Node;
 use Doctrine\ORM\Query\Lexer;
 use Doctrine\ORM\Query\Parser;
 use Doctrine\ORM\Query\SqlWalker;
+use LogicException;
 
 class MbStrtolower extends FunctionNode
 {
@@ -26,6 +27,10 @@ class MbStrtolower extends FunctionNode
 
     public function getSql(SqlWalker $sqlWalker): string
     {
+        if (null === $this->string) {
+            throw new LogicException('No string, parse() was not called?');
+        }
+
         return 'mb_strtolower('.$this->string->dispatch($sqlWalker).')';
     }
 }

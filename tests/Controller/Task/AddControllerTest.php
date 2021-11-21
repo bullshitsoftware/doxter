@@ -71,9 +71,13 @@ class AddControllerTest extends WebTestCase
         self::assertTrue(in_array('tag2', $tags));
         self::assertSame('2006-12-01 01:02:03', $task->getCreated()->format('Y-m-d H:i:s'));
         self::assertSame('2007-01-02 03:04:05', $task->getUpdated()->format('Y-m-d H:i:s'));
+        self::assertNotNull($task->getWait());
         self::assertSame('2006-12-10 03:04:05', $task->getWait()->format('Y-m-d H:i:s'));
+        self::assertNotNull($task->getStarted());
         self::assertSame('2006-12-11 05:06:07', $task->getStarted()->format('Y-m-d H:i:s'));
+        self::assertNotNull($task->getEnded());
         self::assertSame('2006-12-12 07:08:09', $task->getEnded()->format('Y-m-d H:i:s'));
+        self::assertNotNull($task->getDue());
         self::assertSame('2006-12-13 09:10:11', $task->getDue()->format('Y-m-d H:i:s'));
         $this->client->followRedirect();
         self::assertSelectorTextSame('.message_flash', 'Task "test" created');

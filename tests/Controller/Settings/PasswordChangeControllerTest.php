@@ -47,6 +47,7 @@ class PasswordChangeControllerTest extends WebTestCase
         ]);
         self::assertResponseRedirects('/settings/password');
         $user = $this->userRepository->findOneByEmail('john.doe@example.com');
+        self::assertNotNull($user);
         $hasher = self::getContainer()->get(UserPasswordHasherInterface::class);
         self::assertTrue($hasher->isPasswordValid($user, 'qwerty'));
         $this->client->followRedirect();

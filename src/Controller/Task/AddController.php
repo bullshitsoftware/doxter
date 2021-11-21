@@ -19,7 +19,7 @@ class AddController extends Controller
         $this->denyAccessUnlessGranted('ROLE_USER');
 
         $task = new Task();
-        $task->setUser($this->getUser());
+        $task->setUser($this->getUserOrException());
         $task->setCreated($this->now());
         $form = $this->createForm(TaskType::class, $task);
         $form->handleRequest($request);

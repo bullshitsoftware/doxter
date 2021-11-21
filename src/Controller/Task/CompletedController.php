@@ -17,7 +17,7 @@ class CompletedController extends Controller
         $this->denyAccessUnlessGranted('ROLE_USER');
 
         $page = $request->get('page', 1);
-        $pagination = $repository->findCompletedByUser($this->getUser(), $page, $request->get('q'));
+        $pagination = $repository->findCompletedByUser($this->getUserOrException(), $page, $request->get('q'));
 
         return $this->render('task/completed.html.twig', [
             'now' => $this->now(),
