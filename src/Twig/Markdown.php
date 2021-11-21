@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Twig;
 
 use League\CommonMark\GithubFlavoredMarkdownConverter;
@@ -20,6 +22,6 @@ class Markdown implements MarkdownInterface
 
     public function convert(string $body): string
     {
-        return $this->converter->convertToHtml($body);
+        return $this->converter->convertToHtml($body)->getContent();
     }
 }
