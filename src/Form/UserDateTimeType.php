@@ -6,8 +6,10 @@ namespace App\Form;
 
 use App\Entity\User;
 use App\Entity\UserSettings;
+use App\Service\DateTime\DateTimeParser;
 use DateTimeImmutable;
 use DateTimeZone;
+use InvalidArgumentException;
 use LogicException;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\CallbackTransformer;
@@ -19,7 +21,7 @@ use Symfony\Component\Security\Core\Security;
 
 class UserDateTimeType extends AbstractType
 {
-    public function __construct(private Security $security)
+    public function __construct(private Security $security, private DateTimeParser $dateTimeParser)
     {
     }
 
@@ -45,17 +47,11 @@ class UserDateTimeType extends AbstractType
                     return null;
                 }
                 $settings = $this->getUserSettings();
-                $date = DateTimeImmutable::createFromFormat(
-                    $settings->getDateTimeFormat(),
-                    $date,
-                    new DateTimeZone($settings->getTimezone()),
-                );
-                if (false === $date) {
-                    throw new TransformationFailedException('Invalid datetime string');
+                try {
+                    return $this->dateTimeParser->parse($settings->getDateTimeFormat(), $settings->getTimezone(), $date);
+                } catch (InvalidArgumentException $e) {
+                    throw new TransformationFailedException('Invalid datetime string', 0, $e);
                 }
-                $date = $date->setTimezone(new DateTimeZone(date_default_timezone_get()));
-
-                return $date;
             }
         ));
     }
@@ -67,7 +63,7 @@ class UserDateTimeType extends AbstractType
         $resolver
             ->setDefault('empty_data', '')
             ->setDefault('attr', ['placeholder' => $settings->getDateTimeFormat()])
-            ->setDefault('view_timezone', $settings->getTimezone());
+        ;
     }
 
     private function getUserSettings(): UserSettings
