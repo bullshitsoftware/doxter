@@ -138,4 +138,24 @@ class CurrentControllerTest extends WebTestCase
             ],
         );
     }
+
+    public function testFilterDates(): void
+    {
+        self::loginUserByEmail();
+        $this->client->request('GET', '/', ['q' => 'started>=2007-01-01']);
+        self::assertResponseIsSuccessful();
+        self::assertGridContent(
+            '.grid_current',
+            [
+                'columns' => ['ID', 'Active', 'Age', 'Tag', 'Due', 'Title', 'Urg'],
+                'data' => [
+                    ['2c2bbc1d', '9m', '9m', 'bar foo', '', 'Current task 1', '6.00'],
+                    ['b3bb6502', '7m', '7m', 'baz', '', 'Current task 3', '4.00'],
+                    ['8670b12e', '1m', '1m', '', '8mon', 'Current task 9', '3.26'],
+                    ['8570760c', '5m', '5m', '', '', 'Current task 5', '3.00'],
+                    ['a0e84ad1', '3m', '3m', '', '', 'Current task 7', '3.00'],
+                ],
+            ],
+        );
+    }
 }

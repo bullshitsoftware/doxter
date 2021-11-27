@@ -140,4 +140,33 @@ class CompletedControllerTest extends WebTestCase
             ],
         );
     }
+
+    public function testFilterDates(): void
+    {
+        self::loginUserByEmail();
+        $this->client->request('GET', '/completed', ['q' => 'created>=2007-01-01 created<2007-01-02']);
+        self::assertResponseIsSuccessful();
+        self::assertGridContent(
+            '.grid_completed',
+            [
+                'columns' => ['ID', 'Created', 'Completed', 'Age', 'Tag', 'Title'],
+                'data' => [
+                    ['da6dad30', '2007-01-01', '2007-01-01', '1d', '', 'Done task 10'],
+                ],
+            ],
+        );
+
+        $this->client->request('GET', '/completed', ['q' => 'ended>=2006-12-30 ended<2006-12-31']);
+        self::assertResponseIsSuccessful();
+        self::assertGridContent(
+            '.grid_completed',
+            [
+                'columns' => ['ID', 'Created', 'Completed', 'Age', 'Tag', 'Title'],
+                'data' => [
+                    ['7ae9db23', '2006-12-30', '2006-12-30', '3d', '', 'Done task 8'],
+                    ['dcc2a5e5', '2006-12-29', '2006-12-30', '4d', '', 'Done task 7'],
+                ],
+            ],
+        );
+    }
 }

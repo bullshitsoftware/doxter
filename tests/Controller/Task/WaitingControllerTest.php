@@ -134,4 +134,20 @@ class WaitingControllerTest extends WebTestCase
             ],
         );
     }
+
+    public function testFilterDates(): void
+    {
+        self::loginUserByEmail();
+        $this->client->request('GET', '/waiting', ['q' => 'wait>=2007-01-03 wait<2007-01-04']);
+        self::assertResponseIsSuccessful();
+        self::assertGridContent(
+            '.grid_waiting',
+            [
+                'columns' => ['ID', 'Age', 'Tag', 'Wait', 'Remaining', 'Title'],
+                'data' => [
+                    ['1d44a8c5', '8m', 'bar foo', '2007-01-03', '23h', 'Delayed task 1'],
+                ],
+            ],
+        );
+    }
 }

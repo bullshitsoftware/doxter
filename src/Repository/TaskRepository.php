@@ -7,7 +7,7 @@ namespace App\Repository;
 use App\Doctrine\Pagination;
 use App\Entity\Task;
 use App\Entity\User;
-use App\Service\TaskSearchFilter;
+use App\Service\Task\Filter\Filter;
 use function array_slice;
 use function count;
 use DateTimeInterface;
@@ -28,7 +28,7 @@ class TaskRepository extends ServiceEntityRepository
 {
     private const TASK_PER_PAGE = 30;
 
-    public function __construct(ManagerRegistry $registry, private TaskSearchFilter $searchFilter)
+    public function __construct(ManagerRegistry $registry, private Filter $searchFilter)
     {
         $this->searchFilter = $searchFilter;
 
